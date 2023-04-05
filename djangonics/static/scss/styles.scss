@@ -1,0 +1,22 @@
+$util-nav-color: #007fff;
+$nav-text-color: #fff;
+$main-nav-color: #0DC6FF;
+#util-nav{
+    background-color: $util-nav-color;
+    color: $nav-text-color;
+    a form{
+        background-color: #00A4CC;
+        color: #FFEEDB;
+    }
+}
+#search-button{
+    background-color: #FFA500;
+    border: solid 1px #FFA500;
+}
+#main-nav{
+    background-color: $main-nav-color;
+    color: $nav-text-color;
+    li:hover{
+        background-color: #00a2d1;
+    }
+}

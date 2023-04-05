@@ -1,15 +1,19 @@
 #util-nav{
-    background-color: #00A4CC;
-    color: #FFEEDB;
+    background-color: #007fff;
+    color: #FFF;
 }
 #util-nav a form{
     background-color: #00A4CC;
     color: #FFEEDB;
 }
 #search-button{
-    background-color: #F5B736;
+    background-color: #FFA500;
+    border: solid 1px #FFA500;
 }
 #main-nav{
-    background-color: #00B3B3;
+    background-color: #0DC6FF;
     color: FFEBA1;
+}
+#main-nav li:hover{
+    background-color: #00a2d1;
 }

@@ -1,0 +1,21 @@
+/* line 4, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+#util-nav {
+  background-color: util-nav-color;
+  color: #fff; }
+  /* line 7, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav a form {
+    background-color: #00A4CC;
+    color: #FFEEDB; }
+
+/* line 12, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+#search-button {
+  background-color: #FFA500;
+  border: solid 1px #FFA500; }
+
+/* line 16, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+#main-nav {
+  background-color: #0DC6FF;
+  color: #fff; }
+  /* line 19, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #main-nav li:hover {
+    background-color: #00a2d1; }
