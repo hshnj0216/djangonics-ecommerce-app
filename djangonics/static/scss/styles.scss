@@ -8,10 +8,10 @@ $main-nav-color: #0DC6FF;
         background-color: #00A4CC;
         color: #FFEEDB;
     }
-}
-#search-button{
-    background-color: #FFA500;
-    border: solid 1px #FFA500;
+    input#search-button{
+        background-color: #FFA500;
+        border: solid 1px #FFA500;
+    }
 }
 #main-nav{
     background-color: $main-nav-color;
