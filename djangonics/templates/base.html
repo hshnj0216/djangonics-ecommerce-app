@@ -19,7 +19,7 @@
     >
         <div class="container-fluid d-flex row">
             <a href="#" class="navbar-brand col-2">Djangonics</a>
-            <form action="" class="col-8 row d-flex flex-nowrap" role="search">
+            <form action="" class="col-7 row d-flex flex-nowrap" role="search">
                   <div class="flex-grow p-0 w-auto">
                     <select name="" id="" class="form-select rounded-start rounded-0">
                       <option value="all" selected>All</option>
@@ -30,18 +30,19 @@
                       <option value="storage devices">Storage Devices</option>
                     </select>
                   </div>
-                  <div class="flex-fill p-0">
+                  <div class="flex-shrink-1 p-0">
                     <input type="text" class="form-control rounded-0" placeholder="Search for products" name="query">
                   </div>
                   <div class="flex-fill p-0">
                     <input type="submit" value="Search" class="btn btn-outline-dark rounded-end rounded-0" id="search-button">
                   </div>
             </form>
-            <div class="d-flex col-2">
-                <div>Sign in/Login</div>
-                <div>Orders</div>
-                <div>Cart</div>
-            </div>
+            <ul class="d-flex col-3 list-unstyled justify-content-between text-light">
+                <li class="list-item"><a href="">Sell</a></li>
+                <li class="list-item"><a href="">Login/Register</a></li>
+                <li class="list-item"><a href="">Cart</a></li>
+                <li class="list-item"><a href="">Orders</a></li>
+            </ul>
         </div>
     </nav>
     <nav

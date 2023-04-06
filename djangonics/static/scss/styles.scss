@@ -12,6 +12,9 @@ $main-nav-color: #0DC6FF;
         background-color: #FFA500;
         border: solid 1px #FFA500;
     }
+    ul a{
+        color: $nav-text-color;
+    }
 }
 #main-nav{
     background-color: $main-nav-color;

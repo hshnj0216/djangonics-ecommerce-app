@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% block title %}Browse All{% endblock %}
 {% block content %}
-    <h1>This is where all the products are displayed</h1>
+    {% for product in products %}
+        <div class="card p-2 m-3" style="width: 18rem;">
+            <img src="{{product.image.url}}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{product.name}}</h5>
+                <h6 class="card-text">${{product.price|floatformat:2}}</h6>
+                <a href="#" class="btn btn-primary">Buy</a>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
