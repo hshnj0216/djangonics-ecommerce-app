@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
 {% block title %}Browse All{% endblock %}
+{% load humanize %}
 {% block content %}
-    {% for product in products %}
-        <div class="card p-2 m-3" style="width: 18rem;">
-            <img src="{{product.image.url}}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">{{product.name}}</h5>
-                <h6 class="card-text">${{product.price|floatformat:2}}</h6>
-                <a href="#" class="btn btn-primary">Buy</a>
-            </div>
+    <div class="container-fluid d-flex flex-column">
+        <div class="row row-cols-1 row-cols-md-4 g-4 my-3 w-100">
+            {% for product in products %}
+                <div class="card p-2 m-3" style="width: 18rem; height: 22rem">
+                    <a href="{% url 'products:product_details' product.slug%}">
+                        <img src="{{product.image.url}}" class="card-img-top" alt="product-image" style="width: 270.4px; height: 166.2px">
+                    </a>
+                    <div class="card-body">
+                        <a href="{% url 'products:product_details' product.slug%}">
+                            <h6 class="card-title">{{product.name|truncatechars_html:50}}</h6>
+                        </a>
+                        <h4 class="card-text">${{product.price|floatformat:2|intcomma}}</h4>
+                        <a href="#" class="btn btn-primary">Buy Now</a>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}

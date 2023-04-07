@@ -1,4 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Product Details{% endblock %}
 {% block content %}
+    <div class="row w-100 p-5 m-0">
+        <div class="col-lg-5">
+            <img src="{{product.image.url}}" class="w-100" alt="product-image" />
+        </div>
+        <div class="col-lg-4">
+            <p class="fs-3">{{product.name}}</p>
+        </div>
+        <div class="col-lg-3">
+            <p>Payment here</p>
+        </div>
+    </div>
 {% endblock %}
