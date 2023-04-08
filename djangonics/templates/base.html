@@ -17,10 +17,10 @@
             class="navbar navbar-expand-lg"
             id="util-nav"
     >
-        <div class="container-fluid d-flex row">
-            <a href="#" class="navbar-brand col-2">Djangonics</a>
-            <form action="" class="col-7 row d-flex flex-nowrap" role="search">
-                  <div class="flex-grow p-0 w-auto">
+        <div class="container d-flex row w-100">
+            <a href="{% url 'products:home' %}" class="navbar-brand col-2 flex-grow-0">Djangonics</a>
+            <form action="" class="col-7 row d-flex flex-nowrap flex-grow-1" role="search">
+                  <div class="p-0 w-auto">
                     <select name="" id="" class="form-select rounded-start rounded-0">
                       <option value="all" selected>All</option>
                       <option value="computers & laptops">Computers & Laptops</option>
@@ -30,7 +30,7 @@
                       <option value="storage devices">Storage Devices</option>
                     </select>
                   </div>
-                  <div class="flex-shrink-1 p-0">
+                  <div class="flex-fill p-0">
                     <input type="text" class="form-control rounded-0" placeholder="Search for products" name="query">
                   </div>
                   <div class="flex-fill p-0">
