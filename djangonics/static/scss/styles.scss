@@ -19,7 +19,32 @@ $main-nav-color: #0DC6FF;
 #main-nav{
     background-color: $main-nav-color;
     color: $nav-text-color;
+    box-shadow: 0 2px 1px black;
     li:hover{
         background-color: #00a2d1;
     }
+}
+.card{
+    background-color: #E6F0FF;
+    a.buy-button{
+        background-color: #FFFF00;
+        box-shadow: 1px 1px 1px 1px;
+    }
+    a.add-to-cart-button{
+        background-color: #FFA500;
+        box-shadow: 1px 1px 1px 1px;
+    }
+    .card-img-bg{
+        width: 270px;
+        height: 170px;
+        background-color: #FFF;
+    }
+    .product-img{
+        object-fit: contain;
+        width: 270px;
+        height: 170px;
+    }
+}
+.active{
+    background-color: #00a2d1;
 }

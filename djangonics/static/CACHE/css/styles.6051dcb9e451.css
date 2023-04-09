@@ -1,0 +1,34 @@
+/* line 4, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+#util-nav {
+  background-color: #007fff;
+  color: #fff; }
+  /* line 7, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav a form {
+    background-color: #00A4CC;
+    color: #FFEEDB; }
+  /* line 11, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav input#search-button {
+    background-color: #FFA500;
+    border: solid 1px #FFA500; }
+  /* line 15, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav ul a {
+    color: #fff; }
+
+/* line 19, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+#main-nav {
+  background-color: #0DC6FF;
+  color: #fff;
+  box-shadow: 0 2px 2px black; }
+  /* line 23, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #main-nav li:hover {
+    background-color: #00a2d1; }
+
+/* line 28, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+.card a.buy-button {
+  background-color: #FFFF00;
+  box-shadow: 2px 2px 3px 2px; }
+
+/* line 32, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+.card a.add-to-cart-button {
+  background-color: #FFA500;
+  box-shadow: 2px 2px 1px 2px; }

@@ -2,25 +2,41 @@
 {% block title %}Browse All{% endblock %}
 {% load humanize %}
 {% block content %}
-    <div class="container-fluid d-flex flex-column">
-        <div class="row row-cols-1 row-cols-md-4 g-4 my-3 w-100">
-            {% for product in products %}
-                <div class="card p-2 m-3" style="width: 18rem; height: 22rem">
-                    <a href="{% url 'products:product_details' product.slug product.id%}">
-                        <img src="{{product.image.url}}" class="card-img-top" alt="product-image" style="width: 270.4px; height: 166.2px">
-                    </a>
-                    <div class="card-body">
-                        <a href="{% url 'products:product_details' product.slug product.id%}">
-                            <h6 class="card-title">{{product.name|truncatechars_html:50}}</h6>
-                        </a>
-                        <h4 class="card-text">${{product.price|floatformat:2|intcomma}}</h4>
-                        <div class="d-flex justify-content-between">
-                            <a href="#" class="btn btn-primary">Buy Now</a>
-                            <a href="#" class="btn btn-primary">Add to Cart</a>
+    <div class="container-fluid d-flex row">
+        <section class="col-md-2">
+            <h5>Filter by:</h5>
+            <h6></h6>
+        </section>
+        <section class="col-md-10">
+            <h3>Browse All Products</h3>
+            <div class="d-flex flex-column">
+                <div class="row">
+                    {% for product in products %}
+                        <div class="card p-2 m-2 col-md-3" style="width: 18.25rem; height: 23rem">
+                            <a href="{% url 'products:product_details' product.slug product.id%}">
+                                <div class="card-img-bg">
+                                    <img src="{{product.image.url}}" class="card-img-top product-img" alt="product-image">
+                                </div>
+                            </a>
+                            <div class="card-body p-2">
+                                <a href="{% url 'products:product_details' product.slug product.id%}">
+                                    <h6 class="card-title">{{product.name|truncatechars_html:50}}</h6>
+                                </a>
+                                <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
+                                <p class="fs-6 mb-1">Stars | reviews</p>
+                                <p class="text-secondary fs-6 mb-1">Sold by: {{product.seller}}</p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="#" class="fs-6 btn add-to-cart-button">Add to Cart</a>
+                                    <a href="#" class="fs-6 btn buy-button">Buy Now</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                            </div><div class="row">
+                        {% endif %}
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        </section>
     </div>
 {% endblock %}
