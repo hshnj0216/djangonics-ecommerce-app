@@ -3,9 +3,18 @@
 {% load humanize %}
 {% block content %}
     <div class="container-fluid d-flex row">
-        <section class="col-md-2">
+        <section class="col-md-2 mt-3">
             <h5>Filter by:</h5>
-            <h6></h6>
+            <form action="">
+                {% for category in categories %}
+                    <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="{{category.slug}}" id="flexCheckDefault">
+                          <label class="form-check-label" for="flexCheckDefault">
+                            {{category.get_name_display}}
+                          </label>
+                    </div>
+                {% endfor %}
+            </form>
         </section>
         <section class="col-md-10">
             <h3>Browse All Products</h3>

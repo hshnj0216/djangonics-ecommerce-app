@@ -8,7 +8,8 @@ def home(request):
 
 def browse_all(request):
     products = Product.objects.all()
-    return render(request, 'products/browse_all.html', {'products': products})
+    categories = Category.objects.all()
+    return render(request, 'products/browse_all.html', {'products': products, 'categories': categories})
 
 def product_details(request, slug, id):
     product = get_object_or_404(Product, pk=id)
