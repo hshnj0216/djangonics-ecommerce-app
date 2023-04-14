@@ -35,4 +35,4 @@ def filter_products(request):
     else:
         products = Product.objects.filter(category__slug__in=categories)
 
-    return render(request, 'products/product_list_partial.html', {'products': products, 'message': message})
+    return render(request, 'products/product_list_partial.html', {'products': products})
