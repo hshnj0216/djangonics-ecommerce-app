@@ -46,3 +46,8 @@ def filter_products(request):
         print(f"after queryset length is {len(queryset)}")
 
     return render(request, 'products/product_list_partial.html', {'products': queryset})
+
+def search_products(request):
+    query = request.GET.get('query_string')
+    products = Product.objects.filter(name__icontains=query)
+    return render(request, 'products/product_list_partial.html', {'products': products})
