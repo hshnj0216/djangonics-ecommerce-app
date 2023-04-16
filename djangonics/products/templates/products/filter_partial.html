@@ -12,17 +12,23 @@
         {% endfor %}
     </div>
     <h6>Price:</h6>
-    <div class="container">
-        <div class="row gx-1">
-            <div class="input-group col">
-                <span class="input-group-text">$</span>
-                <input class="form-control" name="min_price" type="text" placeholder="Min">
+    <div class="container w-100">
+        <div class="row d-flex flex-nowrap px-2">
+            <div class="col-5 p-0 mx-1">
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input class="form-control" id="min_price" name="min_price" type="number" onwheel="return false;" placeholder="Min">
+                </div>
             </div>
-            <div class="input-group col">
-                <span class="input-group-text">$</span>
-                <input class="form-control" name="max_price" type="text" placeholder="Max">
+            <div class="col-5 p-0 mx-1">
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input class="form-control" id="max_price" name="max_price" type="number" onwheel="return false;" placeholder="Max">
+                </div>
             </div>
-            <input type="submit" value="Go" class="col">
+            <div class="col-2 p-0">
+                <input type="submit" value="Go" class="btn btn-primary w-100">
+            </div>
         </div>
     </div>
     <h6>Rating:</h6>

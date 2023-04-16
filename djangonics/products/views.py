@@ -31,8 +31,18 @@ def filter_products(request):
 
     # filter the products based on the selected categories
     if len(categories) == 1 and categories[0] == '':
-        products = Product.objects.all()
+        queryset = Product.objects.all()
     else:
-        products = Product.objects.filter(category__slug__in=categories)
+        queryset = Product.objects.filter(category__slug__in=categories)
+        print(f"filter by categories initiated, queryset is {queryset}")
 
-    return render(request, 'products/product_list_partial.html', {'products': products})
+    # apply price filters if provided
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    if max_price and min_price and not (min_price == 'NaN' or max_price == 'NaN'):
+        print(f"minmax block run, min_price is {min_price} and max_price is {max_price}")
+        print(f"filter by price initiated, current queryset has items {len(queryset)}")
+        queryset = queryset.filter(price__range=(min_price, max_price))
+        print(f"after queryset length is {len(queryset)}")
+
+    return render(request, 'products/product_list_partial.html', {'products': queryset})
