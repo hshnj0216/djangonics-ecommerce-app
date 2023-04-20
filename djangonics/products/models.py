@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.postgres.search import SearchVector, SearchVectorField
+
 
 # Create your models here.
 class Category(models.Model):

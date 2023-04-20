@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Product, Category
+from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib.postgres.search import SearchQuery, SearchVector
 
 
 # Create your views here.
@@ -49,5 +51,6 @@ def filter_products(request):
 
 def search_products(request):
     query = request.GET.get('query_string')
-    products = Product.objects.filter(name__icontains=query)
+    products = Product.objects.annotate(search=SearchVector('name', 'description'),).filter(search=SearchQuery(query))
+    print(products)
     return render(request, 'products/product_list_partial.html', {'products': products})
