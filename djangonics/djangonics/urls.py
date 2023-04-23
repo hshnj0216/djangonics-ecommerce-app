@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('products:home'), name='home'),
     path('products/', include('products.urls')),
+    path('accounts/', include('accounts.urls')),
 ]
 
 if settings.DEBUG:

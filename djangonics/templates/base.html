@@ -42,7 +42,8 @@
             </form>
             <ul class="d-flex col-3 list-unstyled justify-content-between text-light">
                 <li class="list-item"><a href="">Sell</a></li>
-                <li class="list-item"><a href="">Login/Register</a></li>
+                <li class="list-item"><a href="{% url 'accounts:login' %}">Login</a></li>
+                <li class="list-item"><a href="{% url 'accounts:signup' %}">Sign Up</a></li>
                 <li class="list-item"><a href="">Cart</a></li>
                 <li class="list-item"><a href="">Orders</a></li>
             </ul>

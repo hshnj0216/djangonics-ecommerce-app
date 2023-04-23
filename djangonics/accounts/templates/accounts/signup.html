@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+    <div class="w-50 mx-auto">
+        <div class="d-flex align-items-center">
+            <div>
+                <h3>Create your account</h3>
+            </div>
+            <div class="d-flex align-items-center">
+                <p class="text-center">Already a member?<a href="{% url 'accounts:login' %}">Login here.</a></p>
+            </div>
+        </div>
+        <div class="d-flex border border-round mx-auto row p-3">
+            <div class="col-5 p-3">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="mb-2">
+                            <label class="form-label" for="first_name">First Name</label>
+                            <input class="form-control" type="text" id="first_name" name="first_name">
+                    </div>
+                    <div class="mb-2">
+                            <label class="form-label" for="last_name">Last Name</label>
+                            <input class="form-control" type="text" id="last_name" name="last_name">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" type="email" id="email" name="email">
+                    </div>
+                    <div class="mb-2">
+                            <label class="form-label" for="contact_number">Contact Number</label>
+                            <input class="form-control" type="text" id="contact_number" name="contact_number">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" for="password">Password</label>
+                        <input class="form-control" type="password" id="password" name="password">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" for="confirm_password">Confirm Password</label>
+                        <input class="form-control" type="password" id="confirm_password" name="confirm_password">
+                    </div>
+                    <input class="btn btn-primary" type="submit" value="Sign Up">
+                </form>
+            </div>
+            <div class="divider col-2">
+
+            </div>
+            <div class="col-5">
+                Sign up with google account
+            </div>
+        </div>
+    </div>
+{% endblock %}

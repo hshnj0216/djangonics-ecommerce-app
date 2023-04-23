@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    <div class="d-flex align-items-center h-100">
+        <div class="w-50 row border border-round p-3 my-5 mx-auto">
+            <div>
+                <h3>Welcome to Djangonics! Please login</h3>
+                <p>New customer? <a href="{% url 'accounts:signup' %}">Sign up here.</a></p>
+            </div>
+            <div class="col-5">
+                <form action="">
+                   <div class="mb-2">
+                       <label class="form-label" for="email">Email</label>
+                       <input class="form-control" type="email" id="email" name="email">
+                   </div>
+                   <div class="mb-2">
+                       <label class="form-label" for="password">Password</label>
+                       <input class="form-control" type="password" id="password" name="password">
+                   </div>
+                    <input class="btn btn-primary" type="submit" value="Login">
+                </form>
+            </div>
+            <div class="divider col-2">
+
+            </div>
+            <div class="col-5">
+                login with google account
+            </div>
+        </div>
+    </div>
+{% endblock %}
