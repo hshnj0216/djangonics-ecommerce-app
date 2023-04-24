@@ -1,7 +1,7 @@
 {% load humanize %}
 <div class="row">
     {% for product in products %}
-        <div class="card p-2 m-2 col-md-3" style="width: 16rem; height: 23rem">
+        <div class="card p-2 m-2 col-md-3" style="width: 16rem; height: 21rem">
             <a href="{% url 'products:product_details' product.slug product.id%}">
                 <div class="card-img-bg">
                     <img src="{{product.image.url}}" class="card-img-top product-img" alt="product-image">
@@ -13,7 +13,6 @@
                 </a>
                 <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
                 <p class="fs-6 mb-1">Stars | reviews</p>
-                <p class="text-secondary fs-6 mb-1">Sold by: {{product.seller}}</p>
                 <div class="d-flex justify-content-between">
                     <a href="#" class="fs-6 btn add-to-cart-button">Add to Cart</a>
                     <a href="#" class="fs-6 btn buy-button">Buy Now</a>
