@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.postgres',
+    'django_bootstrap_icons',
     'compressor',
     'products',
     'pages',

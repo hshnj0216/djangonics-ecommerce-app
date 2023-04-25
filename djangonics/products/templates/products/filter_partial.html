@@ -4,8 +4,8 @@
     <div class="container">
         {% for category in categories %}
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="{{category.slug}}" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
+                <input class="form-check-input" type="checkbox" value="{{category.slug}}" id="{{category}}">
+                <label class="form-check-label" for="{{category}}">
                     {{category.get_name_display}}
                 </label>
             </div>
@@ -17,7 +17,7 @@
             <div class="col-5 p-0 mx-1">
                 <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input class="form-control" id="min_price" name="min_price" type="number" onwheel="return false;" placeholder="Min">
+                    <input class="form-control" id="min_price" name="min_price" type="number" placeholder="Min">
                 </div>
             </div>
             <div class="col-5 p-0 mx-1">

@@ -15,6 +15,16 @@ $main-nav-color: #0DC6FF;
     ul a{
         color: $nav-text-color;
     }
+    .item span{
+        font-size: 12px;
+        display: inline-block;
+        padding-top: 10px;
+        font-weight: bold;
+    }
+    .bi-cart2{
+        width:25px;
+        height: 25px;
+    }
 }
 #main-nav{
     background-color: $main-nav-color;
