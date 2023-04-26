@@ -17,14 +17,18 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+    <!-- utility nav -->
     <nav
-            class="navbar navbar-expand-lg"
+            class="navbar navbar-expand-lg py-1 px-5"
             id="util-nav"
     >
         <div class="container d-flex row w-100">
+            <!-- brand logo -->
             <a href="{% url 'products:home' %}" class="navbar-brand col-2 flex-grow-0">Djangonics</a>
+            <!-- search bar -->
             <form action="" id="search" class="col-7 row d-flex flex-nowrap flex-grow-1" data-search-url="{% url 'products:search_products' %}" role="search">
-                  <div class="p-0 w-auto">
+                <!--
+                <div class="p-0 w-auto">
                     <select name="category" id="category-selection" class="form-select rounded-start rounded-0">
                       <option value="all" selected>All Categories</option>
                       <option value="computers & laptops">Computers & Laptops</option>
@@ -34,6 +38,7 @@
                       <option value="storage devices">Storage Devices</option>
                     </select>
                   </div>
+                  -->
                   <div class="flex-fill p-0">
                     <input type="text" class="form-control rounded-0" id="query" placeholder="Search for products" name="query">
                   </div>
@@ -41,29 +46,25 @@
                     <input type="submit" value="Search" class="btn btn-outline-dark rounded-end rounded-0" id="search-button">
                   </div>
             </form>
+            <!-- utility nav links -->
             <ul class="d-flex col-3 list-unstyled justify-content-between align-items-center text-light m-0">
-                <li class="list-item h-100">
+                <li class="list-item p-1">
                     <a href="{% url 'accounts:login' %}" class="text-decoration-none">
-                        Login
-                    </a>
-                </li>
-                <li class="list-item">
-                    <a href="{% url 'accounts:signup' %}" class="text-decoration-none">
-                        <div>
-                            <span>Sign Up or</span>
-                            <span>Log In</span>
+                        <div class="nav-text">
+                            <span class="secondary-text">Sign Up or</span>
+                            <span class="primary-text">Log In</span>
                         </div>
                     </a>
                 </li>
-                <li class="list-item">
+                <li class="list-item p-1">
                     <a href="" class="text-decoration-none">
-                        <div>
-                            <span>Returns &</span>
-                            <span>Orders</span>
+                        <div class="nav-text">
+                            <span class="secondary-text">Returns &</span>
+                            <span class="primary-text">Orders</span>
                         </div>
                     </a>
                 </li>
-                <li class="list-item">
+                <li class="list-item p-1">
                     <a href="" class="text-decoration-none">
                         <div class="item d-flex">
                             {% bs_icon 'cart2' %}
@@ -74,9 +75,10 @@
             </ul>
         </div>
     </nav>
+    <!-- main nav -->
     <nav
             id="main-nav"
-            class="navbar navbar-expand-lg py-0 px-2 mb-3 "
+            class="navbar navbar-expand-lg py-0 px-5 mb-3"
     >
         <ul class="nav">
             <li class="nav-item">

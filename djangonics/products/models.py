@@ -5,6 +5,7 @@ from django.contrib.postgres.search import SearchVector, SearchVectorField
 
 # Create your models here.
 class Category(models.Model):
+    id = models.BigAutoField(primary_key=True)
     COMPUTERS_LAPTOPS = 'computers_laptops'
     SMARTPHONES_TABLETS = 'smartphones_tablets'
     GAMING_CONSOLES_ACCESSORIES = 'gaming_consoles_accessories'
@@ -29,8 +30,8 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    id = models.BigAutoField(primary_key=True)
     category = models.ForeignKey(Category, related_name='product', on_delete=models.CASCADE)
-    seller = models.ForeignKey(User, related_name='product_seller', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     units_sold = models.IntegerField(default=0)
     description = models.TextField()

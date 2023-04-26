@@ -1,6 +1,7 @@
 $util-nav-color: #007fff;
 $nav-text-color: #fff;
 $main-nav-color: #0DC6FF;
+$card-bg-color: #E6F0FF;
 #util-nav{
     background-color: $util-nav-color;
     color: $nav-text-color;
@@ -15,11 +16,26 @@ $main-nav-color: #0DC6FF;
     ul a{
         color: $nav-text-color;
     }
+    ul li:hover{
+        border: solid 1px #FFF;
+        border-radius: 3px;
+    }
     .item span{
-        font-size: 12px;
+        font-size: 14px;
         display: inline-block;
         padding-top: 10px;
         font-weight: bold;
+    }
+    .nav-text span{
+        display:block;
+        line-height: 0.9;
+    }
+    .primary-text{
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .secondary-text{
+        font-size: 12px;
     }
     .bi-cart2{
         width:25px;
@@ -35,7 +51,7 @@ $main-nav-color: #0DC6FF;
     }
 }
 .card{
-    background-color: #E6F0FF;
+    background-color: $card-bg-color;
     a.buy-button{
         background-color: #FFFF00;
         box-shadow: 1px 1px 1px 1px;
