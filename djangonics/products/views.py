@@ -41,16 +41,13 @@ def filter_products(request):
     # apply price filters if provided
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
+
     if max_price and min_price and not (min_price == 'NaN' or max_price == 'NaN'):
-        print(f"minmax block run, min_price is {min_price} and max_price is {max_price}")
-        print(f"filter by price initiated, current queryset has items {len(queryset)}")
         queryset = queryset.filter(price__range=(min_price, max_price))
-        print(f"after queryset length is {len(queryset)}")
 
     return render(request, 'products/product_list_partial.html', {'products': queryset})
 
 def search_products(request):
     query = request.GET.get('query_string')
     products = Product.objects.annotate(search=SearchVector('name', 'description'),).filter(search=SearchQuery(query))
-    print(products)
     return render(request, 'products/product_list_partial.html', {'products': products})
