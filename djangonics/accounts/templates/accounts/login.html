@@ -8,13 +8,20 @@
                 <p>New customer? <a href="{% url 'accounts:signup' %}">Sign up here.</a></p>
             </div>
             <div class="col-5">
-                <form action="">
+                {% if success_message %}
+                    <p class="text-success">{{success_message}}</p>
+                {% endif %}
+                {% if error_message %}
+                    <p class="text-danger">{{error_message}}</p>
+                {% endif %}
+                <form action="{% url 'accounts:login_user' %}" method="post">
+                   {% csrf_token %}
                    <div class="mb-2">
-                       <label class="form-label" for="email">Email</label>
+                       <label class="form-label mb-0" for="email">Email</label>
                        <input class="form-control" type="email" id="email" name="email">
                    </div>
                    <div class="mb-2">
-                       <label class="form-label" for="password">Password</label>
+                       <label class="form-label mb-0" for="password">Password</label>
                        <input class="form-control" type="password" id="password" name="password">
                    </div>
                     <input class="btn btn-primary" type="submit" value="Login">

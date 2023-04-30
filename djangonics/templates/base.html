@@ -48,11 +48,11 @@
             </form>
             <!-- utility nav links -->
             <ul class="d-flex col-3 list-unstyled justify-content-between align-items-center text-light m-0">
-                <li class="list-item p-1">
-                    <a href="{% url 'accounts:login' %}" class="text-decoration-none">
-                        <div class="nav-text">
-                            <span class="secondary-text">Sign Up or</span>
-                            <span class="primary-text">Log In</span>
+                 <li class="list-item p-1">
+                    <a href="" class="text-decoration-none">
+                        <div class="item d-flex">
+                            {% bs_icon 'cart2' %}
+                            <span>Cart</span>
                         </div>
                     </a>
                 </li>
@@ -64,14 +64,25 @@
                         </div>
                     </a>
                 </li>
-                <li class="list-item p-1">
-                    <a href="" class="text-decoration-none">
-                        <div class="item d-flex">
-                            {% bs_icon 'cart2' %}
-                            <span>Cart</span>
-                        </div>
-                    </a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="list-item p-1">
+                        <a href="" class="text-decoration-none">
+                            <div class="item d-flex">
+                                {% bs_icon 'person-gear' %}
+                                <span>Account</span>
+                            </div>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="list-item p-1">
+                        <a href="{% url 'accounts:login_user' %}" class="text-decoration-none">
+                            <div class="nav-text">
+                                <span class="secondary-text">Sign Up or</span>
+                                <span class="primary-text">Log In</span>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </nav>
