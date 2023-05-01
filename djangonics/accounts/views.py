@@ -54,3 +54,7 @@ def login_user(request):
             error_message = "Invalid email or password."
             context['error_message'] = error_message
             return render(request, "accounts/login.html", context)
+
+def logout_user(request):
+    logout(request)
+    return redirect(reverse("products:home"))

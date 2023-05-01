@@ -1,0 +1,85 @@
+/* line 5, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+#util-nav {
+  background-color: #007fff;
+  color: #fff; }
+  /* line 8, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav a form {
+    background-color: #00A4CC;
+    color: #FFEEDB; }
+  /* line 12, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav input#search-button {
+    background-color: #FFA500;
+    border: solid 1px #FFA500; }
+  /* line 16, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav ul a {
+    color: #fff; }
+  /* line 19, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav ul li:hover {
+    border: solid 1px #FFF;
+    border-radius: 3px; }
+  /* line 23, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav .item span {
+    font-size: 14px;
+    display: inline-block;
+    padding-top: 10px;
+    font-weight: bold; }
+  /* line 29, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav .nav-text span {
+    display: block;
+    line-height: 0.9; }
+  /* line 33, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav .primary-text {
+    font-size: 14px;
+    font-weight: bold; }
+  /* line 37, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav .secondary-text {
+    font-size: 12px; }
+  /* line 40, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #util-nav .bi {
+    width: 25px;
+    height: 25px; }
+
+/* line 45, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+#main-nav {
+  background-color: #0DC6FF;
+  color: #fff;
+  box-shadow: 0 2px 1px black; }
+  /* line 49, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  #main-nav li:hover {
+    background-color: #00a2d1; }
+
+/* line 53, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+.card {
+  background-color: #E6F0FF; }
+  /* line 55, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  .card a.buy-button {
+    background-color: #FFFF00;
+    box-shadow: 1px 1px 1px 1px; }
+  /* line 59, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  .card a.add-to-cart-button {
+    background-color: #FFA500;
+    box-shadow: 1px 1px 1px 1px; }
+  /* line 63, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  .card .card-img-bg {
+    width: 240x;
+    height: 170px;
+    background-color: #FFF; }
+  /* line 68, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  .card .product-img {
+    object-fit: contain;
+    width: 240px;
+    height: 170px; }
+  /* line 73, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+  .card .card-title {
+    display: inline-block;
+    height: 38.4px; }
+
+/* line 78, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+.active {
+  background-color: #00a2d1; }
+
+/* line 81, e:/projects/e-commerce/djangonics/static/scss/styles.scss */
+.product-detail-img {
+  width: 25rem;
+  height: 18rem;
+  object-fit: contain; }

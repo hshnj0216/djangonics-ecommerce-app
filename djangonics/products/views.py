@@ -48,6 +48,7 @@ def filter_products(request):
     return render(request, 'products/product_list_partial.html', {'products': queryset})
 
 def search_products(request):
-    query = request.GET.get('query_string')
-    products = Product.objects.annotate(search=SearchVector('name', 'description'),).filter(search=SearchQuery(query))
-    return render(request, 'products/product_list_partial.html', {'products': products})
+    query = request.GET.get('query')
+    products = Product.objects.annotate(search=SearchVector('name', 'category__name'),).filter(search=SearchQuery(query ))
+    categories = Category.objects.all()
+    return render(request, 'products/search.html', {'products': products, 'query': query, 'categories': categories})

@@ -17,8 +17,16 @@ $card-bg-color: #E6F0FF;
         color: $nav-text-color;
     }
     ul li:hover{
-        border: solid 1px #FFF;
+        box-shadow: 0 0 0 2px #FFF;
         border-radius: 3px;
+    }
+    .item{
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+    .item svg{
+        margin-right: 5px;
     }
     .item span{
         font-size: 14px;
@@ -30,16 +38,20 @@ $card-bg-color: #E6F0FF;
         display:block;
         line-height: 0.9;
     }
-    .primary-text{
+    span.primary-text{
         font-size: 14px;
         font-weight: bold;
     }
-    .secondary-text{
+    span.secondary-text{
         font-size: 12px;
     }
-    .bi-cart2{
-        width:25px;
-        height: 25px;
+    .bi{
+        width:30px;
+        height: 30px;
+        margin-right: 5px;
+    }
+    #account-dropdown, .dropdown{
+        padding: 0;
     }
 }
 #main-nav{
@@ -82,4 +94,8 @@ $card-bg-color: #E6F0FF;
     width: 25rem;
     height: 18rem;
     object-fit: contain;
+}
+.product-section{
+    background-color: $card-bg-color;
+    height: 10rem;
 }

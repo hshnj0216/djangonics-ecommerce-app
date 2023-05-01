@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django_bootstrap_icons',
     'compressor',
     'products',
-    'pages',
     'accounts'
 ]
 

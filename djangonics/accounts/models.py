@@ -5,5 +5,5 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class User(AbstractUser):
-    id = models.UUIDField(unique=True, editable=False, primary_key=True, default=uuid.uuid4)
+    id = models.BigAutoField(unique=True, editable=False, primary_key=True)
     contact_number = models.CharField(max_length=15)
