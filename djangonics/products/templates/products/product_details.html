@@ -2,10 +2,10 @@
 {% block title %}Product Details{% endblock %}
 {% block content %}
     <div class="row w-100 p-5 m-0">
-        <div class="col-lg-4">
+        <div class="col-lg-4 border">
             <img src="{{product.image.url}}" class="product-detail-img w-100" alt="product-image"/>
         </div>
-        <section class="col-lg-6">
+        <section class="col-lg-6 border">
             <div class="border-bottom border-3">
                 <h3 class="fs-2">{{product.name}}</h3>
                 <p>No ratings</p>
@@ -15,8 +15,20 @@
                 <p>{{product.description}}</p>
             </article>
         </section>
-        <div class="col-lg-2">
-            <p>Payment here</p>
+        <div class="col-lg-2 border">
+            <h6>Payment</h6>
+            <form action="">
+                <div>
+                    <label for="qty ">Quantity: </label>
+                    <select name="qty" id="qty">
+                        {% for i in range %}
+                            <option value="{{i}}">{{i}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="add-to-cart-button" type="submit" formaction="{% url 'products:add_to_cart' product.id %}">Add to Cart</button>
+                <button class="buy-button" type="submit" formaction="">Buy Now</button>
+            </form>
         </div>
     </div>
 {% endblock %}

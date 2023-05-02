@@ -1,6 +1,6 @@
 import uuid
 from django.shortcuts import render, get_object_or_404, redirect, reverse
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from django.contrib import messages
 from .models import User
 import logging
@@ -37,7 +37,7 @@ def signup(request):
 
 
 
-def login_user(request):
+def login(request):
     context = {}
     if request.method == "GET":
         return render(request, 'accounts/login.html')
@@ -48,13 +48,13 @@ def login_user(request):
             user = authenticate(email=email, password=password)
             print(user)
         if user is not None:
-            login(request, user=user)
+            auth_login(request, user=user)
             return redirect(reverse("products:home"))
         else:
             error_message = "Invalid email or password."
             context['error_message'] = error_message
             return render(request, "accounts/login.html", context)
 
-def logout_user(request):
-    logout(request)
+def logout(request):
+    auth_logout(request)
     return redirect(reverse("products:home"))

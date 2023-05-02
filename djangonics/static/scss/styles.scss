@@ -53,6 +53,25 @@ $card-bg-color: #E6F0FF;
     #account-dropdown, .dropdown{
         padding: 0;
     }
+    #cart-container{
+        position: relative;
+        width: 30px;
+        height: 30px;
+    }
+    #item-counter{
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        padding-top: 3.5px;
+        text-align: center;
+        font-size: 12px;
+        background-color: #FFA500;
+        box-shadow: 1px 1px 0 0 #FFA500;
+        border-radius: 50%;
+    }
 }
 #main-nav{
     background-color: $main-nav-color;
@@ -64,14 +83,6 @@ $card-bg-color: #E6F0FF;
 }
 .card{
     background-color: $card-bg-color;
-    a.buy-button{
-        background-color: #FFFF00;
-        box-shadow: 1px 1px 1px 1px;
-    }
-    a.add-to-cart-button{
-        background-color: #FFA500;
-        box-shadow: 1px 1px 1px 1px;
-    }
     .card-img-bg{
         width: 240x;
         height: 170px;
@@ -94,6 +105,24 @@ $card-bg-color: #E6F0FF;
     width: 25rem;
     height: 18rem;
     object-fit: contain;
+}
+button.buy-button{
+    display: block;
+    background-color: #FFFF00;
+    box-shadow: 1px 1px 1px;
+    border-radius: 10px;
+    width: 12rem;
+    margin: 1rem auto;
+    padding: 0.5rem;
+}
+button.add-to-cart-button{
+    display: block;
+    background-color: #FFA500;
+    box-shadow: 1px 1px 1px;
+    border-radius: 10px;
+    width: 12rem;
+    margin: 1rem auto;
+    padding: 0.5rem;
 }
 .product-section{
     background-color: $card-bg-color;

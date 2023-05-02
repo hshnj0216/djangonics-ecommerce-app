@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product, Category
+from .models import Product, Category, Cart, CartItem
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
 
 
@@ -18,7 +19,9 @@ def browse_all(request):
 
 def product_details(request, slug, id):
     product = get_object_or_404(Product, pk=id)
-    return render(request, 'products/product_details.html', {'product': product})
+    stock_range = range(1, product.stock + 1)
+    print(stock_range)
+    return render(request, 'products/product_details.html', {'product': product, 'range': stock_range})
 
 
 def category_list(request, category_slug):
@@ -52,3 +55,22 @@ def search_products(request):
     products = Product.objects.annotate(search=SearchVector('name', 'category__name'),).filter(search=SearchQuery(query ))
     categories = Category.objects.all()
     return render(request, 'products/search.html', {'products': products, 'query': query, 'categories': categories})
+
+def cart(request):
+    return render(request, 'products/cart.html')
+
+@login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    user = request.user
+    cart = user.cart
+
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': 1})
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+#@login_required
+#def buy_now(request):
+
+

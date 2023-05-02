@@ -37,9 +37,12 @@
             <!-- utility nav links -->
             <ul class="d-flex list-unstyled justify-content-between align-items-center text-light m-0 ms-3">
                  <li class="list-item p-1 mx-3">
-                    <a href="" class="text-decoration-none">
+                    <a href="{% url 'products:cart' %}" class="text-decoration-none">
                         <div class="d-flex nav-text">
-                            {% bs_icon 'cart2' %}
+                            <div id="cart-container" class="">
+                                {% bs_icon 'cart2' %}
+                                <span id="item-counter">1</span>
+                            </div>
                             <div class="d-flex nav-text align-items-end">
                                 <span class="primary-text">Cart</span>
                             </div>
@@ -67,12 +70,12 @@
                         </a>
                         <ul class="dropdown-menu bg-info">
                             <li class="dropdown-item"><a href="">Account </a></li>
-                            <li class="dropdown-item"><a href="{% url 'accounts:logout_user' %}">Logout</a></li>
+                            <li class="dropdown-item"><a href="{% url 'accounts:logout' %}">Logout</a></li>
                         </ul>
                     </li>
                 {% else %}
                     <li class="list-item p-1 mx-3">
-                        <a href="{% url 'accounts:login_user' %}" class="text-decoration-none">
+                        <a href="{% url 'accounts:login' %}" class="text-decoration-none">
                             <div class="d-flex">
                                 {% bs_icon 'person' %}
                                 <div class="nav-text d-flex flex-column justify-content-end">

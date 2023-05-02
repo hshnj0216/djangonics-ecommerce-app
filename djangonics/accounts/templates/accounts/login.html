@@ -4,7 +4,7 @@
     <div class="d-flex align-items-center h-100">
         <div class="w-50 row border border-round p-3 my-5 mx-auto">
             <div>
-                <h3>Welcome to Djangonics! Please login</h3>
+                <h3>Welcome to Djangonics! Please log in.</h3>
                 <p>New customer? <a href="{% url 'accounts:signup' %}">Sign up here.</a></p>
             </div>
             <div class="col-5">
@@ -14,7 +14,7 @@
                 {% if error_message %}
                     <p class="text-danger">{{error_message}}</p>
                 {% endif %}
-                <form action="{% url 'accounts:login_user' %}" method="post">
+                <form action="{% url 'accounts:login' %}" method="post">
                    {% csrf_token %}
                    <div class="mb-2">
                        <label class="form-label mb-0" for="email">Email</label>
