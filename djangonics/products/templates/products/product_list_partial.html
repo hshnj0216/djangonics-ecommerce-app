@@ -1,7 +1,7 @@
 {% load humanize %}
 <div class="row">
     {% for product in products %}
-        <div class="card p-2 m-2 col-md-3" style="width: 16rem; height: 19rem">
+        <div class="card p-2 m-2 col-md-3">
             <a href="{% url 'products:product_details' product.slug product.id%}">
                 <div class="card-img-bg">
                     <img src="{{product.image.url}}" class="card-img-top product-img" alt="product-image">

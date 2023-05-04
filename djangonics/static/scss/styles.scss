@@ -46,8 +46,8 @@ $card-bg-color: #E6F0FF;
         font-size: 12px;
     }
     .bi{
-        width:30px;
-        height: 30px;
+        width:40px;
+        height: 40px;
         margin-right: 5px;
     }
     #account-dropdown, .dropdown{
@@ -55,19 +55,19 @@ $card-bg-color: #E6F0FF;
     }
     #cart-container{
         position: relative;
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
     }
     #item-counter{
         display: inline-block;
-        width: 18.8px;
-        height: 18.8px;
+        width: 22px;
+        height: 22px;
         position: absolute;
-        top: -4px;
+        top: -3px;
         right: -4px;
-        padding-top: 4px;
+        padding-top: 5px;
         text-align: center;
-        font-size: 11px;
+        font-size: 12px;
         background-color: #FFA500;
         box-shadow: 1px 1px 0 0 #FFA500;
         border-radius: 50%;
@@ -83,6 +83,8 @@ $card-bg-color: #E6F0FF;
 }
 .card{
     background-color: $card-bg-color;
+    width: 16rem;
+    height: 19rem;
     .card-img-bg{
         width: 240x;
         height: 170px;
@@ -90,12 +92,27 @@ $card-bg-color: #E6F0FF;
     }
     .product-img{
         object-fit: contain;
-        width: 240px;
+        width: 238px;
         height: 170px;
     }
     .card-title{
         display: inline-block;
         height: 38.4px;
+    }
+}
+.cart-card{
+    background-color: $card-bg-color;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+    .card-img-bg{
+        width: 150px;
+        height: 140px;
+        background-color: #FFF;
+    }
+    .product-img{
+        object-fit: contain;
+        width: 148px;
+        height: 138px;
     }
 }
 .active{
@@ -128,3 +145,4 @@ button.add-to-cart-button{
     background-color: $card-bg-color;
     height: 10rem;
 }
+

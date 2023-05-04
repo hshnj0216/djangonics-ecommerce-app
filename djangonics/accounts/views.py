@@ -2,7 +2,6 @@ import json
 import uuid
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
-from django.contrib import messages
 from .models import User
 from products.views import get_cart_item_count
 from products.models import Cart
@@ -49,13 +48,11 @@ def login(request):
         password = request.POST['password']
         if email and password:
             user = authenticate(email=email, password=password)
-            print(f"user is {user} ")
         if user is not None:
             response = get_cart_item_count(request=request, user=user)
             cart_item_count = json.loads(response.content)['cart_item_count']
             request.session['cart_item_count'] = cart_item_count
             auth_login(request, user=user)
-            print(f"session item count: {request.session['cart_item_count']}")
             return redirect('products:home')
         else:
             error_message = "Invalid email or password."

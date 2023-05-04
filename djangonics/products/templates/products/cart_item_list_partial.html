@@ -1,0 +1,39 @@
+{% load humanize %}
+<div class="container" id="#cart-item-list">
+    {% for product in products %}
+        <div class="cart-card row d-flex mb-3 p-3">
+            <div class="form-check col-1 d-flex justify-content-center align-items-center">
+              <input class="form-check-input cart-item-checkbox" type="checkbox" value="">
+            </div>
+            <div class="col-2 border d-flex justify-content-center">
+                <div class="card-img-bg">
+                    <img class="product-img mx-auto" src="{{product.image.url}}" alt="product_img">
+                </div>
+            </div>
+            <div class="col-8 border">
+                <a href="{% url 'products:product_details' product.slug product.id %}">
+                    <h6>{{product.name}}</h6>
+                </a>
+                <div class="d-flex cart-item-options">
+                    <div class="me-3">
+                        <form action="">
+                            {% csrf_token %}
+                            <label>Quantity:</label>
+                            <select name="qty" class="cart-item-select" data-price="{{product.price}}" data-product-id="{{product.id}}">
+                                {% for i in product.range %}
+                                    <option value="{{i}}" {% if i == product.quantity %} selected {% endif %}>{{i}}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div> |
+                    <a href="{% url 'products:remove_item' product.id %}" class=".cart-remove-item">
+                        Remove item
+                    </a>
+                </div>
+            </div>
+            <div class="col-1">
+                <h6 class="text-end">${{product.price}}</h6>
+            </div>
+        </div>
+    {% endfor %}
+</div>
