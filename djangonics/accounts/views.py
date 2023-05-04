@@ -1,8 +1,13 @@
+import json
 import uuid
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from django.contrib import messages
 from .models import User
+from products.views import get_cart_item_count
+from products.models import Cart
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 import logging
 logger = logging.getLogger(__name__)
 
@@ -35,8 +40,6 @@ def signup(request):
         context['success_message'] = success_message
         return render(request,  'accounts/login.html', context)
 
-
-
 def login(request):
     context = {}
     if request.method == "GET":
@@ -46,10 +49,14 @@ def login(request):
         password = request.POST['password']
         if email and password:
             user = authenticate(email=email, password=password)
-            print(user)
+            print(f"user is {user} ")
         if user is not None:
+            response = get_cart_item_count(request=request, user=user)
+            cart_item_count = json.loads(response.content)['cart_item_count']
+            request.session['cart_item_count'] = cart_item_count
             auth_login(request, user=user)
-            return redirect(reverse("products:home"))
+            print(f"session item count: {request.session['cart_item_count']}")
+            return redirect('products:home')
         else:
             error_message = "Invalid email or password."
             context['error_message'] = error_message
@@ -58,3 +65,10 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect(reverse("products:home"))
+
+@receiver(post_save, sender=User)
+def create_user_cart(sender, instance, created, **kwargs):
+    if created:
+        cart = Cart.objects.create(user=instance)
+        cart.save()
+

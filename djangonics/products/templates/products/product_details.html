@@ -2,7 +2,7 @@
 {% block title %}Product Details{% endblock %}
 {% block content %}
     <div class="row w-100 p-5 m-0">
-        <div class="col-lg-4 border">
+        <div class="col-lg-4 border d-flex align-items-center">
             <img src="{{product.image.url}}" class="product-detail-img w-100" alt="product-image"/>
         </div>
         <section class="col-lg-6 border">
@@ -17,17 +17,23 @@
         </section>
         <div class="col-lg-2 border">
             <h6>Payment</h6>
-            <form action="">
-                <div>
-                    <label for="qty ">Quantity: </label>
-                    <select name="qty" id="qty">
-                        {% for i in range %}
-                            <option value="{{i}}">{{i}}</option>
-                        {% endfor %}
+            <form action="{% url 'products:buy_now' product.id %}"
+                  method="get"
+                  class="buy-add-to-cart-form"
+                  data-add-to-cart-url="{% url 'products:add_to_cart' %}"
+                  data-product-id="{{product.id}}"
+            >
+                  {% csrf_token %}
+                  <div>
+                    <label for="qty">Quantity:</label>
+                    <select name="qty" id="qty" class="qty">
+                      {% for i in range %}
+                        <option value="{{i}}">{{i}}</option>
+                      {% endfor %}
                     </select>
-                </div>
-                <button class="add-to-cart-button" type="submit" formaction="{% url 'products:add_to_cart' product.id %}">Add to Cart</button>
-                <button class="buy-button" type="submit" formaction="">Buy Now</button>
+                  </div>
+                  <button class="add-to-cart-button" type="submit" >Add to Cart</button>
+                  <button class="buy-button" type="submit">Buy Now</button>
             </form>
         </div>
     </div>
