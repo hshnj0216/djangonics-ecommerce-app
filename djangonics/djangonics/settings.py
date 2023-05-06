@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django_bootstrap_icons',
     'compressor',
     'products',
-    'accounts'
+    'accounts',
+    'storages',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -157,4 +158,14 @@ COMPRESS_PRECOMPILERS = (
 )
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# IBM Cloud Object Storage configuration
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = '32e802b8e9b74517a2f6959457c17cb7'
+AWS_SECRET_ACCESS_KEY = 'dbadfc1b734b589131caeaeeab76d4917741f95eacf85163'
+AWS_STORAGE_BUCKET_NAME = 'djangonics'
+AWS_S3_ENDPOINT_URL = 'https://s3.jp-tok.cloud-object-storage.appdomain.cloud'
+
+
+
 
