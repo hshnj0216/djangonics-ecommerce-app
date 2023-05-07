@@ -84,7 +84,7 @@ $card-bg-color: #E6F0FF;
 .card{
     background-color: $card-bg-color;
     width: 16rem;
-    height: 19rem;
+    height: 18rem;
     .card-img-bg{
         width: 240x;
         height: 170px;
@@ -145,4 +145,11 @@ button.add-to-cart-button{
     background-color: $card-bg-color;
     height: 10rem;
 }
-
+.fa-star{
+    color: #da7820;
+    font-size: 16px;
+}
+.far{
+    color: #da7820  ;
+    font-size: 16px;
+}

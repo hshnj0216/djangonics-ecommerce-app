@@ -1,8 +1,9 @@
-import botocore
-from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
+from botocore.config import Config
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Category, Cart, CartItem, ProductImage
-from django.db.models import Sum
+from django.core.cache import cache
+from .models import Product, Category, Cart, CartItem, Rating
+from django.db.models import Sum, Avg, Prefetch
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
@@ -16,9 +17,12 @@ def home(request):
 
 
 def browse_all(request):
-    products = Product.objects.all()
+    products = Product.objects.prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings')
+    ).annotate(average_rating=Avg('ratings__value')).order_by('-created_at')
     categories = Category.objects.all()
     return render(request, 'products/browse_all.html', {'products': products, 'categories': categories})
+
 
 
 def product_details(request, slug, id):
@@ -76,7 +80,6 @@ def cart(request):
             'name': item.product.name,
             'quantity': item.quantity,
             'total_price': item.total_price,
-            'image': item.product.image,
             'slug': item.product.slug,
             'range': product_quantity_range,
         }
@@ -155,22 +158,43 @@ def update_item_quantity(request):
     user = request.user
     cart = user.cart
     cart_item = get_object_or_404(CartItem, product=product, cart=cart)
-    print(f"Cart Item quantity was: {cart_item.quantity}")
     cart_item.quantity = quantity
     cart_item.save()
-    print(f"Cart Item quantity now: {cart_item.quantity}")
     # get the number of items from the cart for the indicator
     cart_item_count = cart.items.aggregate(Sum('quantity'))['quantity__sum']
     request.session['cart_item_count'] = cart_item_count
     data = {'cart_item_count': cart_item_count}
     return JsonResponse(data)
 
-def get_item(bucket_name, item_name):
-    print("Retrieving item from bucket: {0}, key: {1}".format(bucket_name, item_name))
-    try:
-        file = cos.Object(bucket_name, item_name).get()
-        print("File Contents: {0}".format(file["Body"].read()))
-    except ClientError as be:
-        print("CLIENT ERROR: {0}\n".format(be))
-    except Exception as e:
-        print("Unable to retrieve file contents: {0}".format(e))
+def get_images(request, product_id):
+    # First, check if the response is already cached
+    cache_key = f'product_images_{product_id}'
+    cached_data = cache.get(cache_key)
+    if cached_data:
+        return JsonResponse(cached_data)
+
+    # Set up the IBM COS client
+    cos_client = boto3.client('s3',
+                                endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                config=Config(signature_version='s3v4'),
+                                region_name='jp-tok'
+                             )
+
+    # Get the list of objects in the bucket
+    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+    prefix = f"{product_id}/"
+    response = cos_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+
+    # Generate a list of URLs for the image objects
+    if 'Contents' in response:
+        data = {'img_urls': [f"{settings.AWS_S3_ENDPOINT_URL}/{bucket_name}/{obj['Key']}" for obj in response['Contents']]}
+    else:
+        data = []
+
+    # Cache the response
+    cache.set(cache_key, data)
+
+    return JsonResponse(data)
+

@@ -4,15 +4,19 @@
         <div class="card p-2 m-2 col-md-3">
             <a href="{% url 'products:product_details' product.slug product.id%}">
                 <div class="card-img-bg">
-                    <img src="" class="card-img-top product-img" alt="product-image">
+                    <img src="https://via.placeholder.com/300x200/cccccc"
+                         data-src="{% url 'products:get_images' product.id %}"
+                         loading="lazy"
+                         class="card-img-top product-img"
+                         alt="product-image">
                 </div>
             </a>
             <div class="card-body p-2">
                 <a href="{% url 'products:product_details' product.slug product.id%}">
-                    <h6 class="card-title">{{product.name|truncatechars_html:50}}</h6>
+                    <h6 class="card-title mb-1">{{product.name|truncatechars_html:40}}</h6>
                 </a>
                 <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
-                <p class="fs-6 mb-1">Stars | reviews</p>
+                {% include 'products/rating_partial.html' %}
             </div>
         </div>
         {% if forloop.counter|divisibleby:4 and not forloop.last %}

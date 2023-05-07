@@ -26,7 +26,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ['price', 'stock', ]
     prepopulated_fields = {'slug': ('name',)}
 
-
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ('product', 'image',)

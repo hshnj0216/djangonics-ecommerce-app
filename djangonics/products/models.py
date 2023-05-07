@@ -1,4 +1,5 @@
 import boto3
+from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
 from django.conf import settings
 from django.core.files.storage import default_storage
@@ -56,7 +57,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -96,3 +96,6 @@ class ProductImage(models.Model):
 
         super().save(*args, **kwargs)
 
+class Rating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    value = models.PositiveIntegerField()
