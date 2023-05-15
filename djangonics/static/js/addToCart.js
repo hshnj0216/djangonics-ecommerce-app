@@ -20,7 +20,9 @@ $(function() {
                 'X-CSRFToken': csrfToken,
             },
             success: function(data) {
-                $('#item-counter').text(data['cart_item_count']);
+              if(response.success) {
+                  $('#item-counter').text(data['cart_item_count']);
+              }
             }
         });
     });

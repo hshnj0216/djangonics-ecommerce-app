@@ -2,8 +2,10 @@ from botocore.config import Config
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
+from django.urls import reverse
+
 from .models import Product, Category, Cart, CartItem, Rating
-from django.db.models import Sum, Avg, Prefetch
+from django.db.models import Sum, Avg, Prefetch, Count
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
@@ -19,7 +21,10 @@ def home(request):
 def browse_all(request):
     products = Product.objects.prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings')
-    ).annotate(average_rating=Avg('ratings__value')).order_by('-created_at')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    ).order_by('-created_at')
     categories = Category.objects.all()
     return render(request, 'products/browse_all.html', {'products': products, 'categories': categories})
 
@@ -52,11 +57,32 @@ def filter_products(request):
 
     return render(request, 'products/product_list_partial.html', {'products': products})
 
+def filter_search(request):
+    # get the selected categories from the request parameters
+    categories = request.GET.get('categories', '').split(',')
+
+    # filter the products based on the selected categories
+    if len(categories) == 1 and categories[0] == '':
+        products = Product.objects.all()
+    else:
+        products = Product.objects.filter(category__slug__in=categories)
+
+    # apply price filters if provided
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+
+    if max_price and min_price and not (min_price == 'NaN' or max_price == 'NaN'):
+        products = products.filter(price__range=(min_price, max_price))
+
+    return render(request, 'products/product_list_partial.html', {'products': products})
 
 def search_products(request):
     query = request.GET.get('query')
     # search the name and category name columns
-    products = Product.objects.annotate(search=SearchVector('name', 'category__name'), ).filter(
+    products = Product.objects.prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings')
+    ).annotate(search=SearchVector('name', 'category__name'), average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')).filter(
         search=SearchQuery(query))
     categories = Category.objects.all()
     return render(request, 'products/search.html', {'products': products, 'query': query, 'categories': categories})
@@ -90,6 +116,7 @@ def cart(request):
 
 @login_required
 def add_to_cart(request):
+
     # get the product from the POST data
     product_id = request.POST.get('product_id')
     product = get_object_or_404(Product, id=product_id)

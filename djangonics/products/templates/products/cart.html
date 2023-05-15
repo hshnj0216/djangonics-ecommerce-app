@@ -21,13 +21,18 @@
         <p class="fs-5 text-center">
           Subtotal(<span id="item-count"></span> items): <strong>$<span id="subtotal-price">0.00</span></strong>
         </p>
-        <button class="buy-button">
+        <a class="buy-button text-decoration-none" href="{% url 'accounts:checkout' %}">
           Proceed to Checkout
-        </button>
+        </a>
       </div>
       <div>
         <h5>Recommendations</h5>
       </div>
     </section>
   </div>
+{% endblock %}
+{% load static %}
+{% block script %}
+      <script src="{% static 'js/selectAll.js' %}"></script>
+      <script src="{% static 'js/calculatePrice.js' %}"></script>
 {% endblock %}

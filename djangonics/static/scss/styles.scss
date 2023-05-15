@@ -123,7 +123,7 @@ $card-bg-color: #E6F0FF;
     height: 18rem;
     object-fit: contain;
 }
-button.buy-button{
+.buy-button{
     display: block;
     background-color: #FFFF00;
     box-shadow: 1px 1px 1px;
@@ -131,8 +131,9 @@ button.buy-button{
     width: 12rem;
     margin: 1rem auto;
     padding: 0.5rem;
+    text-align: center;
 }
-button.add-to-cart-button{
+.add-to-cart-button{
     display: block;
     background-color: #FFA500;
     box-shadow: 1px 1px 1px;
@@ -140,6 +141,7 @@ button.add-to-cart-button{
     width: 12rem;
     margin: 1rem auto;
     padding: 0.5rem;
+    text-align: center;
 }
 .product-section{
     background-color: $card-bg-color;
@@ -152,4 +154,22 @@ button.add-to-cart-button{
 .far{
     color: #da7820  ;
     font-size: 16px;
+}
+//address actions
+li.address-action:not(:first-child)::before {
+  content: "|";
+  margin: 0 10px;
+}
+.address-action{
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: blue;
+}
+.address-card{
+    height: 18rem;
+    width: 20.2rem;
+    .header{
+        height: 2rem;
+    }
 }

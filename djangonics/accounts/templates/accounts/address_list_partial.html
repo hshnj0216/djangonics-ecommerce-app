@@ -1,0 +1,44 @@
+<div class="d-flex flex-wrap m-0 w-100" id="address-list-partial">
+    <button
+            class="btn d-flex flex-column align-items-center
+                   justify-content-center p-4 border rounded m-3 address-card"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-form"
+    >
+        <p class="text-secondary m-0" style="font-size: 5rem; line-height: 0.8;">+</p>
+        <p class="fs-2">Add Address</p>
+    </button>
+    {% for address in addresses %}
+        <div class="address p-0 m-3 border rounded address-card" {% if address.is_default %} id="default-address" {% endif %}>
+            {% if address.is_default %}
+                <h6 class="bg-info border-bottom rounded-top text-center p-1 header" >Default Address</h6>
+            {% else %}
+                <h6 class="header rounded-top text-center border-bottom"></h6>
+            {% endif %}
+            <div class="p-3">
+                <h6>{{address.recipient_name}}</h6>
+                <p>{{address.street_address}}, {{address.apartment_address}}</p>
+                <p>{{address.city}}, {{address.state}} {{address.zip_code}}</p>
+                <p>United States</p>
+                <p>Phone number: {{address.phone_number}}</p>
+                <form class="address-action-form" method="post" data-address-id="{{address.id}}">
+                    {% csrf_token %}
+                    <ul class="list-unstyled d-flex">
+                        <li class="address-action">
+                            <input type="submit" name="action" value="Edit" class="address-action edit-address">
+                        </li>
+                        <li class="address-action">
+                            <input type="submit" name="action" value="Remove" class="address-action remove-address">
+                        </li>
+                        {% if address.is_default is False %}
+                            <li class="address-action">
+                                <input type="submit" name="action" value="Set as Default"
+                                       class="set-default address-action" >
+                            </li>
+                        {% endif %}
+                    </ul>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+</div>
