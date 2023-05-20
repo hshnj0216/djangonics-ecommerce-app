@@ -7,7 +7,6 @@ $(function() {
         let url = form.data('add-to-cart-url');
         let productId = form.data('product-id');
         let csrfToken = $("input[name='csrfmiddlewaretoken']").val();
-        alert(`productId: ${productId}, url: ${url}`);
         $.ajax({
             type: 'POST',
             url: url,

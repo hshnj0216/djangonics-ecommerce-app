@@ -24,7 +24,7 @@ def signup(request):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
-        contact_number =request.POST['contact_number']
+        contact_number =  request.POST['contact_number']
         password = request.POST['password']
         #generate username
         username = email.split('@')[0]+str(uuid.uuid4()).replace('-', '')[:10]
@@ -115,7 +115,7 @@ def edit_address(request, address_id):
     #if GET request, send the data
     if request.method == 'GET':
         data = {'address': address}
-        return JsonResponse()
+        return JsonResponse(data)
 
 
 @login_required
@@ -134,7 +134,7 @@ def set_default_address(request, address_id):
     sorted_addresses = Address.objects.filter(user=request.user).order_by('-is_default')
 
     return render(request, 'accounts/address_list_partial.html', {'addresses': sorted_addresses})
-
+@login_required
 def remove_address(request, address_id):
     #get the address to remove
     address =  Address.objects.get(pk=address_id)
@@ -142,6 +142,7 @@ def remove_address(request, address_id):
     sorted_addresses = Address.objects.filter(user=request.user).order_by('-is_default')
     return render(request, 'accounts/address_list_partial.html', {'addresses': sorted_addresses})
 
+@login_required
 def checkout(request):
     context = {}
     #get the user's addresses
@@ -150,3 +151,8 @@ def checkout(request):
     #get the user's cards
     return render(request, 'accounts/checkout.html', context)
 
+def use_address(request):
+    address_id = request.POST['address_id']
+    address = Address.objects.get(pk=address_id)
+    print(address)
+    return render(request, 'accounts/selected_address.html', {'address': address})

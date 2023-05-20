@@ -9,3 +9,10 @@ header{
 .list-group-item{
     background-color: $card-bg-color;
 }
+.add-address{
+    display: inline-flex;
+    align-items: center;
+}
+#address-selection-bottom{
+    background-color: $card-bg-color;
+}
