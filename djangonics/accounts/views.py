@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
+from django.template.loader import render_to_string
+
 from .models import User, Address
 from products.views import get_cart_item_count
 from products.models import Cart
@@ -154,5 +156,17 @@ def checkout(request):
 def use_address(request):
     address_id = request.POST['address_id']
     address = Address.objects.get(pk=address_id)
-    print(address)
-    return render(request, 'accounts/selected_address.html', {'address': address})
+    address_context = {
+        'address': address,
+    }
+    selected_address_html = render_to_string('accounts/selected_address.html', address_context)
+    payment_selection_html = render_to_string('accounts/payment_selection_partial.html')
+    data = {
+        'selected_address_html': selected_address_html,
+        'payment_selection_html': payment_selection_html,
+    }
+    return JsonResponse(data)
+
+def select_payment(request):
+    if request.method == 'GET':
+        return render(request, 'accounts/payment_selection_partial.html')
