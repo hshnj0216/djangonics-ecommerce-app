@@ -1,0 +1,21 @@
+/* line 5, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+header {
+  background-color: #007fff;
+  text-align: center; }
+
+/* line 9, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+.list-group-item {
+  background-color: #E6F0FF; }
+
+/* line 12, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+.add-address {
+  display: inline-flex;
+  align-items: center; }
+
+/* line 16, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+#address-selection-bottom {
+  background-color: #E6F0FF; }
+
+/* line 19, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+.current-phase > h5 {
+  color: #0DC6FF; }

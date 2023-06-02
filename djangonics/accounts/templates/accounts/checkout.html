@@ -19,6 +19,7 @@
     <link type="text/x-scss" href="{% static 'scss/checkout.scss' %}" rel="stylesheet">
     {% endcompress %}
     <script src="{% static 'js/checkoutActionsHandler.js' %}"></script>
+    <script src="{% static 'js/loadImages.js' %}"></script>
     <title>Checkout</title>
 </head>
 <body>
@@ -26,24 +27,45 @@
     <a href="{% url 'products:home' %}" class="navbar-brand">Djangonics</a>
     <h1>Checkout</h1>
 </header>
-<div class="container mt-3">
-    <div id="checkout-accordion">
+<div class="m-0 px-5 py-2 row w-100">
+    <section id="checkout-section" class="col-9">
         <!-- displays the list of addresses with the default address being first -->
-        {% include 'accounts/address_selection_partial.html' %}
+        <section id="address-selection">
+            {% include 'accounts/address_selection_partial.html' %}
+        </section>
+        <hr>
         <!-- displays the list of payment methods -->
-        <div id="payment-selection">
-            <h5>Payment Selection</h5>
-        </div>
+        <section id="payment-selection">
+            <h5>2. Payment method</h5>
+        </section>
+        <hr>
         <!-- displays the list of items and prices, including other charges -->
-        <div id="review-order">
-            <h6>Review your order</h6>
-            <div>
-                <div>
+        <section id="review-order">
+            {% include 'accounts/order_review_partial.html' %}
+        </section>
+        <hr>
+    </section>
+    <section id="order-summary" class="border rounded p-3 ms-3 col-2">
+        <h5>Order Summary:</h5>
+        <ul>
+            <li>
+                <p>Items:</p>
 
-                </div>
-            </div>
-        </div>
-    </div>
+            </li>
+            <li>
+                <p>Shipping & handling:</p>
+
+            </li>
+            <li>
+                <p>Total before tax:</p>
+
+            </li>
+            <li>
+                <p>Items:</p>
+
+            </li>
+        </ul>
+    </section>
 </div>
 </body>
 </html>

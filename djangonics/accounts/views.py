@@ -4,11 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
+from django.template import RequestContext
 from django.template.loader import render_to_string
 
 from .models import User, Address
 from products.views import get_cart_item_count
-from products.models import Cart
+from products.models import Cart, CartItem
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 import logging
@@ -147,6 +148,13 @@ def remove_address(request, address_id):
 @login_required
 def checkout(request):
     context = {}
+    selected_item_ids = request.POST.getlist('cart_item')
+    selected_items = []
+    for selected_item_id in selected_item_ids:
+        cart_item = CartItem.objects.get(pk=selected_item_id)
+        selected_items.append(cart_item)
+    context['selected_items'] = selected_items
+    print(f"selected items: {selected_items}")
     #get the user's addresses
     addresses = Address.objects.filter(user=request.user)
     context['addresses'] = addresses
@@ -156,17 +164,21 @@ def checkout(request):
 def use_address(request):
     address_id = request.POST['address_id']
     address = Address.objects.get(pk=address_id)
+    #request.session['selected_address'] = address
     address_context = {
         'address': address,
     }
-    selected_address_html = render_to_string('accounts/selected_address.html', address_context)
-    payment_selection_html = render_to_string('accounts/payment_selection_partial.html')
+    selected_address_html = render_to_string('accounts/selected_address.html', address_context, request)
+    payment_selection_html = render_to_string('accounts/payment_selection_partial.html', {}, request)
     data = {
         'selected_address_html': selected_address_html,
         'payment_selection_html': payment_selection_html,
     }
     return JsonResponse(data)
 
-def select_payment(request):
-    if request.method == 'GET':
-        return render(request, 'accounts/payment_selection_partial.html')
+def change_selected_address(request):
+    addresses = Address.objects.filter(user=request.user)
+    return render(request, 'accounts/address_selection_partial.html', {'addresses': addresses})
+
+def select_payment_method(request):
+    return render(request, 'accounts/selected_payment.html')

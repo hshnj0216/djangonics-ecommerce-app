@@ -1,13 +1,16 @@
-<section class="row">
-    <div class="col-5 border">
-        <h5>1 Shipping address</h5>
+<div class="row">
+    <div class="col-5">
+        <h5>1. Shipping address</h5>
     </div>
-    <div class="col-5" border>
-        <p class=""><strong>{{address.recipient_name}}</strong></p>
-        <p>{{address.street_address}} {{address.apartment_address}}</p>
-        <p>{{address.city}}, {{address.state}}, {{address.zip_code}}</p>
+    <div class="col-5">
+        <p class="mb-0"><strong>{{address.recipient_name}}</strong></p>
+        <p class="mb-0">{{address.street_address}} {{address.apartment_address}}</p>
+        <p class="mb-0">{{address.city}}, {{address.state}}, {{address.zip_code}}</p>
     </div>
-    <div class="col-2 border">
-        Change
+    <div class="col-2">
+        <form id="change-address-form">
+            {% csrf_token %}
+            <button id="change-address-button">Change</button>
+        </form>
     </div>
-</section>
+</div>

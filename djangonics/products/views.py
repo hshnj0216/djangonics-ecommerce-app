@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Product, Category, Cart, CartItem, Rating
 from django.db.models import Sum, Avg, Prefetch, Count
@@ -99,9 +100,9 @@ def cart(request):
     products = []
     for item in cart_items:
         product_quantity_range = range(1, item.product.stock + 1)
-        print(product_quantity_range)
         product_info = {
-            'id': item.product.id,
+            'cart_item_id': item.id,
+            'product_id': item.product.id,
             'price': item.product.price,
             'name': item.product.name,
             'quantity': item.quantity,
@@ -150,7 +151,7 @@ def add_to_cart(request):
     return JsonResponse({'cart_item_count': cart_item_count})
 
 
-# @login_required
+@login_required
 def buy_now(request):
     if request.method == "GET":
         pass
@@ -171,6 +172,7 @@ def get_cart_item_count(request, user):
 
 
 @login_required
+@csrf_exempt
 def remove_item(request, product_id):
     cart_item = get_object_or_404(CartItem, product_id=product_id)
     cart_item.delete()
@@ -178,6 +180,7 @@ def remove_item(request, product_id):
 
 
 @login_required
+@csrf_exempt
 def update_item_quantity(request):
     product_id = request.POST['product_id']
     quantity = int(request.POST['qty'])
@@ -224,4 +227,5 @@ def get_images(request, product_id):
     cache.set(cache_key, data)
 
     return JsonResponse(data)
+
 

@@ -16,3 +16,21 @@ header{
 #address-selection-bottom{
     background-color: $card-bg-color;
 }
+.current-phase > h5{
+    color: $main-nav-color;
+}
+.checkout-item-card{
+    background-color: $card-bg-color;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+    .card-img-bg{
+        width: 150px;
+        height: 140px;
+        background-color: #FFF;
+    }
+    .product-img{
+        object-fit: contain;
+        width: 148px;
+        height: 138px;
+    }
+}

@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Cart{% endblock %}
 {% block content %}
-  <div class="container d-flex flex-nowrap row w-100 m-0">
+  <form
+          method="post"
+          action="{% url 'accounts:checkout' %}"
+          class="container d-flex flex-nowrap row w-100 m-0"
+  >
+    {% csrf_token %}
     <section class="col-9 ms-5">
       <h2>Shopping Cart</h2>
       <div class="d-flex justify-content-between">
@@ -21,15 +26,13 @@
         <p class="fs-5 text-center">
           Subtotal(<span id="item-count"></span> items): <strong>$<span id="subtotal-price">0.00</span></strong>
         </p>
-        <a class="buy-button text-decoration-none" href="{% url 'accounts:checkout' %}">
-          Proceed to Checkout
-        </a>
+        <input type="submit" class="buy-button text-decoration-none" value="Proceed to Checkout" />
       </div>
       <div>
         <h5>Recommendations</h5>
       </div>
     </section>
-  </div>
+  </form>
 {% endblock %}
 {% load static %}
 {% block script %}

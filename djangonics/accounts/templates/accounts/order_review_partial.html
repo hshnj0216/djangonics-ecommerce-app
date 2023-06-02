@@ -1,3 +1,23 @@
-<section>
-    
-</section>
+<h5>3. Review order</h5>
+<div id="checkout-items-container" class="px-5">
+    {% for selected_item in selected_items %}
+    <div class="checkout-item-card p-3 m-3 row">
+        <div class="col-2">
+            <div class="card-img-bg">
+                <img class="product-img mx-auto"
+                     src="https://via.placeholder.com/300x200/cccccc"
+                     data-src="{% url 'products:get_images' selected_item.product.id %}"
+                     loading="lazy"
+                     alt="product_img"
+                >
+            </div>
+        </div>
+        <div class="col-8">
+            <h6>{{selected_item.product }}</h6>
+        </div>
+        <div class="col-2">
+            <p>Qty: {{selected_item.quantity}}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>

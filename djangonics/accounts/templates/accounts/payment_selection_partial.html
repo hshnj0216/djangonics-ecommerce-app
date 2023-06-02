@@ -1,6 +1,29 @@
-<section id="payment-selection">
-    <label for="paypal">
-         PayPal
-         <input type="radio" id="paypal">
-    </label>
-</section>
+<h5>2. Select a payment method</h5>
+<div class="border rounded">
+    <div class="p-3">
+        <h6>Payment methods</h6>
+        <hr>
+        <div>
+            <form id="payment-selection-form" class="list-group">
+                {% csrf_token %}
+                <label class="list-group-item d-flex">
+                    <input class="form-check-input me-2"
+                           type="radio"
+                           name="payment-method"
+                           value=""
+                    >
+                    <p>
+                        PayPal
+                    </p>
+                </label>
+            </form>
+            <div class="d-flex add-address my-3">
+                <i class="fas fa-plus"></i>
+                <span>Add new payment method</span>
+            </div>
+        </div>
+    </div>
+    <div id="payment-method-selection-bottom" class="border rounded-bottom p-3">
+        <button id="use-this-payment-method-button" class="btn btn-primary">Use this payment method</button>
+    </div>
+</div>
