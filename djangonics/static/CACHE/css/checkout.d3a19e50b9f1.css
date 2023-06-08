@@ -1,0 +1,53 @@
+/* line 5, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+header {
+  background-color: #007fff;
+  text-align: center; }
+
+/* line 9, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+.list-group-item {
+  background-color: #E6F0FF; }
+
+/* line 12, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+.add-address {
+  display: inline-flex;
+  align-items: center; }
+
+/* line 16, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+#address-selection-bottom {
+  background-color: #E6F0FF; }
+
+/* line 19, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+.current-phase > h5 {
+  color: #0DC6FF; }
+
+/* line 22, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+.checkout-item-card {
+  background-color: #E6F0FF;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem; }
+  /* line 26, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+  .checkout-item-card .card-img-bg {
+    width: 130px;
+    height: 120px;
+    background-color: #FFF; }
+  /* line 31, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+  .checkout-item-card .product-img {
+    object-fit: contain;
+    width: 128px;
+    height: 118px; }
+
+/* line 37, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+#order-summary-wrapper {
+  flex: 0 0 300px;
+  /* Adjust the width of the order summary column as needed */
+  margin-left: 20px;
+  /* Adjust the spacing between columns as needed */
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 40px);
+  /* Adjust the height of the fixed section as needed */
+  overflow-y: auto; }
+
+/* line 45, e:/projects/e-commerce/djangonics/static/scss/checkout.scss */
+#order-summary {
+  flex: 1; }

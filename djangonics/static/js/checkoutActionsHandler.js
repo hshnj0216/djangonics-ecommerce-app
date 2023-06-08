@@ -1,7 +1,10 @@
 $(function() {
     console.log('checkoutActionsHandler.js loaded');
-    //handles address selection
+    //hide preloaded order items review partial and highlight current phase
+    $('#order-review-partial').hide();
     $('#address-selection h5').css('color', '#007fff');
+
+    //use address button handler
     $('#address-selection').on('click', '#use-this-address-button', function(event) {
         event.preventDefault();
         let selectedAddressId = $('input[name="address"]:checked').val();
@@ -29,6 +32,8 @@ $(function() {
           console.log('An error occurred:', error);
         }
     });
+
+    //change address handler
     $('#address-selection').on('click', '#change-address-button', function(event) {
         event.preventDefault();
         console.log('Change address');
@@ -49,11 +54,16 @@ $(function() {
                     $(this).html(data).slideDown(500);
                     $('#address-selection h5').css('color', '#007fff');
                 });
+                $('#order-review-partial').slideUp(300, function() {
+                    $(this).hide();
+                    $('#order-review h5').text('3. Review order').css('color', '#000000');
+
+                });
             }
         });
     });
 
-    //handle the payment select event
+    //payment method selection handler
     $('#payment-selection').on('click','#use-this-payment-method-button', function(event) {
         event.preventDefault();
         let csrfToken = $('#payment-selection form input[name=csrfmiddlewaretoken]').val();
@@ -66,6 +76,10 @@ $(function() {
             success: function(data) {
                 $('#payment-selection').slideUp(300, function() {
                     $(this).html(data).slideDown(500);
+                });
+                $('#order-review h5').text('3. Review your order').css('color', '#007fff');
+                $('#order-review-partial').slideDown(500, function() {
+                    $(this).show();
                 });
             }
         });

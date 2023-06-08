@@ -72,6 +72,10 @@ $card-bg-color: #E6F0FF;
         box-shadow: 1px 1px 0 0 #FFA500;
         border-radius: 50%;
     }
+    img{
+        width: 10rem;
+        height: 2.5rem;
+    }
 }
 #main-nav{
     background-color: $main-nav-color;
@@ -164,7 +168,7 @@ li.address-action:not(:first-child)::before {
     border: none;
     background: transparent;
     cursor: pointer;
-    color: blue;
+    color: #007bff;
 }
 .address-card{
     height: 18rem;

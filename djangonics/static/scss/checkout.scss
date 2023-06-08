@@ -5,6 +5,10 @@ $card-bg-color: #E6F0FF;
 header{
     background-color: $util-nav-color;
     text-align: center;
+    img{
+        width: 10rem;
+        height: 2.5rem;
+    }
 }
 .list-group-item{
     background-color: $card-bg-color;
@@ -24,13 +28,30 @@ header{
     border: 1px solid rgba(0, 0, 0, 0.125);
     border-radius: 0.25rem;
     .card-img-bg{
-        width: 150px;
-        height: 140px;
+        width: 130px;
+        height: 120px;
         background-color: #FFF;
     }
     .product-img{
         object-fit: contain;
-        width: 148px;
-        height: 138px;
+        width: 128px;
+        height: 118px;
     }
+}
+#order-summary-wrapper {
+    flex: 0 0 300px;
+    position: sticky;
+    top: 0.5rem;
+    height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+#order-summary{
+   flex: 1;
+}
+.change-action{
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
 }

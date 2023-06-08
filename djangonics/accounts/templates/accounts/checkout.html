@@ -23,12 +23,14 @@
     <title>Checkout</title>
 </head>
 <body>
-<header class="d-flex">
-    <a href="{% url 'products:home' %}" class="navbar-brand">Djangonics</a>
-    <h1>Checkout</h1>
+<header class="px-5 row">
+    <a href="{% url 'products:home' %}" class="navbar-brand me-5 col-5 ">
+        <img src="{% static 'images/logo/Djangonics-logos_transparent.png' %}" alt="brand logo">
+    </a>
+    <h1 class="col-5">Checkout</h1>
 </header>
-<div class="m-0 px-5 py-2 row w-100">
-    <section id="checkout-section" class="col-9">
+<div class="m-0 px-5 py-2 row w-100 d-flex justify-content-center">
+    <section id="checkout-section" class="col-8">
         <!-- displays the list of addresses with the default address being first -->
         <section id="address-selection">
             {% include 'accounts/address_selection_partial.html' %}
@@ -40,32 +42,37 @@
         </section>
         <hr>
         <!-- displays the list of items and prices, including other charges -->
-        <section id="review-order">
+        <section id="order-review">
+            <h5>3. Review order</h5>
             {% include 'accounts/order_review_partial.html' %}
         </section>
         <hr>
     </section>
-    <section id="order-summary" class="border rounded p-3 ms-3 col-2">
-        <h5>Order Summary:</h5>
-        <ul>
-            <li>
-                <p>Items:</p>
-
-            </li>
-            <li>
-                <p>Shipping & handling:</p>
-
-            </li>
-            <li>
-                <p>Total before tax:</p>
-
-            </li>
-            <li>
-                <p>Items:</p>
-
-            </li>
-        </ul>
-    </section>
+    <div id="order-summary-wrapper" class="col-3">
+        <section id="order-summary" class="border rounded p-3">
+            <h5>Order Summary:</h5>
+            <ul class="list-unstyled">
+                <li class="d-flex justify-content-between">
+                    <span>Items ({{total_item_count}}):</span>
+                    <span>${{total_price|floatformat:2}}</span>
+                </li>
+                <li class="d-flex justify-content-between">
+                    <span>Shipping & handling:</span>
+                    <span>$100.00</span>
+                </li>
+                <li class="d-flex justify-content-between">
+                    <span>Tax (10%):</span>
+                    <span>${{ total_price|floatformat:2 }}</span>
+                </li>
+            </ul>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <h5>Order total:</h5>
+                <h5>${{ order_total|floatformat:2 }}</h5>
+            </div>
+            <button class="btn btn-primary disabled w-100 mt-3">Place order</button>
+        </section>
+    </div>
 </div>
 </body>
 </html>

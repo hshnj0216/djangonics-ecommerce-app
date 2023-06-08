@@ -26,10 +26,23 @@
             class="navbar navbar-expand-lg py-1 px-5"
             id="util-nav"
     >
-        <div class="container d-flex">
+        <div class="d-flex w-100">
             <!-- brand logo -->
-            <a href="{% url 'products:home' %}" class="navbar-brand">Djangonics</a>
-            <a href="{% url 'accounts:addresses' %}" class="text-light">Addresses</a>
+            <ul class="d-flex list-unstyled justify-content-between align-items-center text-light m-0 ms-3">
+                <li class="list-item">
+                    <a class="navbar-brand" href="{% url 'products:home' %}">
+                        <img src="{% static 'images/logo/Djangonics-logos_transparent.png' %}" alt="company logo">
+                    </a>
+                </li>
+                <li class="list-item h-100">
+                    <a href="{% url 'accounts:addresses' %}" class="text-light">
+                        <div>
+                            <p>Deliver to</p>
+                            <p></p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
             <!-- search bar -->
             <form action="{% url 'products:search_products' %}" method="get" id="search" class="d-flex flex-nowrap flex-grow-1" role="search">
                 {% csrf_token %}
