@@ -1,5 +1,5 @@
 from botocore.config import Config
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
 from django.urls import reverse
@@ -12,12 +12,28 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
 import boto3
 from django.conf import settings
+from PIL import Image
 
 
 # Create your views here.
 def home(request):
     return render(request, 'products/home.html')
 
+def generate_low_quality_image(request, hq_image):
+    #open the high quality image
+    image = Image.open(hq_image)
+
+    #resize image
+    resized_image = image.resize((148, 138))
+
+    #compress image
+    compressed_image_path = 'static/images/'
+    resized_image.save(compressed_image_path, quality=60)
+
+    # Serve the processed image as a response
+    with open(compressed_image_path, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='image/jpeg')
+    return response
 
 def browse_all(request):
     products = Product.objects.prefetch_related(

@@ -19,9 +19,12 @@ $(function() {
                 'X-CSRFToken': csrfToken,
             },
             success: function(data) {
-              if(response.success) {
-                  $('#item-counter').text(data['cart_item_count']);
-              }
+              $('#item-counter').text(data['cart_item_count']);
+              $('.toast').addClass('show');
+              $('.toast').fadeTo(3500, 0, 'linear', function() {
+                $(this).removeClass('show');
+                $(this).css('opacity', '');
+              });
             }
         });
     });

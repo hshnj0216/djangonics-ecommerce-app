@@ -1,13 +1,17 @@
+import io
+from io import BytesIO
+
 import boto3
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
 from django.conf import settings
 from django.core.files.storage import default_storage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.urls import reverse
 from storages.backends.s3boto3 import S3Boto3Storage
-
+from PIL import Image
 from accounts.models import User
 
 
@@ -82,14 +86,49 @@ class ProductImage(models.Model):
 
     def save(self, *args, **kwargs):
         if self.image:
-            # Get the file name and path within the S3 bucket
-            file_name = self.image.name
-            file_path = f'{self.product.id}/{file_name}'
+            # Open the image using Pillow
+            image = Image.open(self.image)
 
-            # Use the S3Boto3Storage backend to upload the file to IBM COS
+            # Assign file names and paths
+            orig_file_name = self.image.name
+            low_quality_file_name = f'low-{self.image.name}'
+            file_path = f'{self.product.id}/{orig_file_name}'
+            low_quality_file_path = f'{self.product.id}/{low_quality_file_name}'
+
+            # Calculate the new dimensions while maintaining the aspect ratio
+            width, height = image.size
+            aspect_ratio = width / height
+            new_width = 48
+            new_height = int(new_width / aspect_ratio)
+
+            # Resize the image
+            resized_image = image.resize((new_width, new_height), Image.ANTIALIAS)
+
+            #Compress the original image
+            compressed_image = BytesIO()
+            resized_image.save(compressed_image, optimize=True, quality=70)
+            compressed_image.seek(0)
+
+            # Save the resized image to a buffer
+            buffer = io.BytesIO()
+            format = image.format  # Preserve the original image format
+            resized_image.save(buffer, format=format)
+            buffer.seek(0)
+
+            # Create the InMemoryUploadedFile with the resized image
+            low_quality_image = InMemoryUploadedFile(
+                buffer,
+                None,
+                low_quality_file_name,
+                f'image/{format.lower()}',
+                buffer.tell,
+                None
+            )
+
+            # Use the S3Boto3Storage backend to upload the original and low-quality images to IBM COS
             storage = S3Boto3Storage(bucket_name=settings.AWS_STORAGE_BUCKET_NAME, endpoint_url=settings.AWS_S3_ENDPOINT_URL)
-            file = self.image.file
-            storage.save(file_path, file)
+            storage.save(file_path, self.image)
+            storage.save(low_quality_file_path, low_quality_image)
 
             # Update the image field to use the IBM COS URL
             self.image = f'{settings.AWS_S3_ENDPOINT_URL}/{settings.AWS_STORAGE_BUCKET_NAME}/{file_path}'

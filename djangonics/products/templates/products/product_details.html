@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Product Details{% endblock %}
+{% load bootstrap_icons %}
+{% load static %}
 {% block content %}
     <div>
         <section class="px-5">
@@ -32,7 +34,6 @@
                 <div class="col-lg-2 border">
                     <h6>Payment</h6>
                     <form action="{% url 'products:buy_now' product.id %}"
-                          method="get"
                           class="buy-add-to-cart-form"
                           data-add-to-cart-url="{% url 'products:add_to_cart' %}"
                           data-product-id="{{product.id}}"
@@ -56,8 +57,21 @@
             <h2>Product Reviews</h2>
         </section>
     </div>
+    <div id="toast-container">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header d-flex justify-content-between align-items-center">
+                {% bs_icon 'cart-check-fill' %}
+                <strong class="me-auto ms-2">Cart update</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body py-1">
+                <p class="mb-0">You have a new item in your cart. Don’t let it get lonely, add some more! Or you can
+                    <a href="{% url 'products:cart' %}#{{product.id}}">view item in cart.</a>
+                </p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
-{% load static %}
 {% block script %}
-<script src="{% static 'js/addToCart.js' %}"></script>
+    <script src="{% static 'js/addToCart.js' %}"></script>
 {% endblock %}
