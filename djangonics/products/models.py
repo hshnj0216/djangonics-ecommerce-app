@@ -92,7 +92,7 @@ class ProductImage(models.Model):
             # Assign file names and paths
             orig_file_name = self.image.name
             low_quality_file_name = f'low-{self.image.name}'
-            file_path = f'{self.product.id}/{orig_file_name}'
+            file_path = f'{self.product.id}/high-{orig_file_name}'
             low_quality_file_path = f'{self.product.id}/{low_quality_file_name}'
 
             # Calculate the new dimensions while maintaining the aspect ratio
@@ -100,18 +100,17 @@ class ProductImage(models.Model):
             aspect_ratio = width / height
             new_width = 48
             new_height = int(new_width / aspect_ratio)
-
+            format = image.format
             # Resize the image
             resized_image = image.resize((new_width, new_height), Image.ANTIALIAS)
 
             #Compress the original image
             compressed_image = BytesIO()
-            resized_image.save(compressed_image, optimize=True, quality=70)
+            resized_image.save(compressed_image, format=format, optimize=True, quality=70)
             compressed_image.seek(0)
 
             # Save the resized image to a buffer
             buffer = io.BytesIO()
-            format = image.format  # Preserve the original image format
             resized_image.save(buffer, format=format)
             buffer.seek(0)
 
@@ -138,3 +137,9 @@ class ProductImage(models.Model):
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
     value = models.PositiveIntegerField()
+
+class Discount(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='discount')
+    value = models.FloatField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()

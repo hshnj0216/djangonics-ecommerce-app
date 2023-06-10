@@ -6,26 +6,32 @@ $(function() {
         let selectedCategories = [];
         let minPrice = parseInt($('#min_price').val()) || 0;
         let maxPrice = parseInt($('#max_price').val()) || 9999;
+        let productIds = [];
 
         // iterate over the checkboxes to get the selected categories
         $('.filter-form :checkbox:checked').each(function() {
             selectedCategories.push($(this).val());
         });
 
-        // make an AJAX request with the selected categories and price range
+        // iterate over the product elements to get their IDs
+        $('.product').each(function() {
+            productIds.push($(this).data('product-id'));
+        });
+
+        // make an AJAX request with the selected categories, price range, and product IDs
         $.ajax({
             url: url,
             data: {
                 categories: selectedCategories.join(','),
                 min_price: minPrice,
-                max_price: maxPrice
+                max_price: maxPrice,
+                product_ids: productIds.join(',')
             },
             success: function(data) {
                 $('#product-list-partial').html(data);
             }
         });
     }
-
 
     // attach a change event listener to the checkboxes of the filter form
     $('.filter-form :checkbox').change(function() {

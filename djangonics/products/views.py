@@ -5,7 +5,7 @@ from django.core.cache import cache
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Product, Category, Cart, CartItem, Rating
+from .models import Product, Category, Cart, CartItem, Rating, Discount
 from django.db.models import Sum, Avg, Prefetch, Count
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -41,10 +41,42 @@ def browse_all(request):
     ).annotate(
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
-    ).order_by('-created_at')
+    )
     categories = Category.objects.all()
     return render(request, 'products/browse_all.html', {'products': products, 'categories': categories})
 
+def todays_deals(request):
+    products = Product.objects.prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='discount')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    )
+    categories = Category.objects.all()
+    return render(request, 'products/todays_deals.html', {'products':products, 'categories':categories})
+
+def best_sellers(request):
+    products = Product.objects.prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='discount')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    )
+    categories = Category.objects.all()
+    return render(request, 'products/best_sellers.html', {'products': products, 'categories': categories})
+
+def new_arrivals(request):
+    products = Product.objects.order_by('-created_at')[:10].prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    )
+    categories = Category.objects.all()
+    return render(request, 'products/new_arrivals.html', {'products': products, 'categories': categories})
 
 
 def product_details(request, slug, id):
@@ -230,7 +262,7 @@ def get_images(request, product_id):
 
     # Get the list of objects in the bucket
     bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-    prefix = f"{product_id}/"
+    prefix = f"{product_id}/high-"
     response = cos_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
 
     # Generate a list of URLs for the image objects
