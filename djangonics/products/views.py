@@ -269,9 +269,46 @@ def update_item_quantity(request):
     data = {'cart_item_count': cart_item_count}
     return JsonResponse(data)
 
+def get_low_quality_images(request, product_id):
+    # First, check if the response is already cached
+    cache_key = f'product_images_low_{product_id}'
+    cached_data = cache.get(cache_key)
+    if cached_data:
+        return JsonResponse(cached_data)
+
+    # Set up the IBM COS client
+    cos_client = boto3.client('s3',
+                                endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                config=Config(signature_version='s3v4'),
+                                region_name='jp-tok'
+                             )
+
+    # Get the list of objects in the bucket
+    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+    prefix = f"{product_id}/low-"
+    response = cos_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+
+    # Generate a list of URLs for the image objects
+    if 'Contents' in response:
+        data = {
+            'img_urls': [f"{settings.AWS_S3_ENDPOINT_URL}/{bucket_name}/{obj['Key']}" for obj in response['Contents']],
+            'status': 'success',
+        }
+    else:
+        data = {
+            'status':'failed',
+        }
+
+    # Cache the response
+    cache.set(cache_key, data)
+
+    return JsonResponse(data)
+
 def get_images(request, product_id):
     # First, check if the response is already cached
-    cache_key = f'product_images_{product_id}'
+    cache_key = f'product_images_high_{product_id}'
     cached_data = cache.get(cache_key)
     if cached_data:
         return JsonResponse(cached_data)
@@ -292,9 +329,14 @@ def get_images(request, product_id):
 
     # Generate a list of URLs for the image objects
     if 'Contents' in response:
-        data = {'img_urls': [f"{settings.AWS_S3_ENDPOINT_URL}/{bucket_name}/{obj['Key']}" for obj in response['Contents']]}
+        data = {
+            'img_urls': [f"{settings.AWS_S3_ENDPOINT_URL}/{bucket_name}/{obj['Key']}" for obj in response['Contents']],
+            'status': 'success',
+        }
     else:
-        data = []
+        data = {
+            'status': 'failed',
+        }
 
     # Cache the response
     cache.set(cache_key, data)

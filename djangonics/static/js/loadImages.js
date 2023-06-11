@@ -3,11 +3,37 @@ $(function() {
     console.log("loadImages loaded");
     $('img[data-src]').each(function() {
         let $img = $(this);
-        let src = $img.attr('data-src');
-        // Use AJAX to asynchronously call the get_images view for the product
-        $.get(src, function(data) {
-            // Replace the placeholder image with the actual product image
-            $img.attr('src', data.img_urls[0]);
-        });
+        let lowQualitySource = $img.data('src');
+        let highQualitySource = $img.data('src-high');
+        let lqRetries = 3;
+        let hqRetries = 3;
+
+        function getHQImage() {
+            $.get(highQualitySource, function(data) {
+                console.log(`From getHQImage, data is ${data.img_urls}`);
+                if (data.status == 'success') {
+                    $img.attr('src', data.img_urls[0]);
+                } else if (data.status == 'failed' && hqRetries > 0) {
+                    hqRetries--;
+                    getHQImage();
+                }
+            });
+        }
+
+        function getLQImage() {
+            $.get(lowQualitySource, function(data) {
+                if (data.status == 'success') {
+                    // Replace the placeholder image with the actual product image
+                    $img.attr('src', data.img_urls[0]);
+                    getHQImage();
+                } else if (data.status == 'failed' && lqRetries > 0) {
+                    lqRetries--;
+                    getLQImage();
+                }
+            });
+        }
+
+        getLQImage();
     });
 });
+
