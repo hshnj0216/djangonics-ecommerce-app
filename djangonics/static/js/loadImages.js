@@ -7,7 +7,6 @@ $(function() {
         // Use AJAX to asynchronously call the get_images view for the product
         $.get(src, function(data) {
             // Replace the placeholder image with the actual product image
-            console.log(data);
             $img.attr('src', data.img_urls[0]);
         });
     });

@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Best Sellers{% endblock %}
 {% block content %}
-<div class="container-fluid d-flex row">
+<div id="content-container" class="container-fluid d-flex row" data-page="new_arrivals">
     <section class="col-md-3 mt-3">
         {% include 'products/filter_partial.html' %}
     </section>
     <section class="col-md-9">
         <h3>Best Sellers</h3>
+        <div id="product-list-partial">
+            {% include 'products/product_list_partial.html' %}
+        </div>
     </section>
 </div>
 {% endblock %}

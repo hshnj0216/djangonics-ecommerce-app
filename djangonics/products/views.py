@@ -48,7 +48,7 @@ def browse_all(request):
 def todays_deals(request):
     products = Product.objects.prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
-        Prefetch('discount', queryset=Discount.objects.all(), to_attr='discount')
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
     ).annotate(
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
@@ -59,7 +59,7 @@ def todays_deals(request):
 def best_sellers(request):
     products = Product.objects.prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
-        Prefetch('discount', queryset=Discount.objects.all(), to_attr='discount')
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
     ).annotate(
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
@@ -88,14 +88,23 @@ def product_details(request, slug, id):
 
 
 def filter_products(request):
+    #get the page
+    current_page = request.GET.get('current_page')
+    if current_page == 'new_arrivals':
+        products = Product.objects.all()
+    elif current_page == 'todays_deals':
+        products = Product.objects.all()
+    elif current_page == 'best_sellers':
+        products = Product.objects.all()
+    elif current_page == 'browse_all':
+        products = Product.objects.all()
+
     # get the selected categories from the request parameters
     categories = request.GET.get('categories', '').split(',')
 
     # filter the products based on the selected categories
-    if len(categories) == 1 and categories[0] == '':
-        products = Product.objects.all()
-    else:
-        products = Product.objects.filter(category__slug__in=categories)
+    if len(categories) == 1 and categories[0] != '':
+        products = products.filter(category__slug__in=categories)
 
     # apply price filters if provided
     min_price = request.GET.get('min_price')
@@ -104,7 +113,23 @@ def filter_products(request):
     if max_price and min_price and not (min_price == 'NaN' or max_price == 'NaN'):
         products = products.filter(price__range=(min_price, max_price))
 
+    # prefetch related ratings model
+    products = products.prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='rating')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    )
+
+    #filter the average rating
+    rating = request.GET.get('rating')
+    if rating:
+        min_rating = float(rating)
+        max_rating = min_rating + 1
+        products = products.filter(average_rating__gte=min_rating, average_rating__lt=max_rating)
+
     return render(request, 'products/product_list_partial.html', {'products': products})
+
 
 def filter_search(request):
     # get the selected categories from the request parameters

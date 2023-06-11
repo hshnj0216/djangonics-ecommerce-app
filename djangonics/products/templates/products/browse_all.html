@@ -2,7 +2,7 @@
 {% block title %}Browse All{% endblock %}
 {% load humanize %}
 {% block content %}
-    <div class="container-fluid d-flex row">
+    <div id="content-container" class="container-fluid d-flex row" data-page="browse_all">
         <section class="col-md-3 mt-3">
             {% include 'products/filter_partial.html' %}
         </section>

@@ -188,4 +188,10 @@ li.address-action:not(:first-child)::before {
   max-width: 30rem;
   width: 23rem;
 }
-
+.star-rating-filter:hover{
+    cursor: pointer;
+    background-color: $card-bg-color;
+}
+.selected-rating{
+    background-color: rgba(0, 127, 255, 0.5);
+}
