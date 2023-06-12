@@ -4,7 +4,9 @@
         <div class="card p-2 m-2 col-md-3 product" data-product-id="{{product.id}}">
             <a href="{% url 'products:product_details' product.slug product.id%}">
                 <div class="card-img-bg">
-                    <img data-src="{% url 'products:get_low_quality_images' product.id %}"
+                    <img
+                         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                         data-src="{% url 'products:get_low_quality_images' product.id %}"
                          data-src-high="{% url 'products:get_images' product.id %}"
                          loading="lazy"
                          class="card-img-top product-img"

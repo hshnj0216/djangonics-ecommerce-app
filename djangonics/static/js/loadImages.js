@@ -10,10 +10,10 @@ $(function() {
 
         function getHQImage() {
             $.get(highQualitySource, function(data) {
-                console.log(`From getHQImage, data is ${data.img_urls}`);
                 if (data.status == 'success') {
                     $img.attr('src', data.img_urls[0]);
                 } else if (data.status == 'failed' && hqRetries > 0) {
+                    console.log("hq retry");
                     hqRetries--;
                     getHQImage();
                 }
@@ -27,6 +27,7 @@ $(function() {
                     $img.attr('src', data.img_urls[0]);
                     getHQImage();
                 } else if (data.status == 'failed' && lqRetries > 0) {
+                    console.log("lq retry");
                     lqRetries--;
                     getLQImage();
                 }

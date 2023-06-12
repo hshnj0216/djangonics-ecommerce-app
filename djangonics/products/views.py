@@ -271,10 +271,6 @@ def update_item_quantity(request):
 
 def get_low_quality_images(request, product_id):
     # First, check if the response is already cached
-    cache_key = f'product_images_low_{product_id}'
-    cached_data = cache.get(cache_key)
-    if cached_data:
-        return JsonResponse(cached_data)
 
     # Set up the IBM COS client
     cos_client = boto3.client('s3',
@@ -300,9 +296,6 @@ def get_low_quality_images(request, product_id):
         data = {
             'status':'failed',
         }
-
-    # Cache the response
-    cache.set(cache_key, data)
 
     return JsonResponse(data)
 

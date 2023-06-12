@@ -26,14 +26,24 @@ $(function() {
             },
             success: function(data) {
                 $('#product-list-partial').html(data);
-                $('img[data-src]').each(function() {
+                 $('img[data-src]').each(function() {
                     let $img = $(this);
-                    let src = $img.attr('data-src');
-                    // Use AJAX to asynchronously call the get_images view for the product
-                    $.get(src, function(data) {
-                        // Replace the placeholder image with the actual product image
-                        $img.attr('src', data.img_urls[0]);
-                    });
+                    let highQualitySource = $img.data('src-high');
+                    let hqRetries = 3;
+
+                    function getHQImage() {
+                        $.get(highQualitySource, function(data) {
+                            if (data.status == 'success') {
+                                $img.attr('src', data.img_urls[0]);
+                            } else if (data.status == 'failed' && hqRetries > 0) {
+                                console.log("hq retry");
+                                hqRetries--;
+                                getHQImage();
+                            }
+                        });
+                    }
+
+                    getHQImage();
                 });
             }
         });
