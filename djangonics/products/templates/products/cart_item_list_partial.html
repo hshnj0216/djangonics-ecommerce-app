@@ -1,43 +1,68 @@
 {% load humanize %}
 <div class="container" id="#cart-item-list">
     {% for product in products %}
-        <div class="cart-card row d-flex mb-3 p-3" id="{{product.product_id}}">
-            <div class="form-check col-1 d-flex justify-content-center align-items-center">
-              <input class="form-check-input cart-item-checkbox" type="checkbox" name="cart_item" value="{{product.cart_item_id}}">
-            </div>
-            <div class="col-2 border d-flex justify-content-center">
-                <div class="card-img-bg">
-                    <img class="product-img mx-auto"
-                         src="https://via.placeholder.com/300x200/cccccc"
-                         data-src="{% url 'products:get_images' product.product_id %}"
-                         loading="lazy"
-                         alt="product_img"
-                    >
-                </div>
-            </div>
-            <div class="col-8 border">
-                <a href="{% url 'products:product_details' product.slug product.product_id %}">
-                    <h6>{{product.name}}</h6>
-                </a>
-                <div class="d-flex cart-item-options">
-                    <div class="me-3">
-                        <div >
-                            <label>Qty: </label>
-                            <select name="qty" class="cart-item-select" data-price="{{product.price}}" data-product-id="{{product.product_id}}">
-                                {% for i in product.range %}
-                                    <option value="{{i}}" {% if i == product.quantity %} selected {% endif %}>{{i}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div> |
-                    <a href="{% url 'products:remove_item' product.product_id %}" class=".cart-remove-item">
-                        Remove item
-                    </a>
-                </div>
-            </div>
-            <div class="col-1">
-                <h6 class="text-end">${{product.price}}</h6>
+    <div class="cart-card row d-flex mb-3 p-3" id="{{product.cart_item_id}}">
+        <div class="form-check col-1 d-flex justify-content-center align-items-center">
+            <input class="form-check-input cart-item-checkbox" type="checkbox" name="cart_item"
+                   value="{{product.cart_item_id}}">
+        </div>
+        <div class="col-2 border d-flex justify-content-center">
+            <div class="card-img-bg">
+                <img class="product-img mx-auto"
+                     src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                     data-src="{% url 'products:get_images' product.product_id %}"
+                     loading="lazy"
+                     alt="product_img"
+                >
             </div>
         </div>
+        <div class="col-8 border">
+            <a href="{% url 'products:product_details' product.slug product.product_id %}">
+                <h6>{{product.name}}</h6>
+            </a>
+            <div class="d-flex cart-item-options">
+                <div class="me-3">
+                    {% if product.quantity > 10 %}
+                    <div class="cart-item-qty-container">
+                        <label>Qty:
+                            <input type="number"
+                                   class="cart-item-qty"
+                                   value="{{product.quantity}}"
+                                   data-price="{{product.price}}"
+                                   data-product-id="{{product.product_id}}"
+                            >
+                            <button class="btn btn-primary update-button d-none">Update</button>
+                        </label>
+                    </div>
+                    {% else %}
+                    <div class="cart-item-qty-container">
+                        <label>Qty:
+                            <select name="qty"
+                                class="cart-item-qty p-1"
+                                data-price="{{product.price}}"
+                                data-product-id="{{product.product_id}}"
+                                data-cart-item-id="{{product.cart_item_id}}"
+                            >
+                                <option value="0">0 (Delete)</option>
+                                {% for i in product.range %}
+                                <option value="{{i}}" {% if i == product.quantity %} selected {% endif %}>{{i}}</option>
+                                {% endfor %}
+                                <option value= "expand">10+</option>
+                            </select>
+                        </label>
+
+                    </div>
+                    {% endif %}
+                </div>
+                |
+                <a href="{% url 'products:remove_item' product.product_id product.cart_item_id %}" class=".cart-remove-item">
+                    Remove item
+                </a>
+            </div>
+        </div>
+        <div class="col-1">
+            <h6 class="text-end">${{product.price}}</h6>
+        </div>
+    </div>
     {% endfor %}
 </div>

@@ -20,8 +20,9 @@ $(function() {
             },
             success: function(data) {
               $('#item-counter').text(data['cart_item_count']);
+              $('.toast').removeClass('show');
               $('.toast').addClass('show');
-              $('.toast').fadeTo(3500, 0, 'linear', function() {
+              $('.toast').fadeTo(5000, 0, 'swing', function() {
                 $(this).removeClass('show');
                 $(this).css('opacity', '');
               });

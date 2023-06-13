@@ -8,6 +8,7 @@
                          src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                          data-src="{% url 'products:get_low_quality_images' product.id %}"
                          data-src-high="{% url 'products:get_images' product.id %}"
+                         data-product-id="{{product.id}}"
                          loading="lazy"
                          class="card-img-top product-img"
                          alt="product-image">
@@ -15,7 +16,7 @@
             </a>
             <div class="card-body p-2">
                 <a href="{% url 'products:product_details' product.slug product.id%}">
-                    <h6 class="card-title mb-1">{{product.name|truncatechars_html:40}}</h6>
+                    <h6 class="card-title mb-1">{{product.name|truncatechars_html:45}}</h6>
                 </a>
                 <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
                 {% include 'products/rating_partial.html' %}

@@ -79,9 +79,20 @@ def new_arrivals(request):
     return render(request, 'products/new_arrivals.html', {'products': products, 'categories': categories})
 
 
-def product_details(request, slug, id):
-    product = get_object_or_404(Product, pk=id)
-    stock_range = range(1, product.stock + 1)
+def product_details(request, slug, product_id):
+    product = Product.objects.prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    ).get(
+        pk=product_id
+    )
+    if product.stock <= 30:
+        stock_range = range(1, product.stock + 1)
+    else:
+        stock_range = range(1, 31)
     product_images = product.images.all()
     return render(request, 'products/product_details.html',
                   {'product': product, 'range': stock_range, 'product_images': product_images})
@@ -172,7 +183,7 @@ def cart(request):
     cart_items = cart.items.all()
     products = []
     for item in cart_items:
-        product_quantity_range = range(1, item.product.stock + 1)
+        product_quantity_range = range(1, 10)
         product_info = {
             'cart_item_id': item.id,
             'product_id': item.product.id,
@@ -246,10 +257,11 @@ def get_cart_item_count(request, user):
 
 @login_required
 @csrf_exempt
-def remove_item(request, product_id):
-    cart_item = get_object_or_404(CartItem, product_id=product_id)
+def remove_item(request, product_id, cart_item_id):
+    cart_item = get_object_or_404(CartItem, id=cart_item_id)
     cart_item.delete()
-    return redirect('products:cart')
+    product = Product.objects.get(id=product_id)
+    return render(request, 'products/removed.html', {'product':product})
 
 
 @login_required
