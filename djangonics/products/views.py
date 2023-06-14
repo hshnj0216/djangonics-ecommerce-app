@@ -3,6 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
 from django.urls import reverse
+from django.utils.cache import patch_response_headers
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Product, Category, Cart, CartItem, Rating, Discount
@@ -11,9 +12,11 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
 import boto3
+from threading import Semaphore
 from django.conf import settings
 from PIL import Image
 
+cos_client_semaphore = Semaphore(4)
 
 # Create your views here.
 def home(request):
@@ -309,7 +312,9 @@ def get_low_quality_images(request, product_id):
             'status':'failed',
         }
 
-    return JsonResponse(data)
+    response = JsonResponse(data)
+
+    return response
 
 def get_images(request, product_id):
     # First, check if the response is already cached
@@ -346,6 +351,12 @@ def get_images(request, product_id):
     # Cache the response
     cache.set(cache_key, data)
 
-    return JsonResponse(data)
+    response = JsonResponse(data)
+
+    # Set cache headers
+    cache_timeout = 60 * 30
+    patch_response_headers(response, cache_timeout=cache_timeout)
+
+    return response
 
 

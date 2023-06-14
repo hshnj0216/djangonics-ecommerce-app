@@ -16,7 +16,7 @@
             </a>
             <div class="card-body p-2">
                 <a href="{% url 'products:product_details' product.slug product.id%}">
-                    <h6 class="card-title mb-1">{{product.name|truncatechars_html:45}}</h6>
+                    <h6 class="card-title mb-1">{{product.name|truncatechars_html:40}}</h6>
                 </a>
                 <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
                 {% include 'products/rating_partial.html' %}

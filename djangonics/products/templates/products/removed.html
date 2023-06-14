@@ -1,8 +1,6 @@
-<div class="cart-card mb-3 p-3 w-100" id="{{product.id}}">
-    <p>
-        <a href="{% url 'products:product_details' product.slug product.id %}">
-            {{product.name|truncatechars_html:45}}...
-        </a>
-        was removed from the shopping cart.
-    </p>
-</div>
+<p class="my-3">
+    <a href="{% url 'products:product_details' product.slug product.id %}">
+        {{product.name|truncatechars_html:45}}...
+    </a>
+    was removed from the shopping cart.
+</p>

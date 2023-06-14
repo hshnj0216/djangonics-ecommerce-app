@@ -195,3 +195,22 @@ li.address-action:not(:first-child)::before {
 .selected-rating{
     background-color: rgba(0, 127, 255, 0.5);
 }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"], select {
+    max-width: 8ch;
+}
+.cart-item-option:not(:first-child)::before {
+  content: "|";
+  margin: 0 10px;
+}
+.remove-item-btn{
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+}
