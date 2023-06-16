@@ -1,0 +1,43 @@
+<div class="cart-item-option">
+    {% if product.quantity > 10 %}
+    <div class="cart-item-qty-container d-flex align-items-center">
+        <label>Qty:
+            <input type="number"
+                   maxlength="999"
+                   class="cart-item-qty form-control-sm"
+                   value="{{product.quantity}}"
+                   data-price="{{product.price}}"
+                   data-product-id="{{product.product_id}}"
+                   data-cart-item-id="{{product.cart_item_id}}"
+            >
+        </label>
+        <button type="button" class="btn btn-sm btn-primary update-qty-button ms-1 d-none">Update</button>
+    </div>
+    {% else %}
+    <div class="cart-item-qty-container d-flex align-items-center">
+        <label>Qty:
+            <select name="qty"
+                    class="cart-item-qty form-select-sm p-1"
+                    data-price="{{product.price}}"
+                    data-product-id="{{product.product_id}}"
+                    data-cart-item-id="{{product.cart_item_id}}"
+            >
+                <option value="0">0 (Delete)</option>
+                {% for i in range %}
+                <option value="{{i}}" {% if i == product.quantity %} selected {% endif %}>{{i}}</option>
+                {% endfor %}
+                <option value="10+">10+</option>
+            </select>
+        </label>
+    </div>
+    {% endif %}
+</div>
+<button
+        type="button"
+        class="remove-item-btn cart-item-option"
+        data-product-id="{{product.product_id}}"
+        data-cart-item-id="{{product.cart_item_id}}"
+        data-qty="{{product.quantity}}"
+>
+    Remove item
+</button>

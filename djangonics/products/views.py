@@ -2,6 +2,7 @@ from botocore.config import Config
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.cache import patch_response_headers
 from django.views.decorators.csrf import csrf_exempt
@@ -186,7 +187,7 @@ def cart(request):
     cart_items = cart.items.all()
     products = []
     for item in cart_items:
-        product_quantity_range = range(1, 10)
+        qty_range = range(1, 10)
         product_info = {
             'cart_item_id': item.id,
             'product_id': item.product.id,
@@ -195,10 +196,10 @@ def cart(request):
             'quantity': item.quantity,
             'total_price': item.total_price,
             'slug': item.product.slug,
-            'range': product_quantity_range,
         }
         products.append(product_info)
     context['products'] = products
+    context['range'] = qty_range
     return render(request, 'products/cart.html', context)
 
 
@@ -253,18 +254,27 @@ def get_cart_item_count(request, user):
         if cart_item_count is None:
             cart_item_count = 0
             request.session['cart_item_count'] = cart_item_count
-    print(f"cart item count: {cart_item_count}")
     data = {'cart_item_count': cart_item_count}
     return JsonResponse(data)
 
 
 @login_required
 @csrf_exempt
-def remove_item(request, product_id, cart_item_id):
+def remove_item(request):
+    product_id = request.POST['product_id']
+    cart_item_id = request.POST['cart_item_id']
     cart_item = get_object_or_404(CartItem, id=cart_item_id)
     cart_item.delete()
     product = Product.objects.get(id=product_id)
-    return render(request, 'products/removed.html', {'product':product})
+    cart = request.user.cart
+    cart_item_count = cart.items.aggregate(Sum('quantity'))['quantity__sum']
+    request.session['cart_item_count'] = cart_item_count
+    removed_html = render_to_string('products/removed.html', {'product':product}, request)
+    data = {
+        'cart_item_count': cart_item_count,
+        'removed_html': removed_html,
+    }
+    return JsonResponse(data)
 
 
 @login_required
@@ -275,13 +285,30 @@ def update_item_quantity(request):
     product = get_object_or_404(Product, id=product_id)
     user = request.user
     cart = user.cart
-    cart_item = get_object_or_404(CartItem, product=product, cart=cart)
-    cart_item.quantity = quantity
-    cart_item.save()
+    cart_item = get_object_or_404(CartItem, product=product, cart=cart.id)
+    if quantity != 0:
+        cart_item.quantity = quantity
+        cart_item.save()
+    else:
+        cart_item.delete()
     # get the number of items from the cart for the indicator
+    cart_item_info = {
+        'cart_item_id': cart_item.id,
+        'product_id': cart_item.product.id,
+        'price': cart_item.product.price,
+        'name': cart_item.product.name,
+        'quantity': cart_item.quantity,
+        'total_price': cart_item.total_price,
+        'slug': cart_item.product.slug,
+    }
     cart_item_count = cart.items.aggregate(Sum('quantity'))['quantity__sum']
     request.session['cart_item_count'] = cart_item_count
-    data = {'cart_item_count': cart_item_count}
+    qty_range = range(1, 10)
+    cart_item_options_html = render_to_string('products/cart_item_options_partial.html', {'product':cart_item_info, 'range': qty_range}, request)
+    data = {
+        'cart_item_count': cart_item_count,
+        'cart_item_options_html': cart_item_options_html,
+    }
     return JsonResponse(data)
 
 def get_low_quality_images(request, product_id):
