@@ -180,10 +180,8 @@ def use_address(request):
         'address': address,
     }
     selected_address_html = render_to_string('accounts/selected_address.html', address_context, request)
-    payment_selection_html = render_to_string('accounts/payment_selection_partial.html', {}, request)
     data = {
         'selected_address_html': selected_address_html,
-        'payment_selection_html': payment_selection_html,
     }
     return JsonResponse(data)
 

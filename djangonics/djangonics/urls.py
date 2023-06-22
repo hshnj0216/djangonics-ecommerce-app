@@ -24,6 +24,7 @@ urlpatterns = [
     path('', lambda request: redirect('products:home'), name='home'),
     path('products/', include('products.urls')),
     path('accounts/', include('accounts.urls')),
+    path('transactions/', include('transactions.urls')),
 ]
 
 if settings.DEBUG:

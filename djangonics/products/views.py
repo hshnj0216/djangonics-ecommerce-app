@@ -3,13 +3,10 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
 from django.template.loader import render_to_string
-from django.urls import reverse
 from django.utils.cache import patch_response_headers
 from django.views.decorators.csrf import csrf_exempt
-
 from .models import Product, Category, Cart, CartItem, Rating, Discount
 from django.db.models import Sum, Avg, Prefetch, Count
-from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
 import boto3

@@ -1,6 +1,7 @@
 $(function() {
     console.log('checkoutActionsHandler.js loaded');
     //hide preloaded order items review partial and highlight current phase
+    $('#payment-selection-partial').hide();
     $('#order-review-partial').hide();
     $('#address-selection h5').css('color', '#007fff');
 
@@ -23,8 +24,10 @@ $(function() {
                 $('#address-selection').slideUp(300, function() {
                     $(this).html(data['selected_address_html']).slideDown(300);
                 });
-                $('#payment-selection').hide().html(data['payment_selection_html']).slideDown(500);
-                $('#payment-selection h5').css('color', '#007fff');
+                $('#payment-selection-partial').slideDown(500, function() {
+                    $(this).show();
+                    $(this).siblings('h5').text('2. Select a payment method').css('color', '#007fff');
+                });
             }
           });
         } catch (error) {
@@ -32,6 +35,15 @@ $(function() {
           console.log('An error occurred:', error);
         }
     });
+
+    //proceed to payment handler
+    $('#order-review').on('click', '#proceed-to-payment-button', function(event) {
+        event.preventDefault();
+        //hide the section and show the payment section
+        $(this).closest('#order-review').slideUp(300, function() {
+
+        });
+    })
 
     //change address handler
     $('#address-selection').on('click', '#change-address-button', function(event) {

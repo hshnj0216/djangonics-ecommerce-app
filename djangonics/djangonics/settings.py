@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'compressor',
     'products',
     'accounts',
+    'transactions',
     'storages',
 ]
 

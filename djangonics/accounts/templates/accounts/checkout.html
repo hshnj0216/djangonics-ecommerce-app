@@ -20,6 +20,8 @@
     {% endcompress %}
     <script src="{% static 'js/checkoutActionsHandler.js' %}"></script>
     <script src="{% static 'js/loadImages.js' %}"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=ATq1dwh2EUeN17EwoFcOdVylRg8jJAIt_9yDXDt83oO2EE2vwc8uUC-5LPcn6-7gPKsOVR0PjKjZG4x_&components=buttons,hosted-fields,marks&commit=false&intent=authorize"></script>
+    <script src="{% static 'js/paypalIntegration.js' %}"></script>
     <title>Checkout</title>
 </head>
 <body>
@@ -39,6 +41,7 @@
         <!-- displays the list of payment methods -->
         <section id="payment-selection">
             <h5>2. Payment method</h5>
+            {% include 'accounts/payment_selection_partial.html' %}
         </section>
         <hr>
         <!-- displays the list of items and prices, including other charges -->
@@ -66,7 +69,7 @@
                 </li>
             </ul>
             <hr>
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between" id="order-total" data-value="{{order_total}}">
                 <h5>Order total:</h5>
                 <h5>${{ order_total|floatformat:2 }}</h5>
             </div>

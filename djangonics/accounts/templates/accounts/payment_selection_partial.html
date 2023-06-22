@@ -1,26 +1,12 @@
-<h5>2. Select a payment method</h5>
-<div class="border rounded">
+<div id="payment-selection-partial" class="border rounded">
     <div class="p-3">
         <h6>Payment methods</h6>
         <hr>
         <div>
             <form id="payment-selection-form" class="list-group">
                 {% csrf_token %}
-                <label class="list-group-item d-flex">
-                    <input class="form-check-input me-2"
-                           type="radio"
-                           name="payment-method"
-                           value="paypal"
-                    >
-                    <a href="https://www.paypal.com/webapps/mpp/paypal-popup">
-                        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0"
-                             alt="PayPal Logo">
-                    </a>
-                </label>
+                <div id="paypal-buttons-container" class="w-50"></div>
             </form>
         </div>
-    </div>
-    <div id="payment-method-selection-bottom" class="border rounded-bottom p-3">
-        <button id="use-this-payment-method-button" class="btn btn-primary">Use this payment method</button>
     </div>
 </div>
