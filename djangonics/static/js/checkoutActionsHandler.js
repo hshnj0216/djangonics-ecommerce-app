@@ -25,6 +25,7 @@ $(function() {
                     $(this).html(data['selected_address_html']).slideDown(300);
                 });
                 $('#payment-selection-partial').slideDown(500, function() {
+                    console.log('payment selection slide down');
                     $(this).show();
                     $(this).siblings('h5').text('2. Select a payment method').css('color', '#007fff');
                 });
@@ -36,15 +37,6 @@ $(function() {
         }
     });
 
-    //proceed to payment handler
-    $('#order-review').on('click', '#proceed-to-payment-button', function(event) {
-        event.preventDefault();
-        //hide the section and show the payment section
-        $(this).closest('#order-review').slideUp(300, function() {
-
-        });
-    })
-
     //change address handler
     $('#address-selection').on('click', '#change-address-button', function(event) {
         event.preventDefault();
@@ -53,15 +45,11 @@ $(function() {
         $.ajax({
             type: 'POST',
             url: '/accounts/change_selected_address/',
-            data: {
-                csrfmiddlewaretoken: csrfToken,
+            headers: {
+                'X-CSRFToken': csrfToken,
             },
             success: function(data) {
-                $('#payment-selection').slideUp(500, function() {
-                    $(this).html(`
-                        <h5>2. Payment method</h5>
-                    `).slideDown(300);
-                });
+                $('#payment-selection-partial').slideUp(300);
                 $('#address-selection').slideUp(300, function() {
                     $(this).html(data).slideDown(500);
                     $('#address-selection h5').css('color', '#007fff');
@@ -69,7 +57,6 @@ $(function() {
                 $('#order-review-partial').slideUp(300, function() {
                     $(this).hide();
                     $('#order-review h5').text('3. Review order').css('color', '#000000');
-
                 });
             }
         });

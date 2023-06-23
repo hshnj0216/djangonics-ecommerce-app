@@ -149,6 +149,8 @@ def remove_address(request, address_id):
 def checkout(request):
     context = {}
     selected_item_ids = request.POST.getlist('cart_item')
+    #Store the ids in the session for use on placing order
+    request.session['cart_item_ids'] = selected_item_ids
     selected_items = CartItem.objects.filter(id__in=selected_item_ids)
     context['selected_items'] = selected_items
 
@@ -175,7 +177,7 @@ def checkout(request):
 def use_address(request):
     address_id = request.POST['address_id']
     address = Address.objects.get(pk=address_id)
-    #request.session['selected_address'] = address
+    request.session['selected_address_id'] = address_id
     address_context = {
         'address': address,
     }
