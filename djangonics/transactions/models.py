@@ -18,14 +18,15 @@ class Order(models.Model):
         ('Return Rejected', 'Return Rejected'),
         ('Returned', 'Returned')
     )
+    id = models.CharField(max_length=100, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipient_name = models.CharField(max_length=100)
     street_address = models.CharField(max_length=250)
     apartment_address = models.CharField(max_length=250)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=25)
-    phone = models.CharField(max_length=20)
-    zipcode = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20)
+    zip_code = models.CharField(max_length=20)
     total_amount = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -41,6 +42,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
+
     @property
     def total_price(self):
         return self.unit_price * self.quantity

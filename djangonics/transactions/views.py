@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from .models import Order
-from django.shortcuts import render
+from django.db import transaction
+from .models import Order, OrderItem
+from django.shortcuts import render, redirect, reverse
 import json
 import requests
 import sys
@@ -55,10 +56,10 @@ def capture_payment(request):
     )
     access_token = auth_response.json()['access_token']
 
-    #Get authorization id
+    # Get authorization id
     authorization_id = request.POST.get('authorization_id')
 
-    #Set capture amount
+    # Set capture amount
     order_amount = request.POST.get('order_amount')
     capture_amount = {
         'amount': {
@@ -67,7 +68,7 @@ def capture_payment(request):
         }
     }
 
-    #Capture the payment
+    # Capture the payment
     capture_response = requests.post(
         f'https://api.sandbox.paypal.com/v2/payments/authorizations/{authorization_id}/capture',
         headers={
@@ -91,37 +92,61 @@ def capture_payment(request):
 
     return JsonResponse(capture)
 
+
 @login_required
 def place_order(request):
-    #Get the address entry
+    total_amount = request.POST.get('total_amount')
+
+    # Get the address entry
     address_id = request.session['selected_address_id']
     address = Address.objects.get(pk=address_id)
-    #Create an order entry
-    order_id = request.POST.get('order_id')
-    Order.objects.create(
-        id=order_id,
-        user=request.user,
-        recipient_name=address.recipient_name,
-        street_address=address.street_address,
-        apartment_address=address.apartment_address,
-        city=address.city,
-        state=address.state,
-        zip_code=address.zip_code,
-        phone_number=address.phone_number,
-    )
-    #Get the cart item ids of the ordered items from the session
-    cart_item_ids = request.session['cart_item_ids']
-    order_items = []
-    #Retrieve cart item info and create order items
-    for cart_item_id in cart_item_ids:
-        cart_item = CartItem.objects.get(pk=cart_item_id)
-        OrderItem.objects.create(
-            order=order_id,
-            product=cart_item.product,
-            unit_price=cart_item.product.price,
 
+    # Create an order entry
+    order_id = request.POST.get('order_id')
+
+    with transaction.atomic():
+        order = Order.objects.create(
+            id=order_id,
+            user=request.user,
+            recipient_name=address.recipient_name,
+            street_address=address.street_address,
+            apartment_address=address.apartment_address,
+            city=address.city,
+            state=address.state,
+            zip_code=address.zip_code,
+            phone_number=address.phone_number,
+            total_amount=total_amount,
         )
+
+        # Get the cart item ids of the ordered items from the session
+        cart_item_ids = request.session['cart_item_ids']
+        print(cart_item_ids)
+
+        # Retrieve cart item info and create order items
+        for cart_item_id in cart_item_ids:
+            print(f"cart item id: {cart_item_id}")
+            cart_item = CartItem.objects.get(pk=cart_item_id)
+            OrderItem.objects.create(
+                order=order,
+                product=cart_item.product,
+                unit_price=cart_item.product.price,
+                quantity=cart_item.quantity
+            )
+            cart_item.delete()
+            print(f"Cart item deleted: {cart_item}")
+
+    # Delete cart item ids session data
+    del request.session['cart_item_ids']
+
+    # Redirect to the orders page
+    return redirect(reverse('transactions:orders'))
+
 
 @login_required
 def orders(request):
-    return render(request, 'transactions/orders.html')
+    # Get the orders
+    orders = Order.objects.filter(user=request.user)
+    context = {
+        'orders': orders
+    }
+    return render(request, 'transactions/orders.html', context)

@@ -5,147 +5,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
     <script src="{% static 'js/filter.js' %}"></script>
     <script src="{% static 'js/updateItemQuantity.js' %}"></script>
     <script src="{% static 'js/loadImages.js' %}"></script>
     {% load compress %}
     {% compress css %}
-        <link type="text/x-scss" href="{% static 'scss/styles.scss' %}" rel="stylesheet">
+    <link type="text/x-scss" href="{% static 'scss/styles.scss' %}" rel="stylesheet">
     {% endcompress %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <!-- utility nav -->
-    <nav
-            class="navbar navbar-expand-lg py-1 px-5"
-            id="util-nav"
-    >
-        <div class="d-flex w-100 align-items-center">
-            <!-- brand logo -->
-            <ul class="d-flex list-unstyled justify-content-between align-items-center text-light m-0 ms-3">
-                <li class="list-item me-5">
-                    <a class="navbar-brand" href="{% url 'products:home' %}">
-                        <img src="{% static 'images/logo/Djangonics-logos_transparent.png' %}" alt="company logo">
-                    </a>
-                </li>
-            </ul>
-            <!-- search bar -->
-            <form action="{% url 'products:search_products' %}" method="get" id="search" class="d-flex flex-nowrap flex-grow-1" role="search">
-                {% csrf_token %}
-                  <div class="flex-grow-1 p-0">
-                    <input type="text" class="border-3 rounded-start w-100 h-100" id="query" placeholder="Search for products" name="query">
-                  </div>
-                  <div class="p-0">
-                    <input type="submit" value="Search" class="btn btn-outline-dark rounded-end rounded-0" id="search-button">
-                  </div>
-            </form>
-            <!-- utility nav links -->
-            <ul class="d-flex list-unstyled justify-content-between align-items-center text-light m-0 ms-3">
-                 <li class="list-item p-1 mx-3">
-                    <a href="{% url 'products:cart' %}" class="text-decoration-none">
-                        <div class="d-flex nav-text">
-                            <div id="cart-container" class="">
-                                {% bs_icon 'cart2' %}
-                                {% if user.is_authenticated %}
-                                    <span id="item-counter">
+<!-- utility nav -->
+<nav
+        class="navbar navbar-expand-lg py-1 px-5"
+        id="util-nav"
+>
+    <div class="d-flex w-100 align-items-center">
+        <!-- brand logo -->
+        <ul class="d-flex list-unstyled justify-content-between align-items-center text-light m-0 ms-3">
+            <li class="list-item me-5">
+                <a class="navbar-brand" href="{% url 'products:home' %}">
+                    <img src="{% static 'images/logo/Djangonics-logos_transparent.png' %}" alt="company logo">
+                </a>
+            </li>
+        </ul>
+        <!-- search bar -->
+        <form action="{% url 'products:search_products' %}" method="get" id="search"
+              class="d-flex flex-nowrap flex-grow-1" role="search">
+            {% csrf_token %}
+            <div class="flex-grow-1 p-0">
+                <input type="text" class="border-3 rounded-start w-100 h-100" id="query"
+                       placeholder="Search for products" name="query">
+            </div>
+            <div class="p-0">
+                <input type="submit" value="Search" class="btn btn-outline-dark rounded-end rounded-0"
+                       id="search-button">
+            </div>
+        </form>
+        <!-- utility nav links -->
+        <ul class="d-flex list-unstyled justify-content-between align-items-center text-light m-0 ms-3">
+            <li class="list-item p-1 mx-3">
+                <a href="{% url 'products:cart' %}" class="text-decoration-none">
+                    <div class="d-flex nav-text">
+                        <div id="cart-container" class="">
+                            {% bs_icon 'cart2' %}
+                            {% if user.is_authenticated %}
+                            <span id="item-counter">
                                         {% if request.session.cart_item_count > 99 %}
                                             99+
                                         {% else %}
                                             {{request.session.cart_item_count}}
                                         {% endif %}
                                     </span>
-                                {% endif %}
-                            </div>
-                            <div class="d-flex nav-text align-items-end">
-                                <span class="primary-text">Cart</span>
-                            </div>
+                            {% endif %}
                         </div>
-                    </a>
-                </li>
-                <li class="list-item p-1 mx-3">
-                    <a href="" class="text-decoration-none">
-                        <div class="d-flex nav-text">
-                            {% bs_icon 'box-seam' %}
-                            <div class="d-flex flex-column justify-content-end">
-                                <span class="secondary-text p-0">Returns &</span>
-                                <span class="primary-text p-0">Orders</span>
-                            </div>
+                        <div class="d-flex nav-text align-items-end">
+                            <span class="primary-text">Cart</span>
                         </div>
-                    </a>
-                </li>
-                {% if user.is_authenticated %}
-                    <li class="list-item dropdown p-1 mx-3">
-                        <a href="#" class="d-flex text-decoration-none btn dropdown-toggle outline-none" role="button" id="account-dropdown" data-bs-toggle="dropdown">
-                            <div class="item d-flex">
-                                {% bs_icon 'person-gear' %}
-                                <span>Account</span>
-                            </div>
-                        </a>
-                        <ul class="dropdown-menu bg-info">
-                            <li class="dropdown-item"><a href="{% url 'accounts:account' %}">Account</a></li>
-                            <li class="dropdown-item"><a href="{% url 'accounts:logout' %}">Logout</a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li class="list-item p-1 mx-3">
-                        <a href="{% url 'accounts:login' %}" class="text-decoration-none">
-                            <div class="d-flex">
-                                {% bs_icon 'person' %}
-                                <div class="nav-text d-flex flex-column justify-content-end">
-                                    <span class="secondary-text">Sign Up or</span>
-                                    <span class="primary-text">Log In</span>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
-    <!-- main nav -->
-    <nav
-            id="main-nav"
-            class="navbar navbar-expand-lg py-0 px-5 mb-3"
-    >
-        <ul class="nav">
-            <li class="nav-item">
-                <a href="{% url 'products:browse_all' %}"
-                   class="nav-link text-light {% if request.path == '/products/browse_all/' %}active{% endif %}"
-                >
-                    Browse All Products
+                    </div>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{% url 'products:todays_deals' %}"
-                   class="nav-link text-light"
-                >
-                    Shop Today's Deals
+            <li class="list-item p-1 mx-3">
+                <a href="{% url 'transactions:orders' %}" class="text-decoration-none">
+                    <div class="d-flex nav-text">
+                        {% bs_icon 'box-seam' %}
+                        <div class="d-flex flex-column justify-content-end">
+                            <span class="secondary-text p-0">Returns &</span>
+                            <span class="primary-text p-0">Orders</span>
+                        </div>
+                    </div>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{% url 'products:best_sellers' %}"
-                   class="nav-link text-light"
-                >
-                    Browse Our Best Sellers
+            {% if user.is_authenticated %}
+            <li class="list-item dropdown p-1 mx-3">
+                <a href="#" class="d-flex text-decoration-none btn outline-none" role="button" id="account-dropdown"
+                   data-bs-toggle="dropdown">
+                    <div class="item d-flex">
+                        {% bs_icon 'person-gear' %}
+                        <span>Account</span>
+                    </div>
+                </a>
+                <ul class="dropdown-menu bg-info">
+                    <li class="dropdown-item"><a href="{% url 'accounts:account' %}">Account</a></li>
+                    <li class="dropdown-item"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                </ul>
+            </li>
+            {% else %}
+            <li class="list-item p-1 mx-3">
+                <a href="{% url 'accounts:login' %}" class="text-decoration-none">
+                    <div class="d-flex">
+                        {% bs_icon 'person' %}
+                        <div class="nav-text d-flex flex-column justify-content-end">
+                            <span class="secondary-text">Sign Up or</span>
+                            <span class="primary-text">Log In</span>
+                        </div>
+                    </div>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{% url 'products:new_arrivals' %}"
-                   class="nav-link text-light"
-                >
-                    Check Out Our New Arrivals
-                </a>
-            </li>
+            {% endif %}
         </ul>
-    </nav>
-    {% block content %}
-    {% endblock %}
-    {% block script %}
-    {% endblock %}
+    </div>
+</nav>
+<!-- main nav -->
+<nav
+        id="main-nav"
+        class="navbar navbar-expand-lg py-0 px-5 mb-3"
+>
+    <ul class="nav">
+        <li class="nav-item">
+            <a href="{% url 'products:browse_all' %}"
+               class="nav-link text-light {% if request.path == '/products/browse_all/' %}active{% endif %}"
+            >
+                Browse All Products
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'products:todays_deals' %}"
+               class="nav-link text-light"
+            >
+                Shop Today's Deals
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'products:best_sellers' %}"
+               class="nav-link text-light"
+            >
+                Browse Our Best Sellers
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'products:new_arrivals' %}"
+               class="nav-link text-light"
+            >
+                Check Out Our New Arrivals
+            </a>
+        </li>
+    </ul>
+</nav>
+{% block content %}
+{% endblock %}
+{% block script %}
+{% endblock %}
 </body>
 </html>

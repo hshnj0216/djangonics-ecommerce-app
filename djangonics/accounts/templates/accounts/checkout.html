@@ -19,7 +19,7 @@
     <link type="text/x-scss" href="{% static 'scss/checkout.scss' %}" rel="stylesheet">
     {% endcompress %}
     <script src="{% static 'js/checkoutActionsHandler.js' %}"></script>
-    <script src="{% static 'js/loadImages.js' %}"></script>
+    <!--<-->
     <script src="https://www.paypal.com/sdk/js?client-id=ATq1dwh2EUeN17EwoFcOdVylRg8jJAIt_9yDXDt83oO2EE2vwc8uUC-5LPcn6-7gPKsOVR0PjKjZG4x_&components=buttons,hosted-fields,marks&commit=false&intent=authorize"></script>
     <script src="{% static 'js/paypalIntegration.js' %}"></script>
     <title>Checkout</title>
@@ -77,5 +77,6 @@
         </section>
     </div>
 </div>
+<script src="{% static 'js/loadImages.js' %}"></script>
 </body>
 </html>

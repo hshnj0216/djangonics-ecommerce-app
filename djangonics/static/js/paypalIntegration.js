@@ -76,7 +76,6 @@ $(function() {
                                 order_amount: totalValue,
                             },
                             success: function(data) {
-                                alert('Order placed!');
                                 //Make an AJAX request to the place_order view
                                 $.ajax({
                                     url: '/transactions/place_order/',
@@ -86,15 +85,16 @@ $(function() {
                                     },
                                     data: {
                                         order_id: orderId,
+                                        total_amount: totalValue,
                                     },
                                     success: function(data) {
-                                        //Redirect to the orders page
+                                        // Redirect to the orders page
                                         window.location.href = '/transactions/orders/';
                                     },
                                     error: function(data) {
                                         alert('Something went wrong with your order.');
                                     }
-                                })
+                                });
 
                             },
                             error: function(data) {

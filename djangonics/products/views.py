@@ -183,8 +183,8 @@ def cart(request):
     # Get cart items
     cart_items = cart.items.all()
     products = []
+    qty_range = range(1, 10)
     for item in cart_items:
-        qty_range = range(1, 10)
         product_info = {
             'cart_item_id': item.id,
             'product_id': item.product.id,
@@ -382,5 +382,3 @@ def get_images(request, product_id):
     patch_response_headers(response, cache_timeout=cache_timeout)
 
     return response
-
-
