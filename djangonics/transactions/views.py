@@ -120,11 +120,9 @@ def place_order(request):
 
         # Get the cart item ids of the ordered items from the session
         cart_item_ids = request.session['cart_item_ids']
-        print(cart_item_ids)
 
         # Retrieve cart item info and create order items
         for cart_item_id in cart_item_ids:
-            print(f"cart item id: {cart_item_id}")
             cart_item = CartItem.objects.get(pk=cart_item_id)
             OrderItem.objects.create(
                 order=order,
@@ -133,7 +131,6 @@ def place_order(request):
                 quantity=cart_item.quantity
             )
             cart_item.delete()
-            print(f"Cart item deleted: {cart_item}")
 
     # Delete cart item ids session data
     del request.session['cart_item_ids']
@@ -145,7 +142,7 @@ def place_order(request):
 @login_required
 def orders(request):
     # Get the orders
-    orders = Order.objects.filter(user=request.user)
+    orders = Order.objects.filter(user=request.user).prefetch_related('order_items')
     context = {
         'orders': orders
     }

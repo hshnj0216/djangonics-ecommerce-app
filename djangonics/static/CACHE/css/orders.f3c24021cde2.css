@@ -1,0 +1,15 @@
+/* line 3, e:/projects/e-commerce/djangonics/static/scss/orders.scss */
+.order-card {
+  background-color: #E6F0FF;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem; }
+  /* line 7, e:/projects/e-commerce/djangonics/static/scss/orders.scss */
+  .order-card .card-img-bg {
+    width: 95px;
+    height: 95px;
+    background-color: #FFF; }
+  /* line 12, e:/projects/e-commerce/djangonics/static/scss/orders.scss */
+  .order-card .product-img {
+    object-fit: contain;
+    width: 90px;
+    height: 90px; }

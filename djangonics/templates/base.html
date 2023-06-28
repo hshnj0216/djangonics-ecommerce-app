@@ -22,6 +22,7 @@
     {% load compress %}
     {% compress css %}
     <link type="text/x-scss" href="{% static 'scss/styles.scss' %}" rel="stylesheet">
+    <link type="text/x-scss" rel="stylesheet" href="{% static 'scss/orders.scss' %}">
     {% endcompress %}
     <title>{% block title %}{% endblock %}</title>
 </head>
@@ -61,13 +62,13 @@
                         <div id="cart-container" class="">
                             {% bs_icon 'cart2' %}
                             {% if user.is_authenticated %}
-                            <span id="item-counter">
-                                        {% if request.session.cart_item_count > 99 %}
-                                            99+
-                                        {% else %}
-                                            {{request.session.cart_item_count}}
-                                        {% endif %}
-                                    </span>
+                                <span id="item-counter">
+                                    {% if request.session.cart_item_count > 99 %}
+                                        99+
+                                    {% else %}
+                                        {{request.session.cart_item_count}}
+                                    {% endif %}
+                                </span>
                             {% endif %}
                         </div>
                         <div class="d-flex nav-text align-items-end">
@@ -81,7 +82,6 @@
                     <div class="d-flex nav-text">
                         {% bs_icon 'box-seam' %}
                         <div class="d-flex flex-column justify-content-end">
-                            <span class="secondary-text p-0">Returns &</span>
                             <span class="primary-text p-0">Orders</span>
                         </div>
                     </div>

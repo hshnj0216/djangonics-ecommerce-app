@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Orders{% endblock %}
 {% block content %}
-<div>
-    <h1>Orders page</h1>
-    <div id="order-list">
-        {% for order in orders %}
-            {% include 'transactions/order_partial.html' %}
-        {% endfor %}
+<div class="container d-flex flex-column justify-content-center">
+    <h3>Your orders</h3>
+    <hr>
+    <div id="order-list" class="d-flex justify-content-center">
+        {% if orders %}
+            {% for order in orders %}
+                {% include 'transactions/orders_partial.html' %}
+            {% endfor %}
+        {% else %}
+            <h3>You have no orders</h3>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -1,7 +1,4 @@
-$util-nav-color: #007fff;
-$nav-text-color: #fff;
-$main-nav-color: #0DC6FF;
-$card-bg-color: #E6F0FF;
+@import 'variables';
 #util-nav{
     background-color: $util-nav-color;
     color: $nav-text-color;

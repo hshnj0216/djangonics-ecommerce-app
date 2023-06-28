@@ -18,6 +18,14 @@ class Order(models.Model):
         ('Return Rejected', 'Return Rejected'),
         ('Returned', 'Returned')
     )
+    DELIVERY_STATUS_CHOICES = (
+        ('Processing', 'Processing'),
+        ('Not Shipped', 'Not Shipped'),
+        ('Shipped', 'Shipped'),
+        ('In Transit', 'In Transit'),
+        ('Out for Delivery', 'Out for Delivery'),
+        ('Delivered', 'Delivered'),
+    )
     id = models.CharField(max_length=100, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipient_name = models.CharField(max_length=100)
@@ -31,6 +39,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Open')
+    delivery_status = models.CharField(max_length=20, choices=DELIVERY_STATUS_CHOICES, default='Processing')
     return_status = models.CharField(max_length=20, choices=RETURN_STATUS_CHOICES, default='Not Returned')
 
     class Meta:
@@ -38,7 +47,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
