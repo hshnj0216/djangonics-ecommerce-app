@@ -1,42 +1,50 @@
-<div class="orders-container w-75 d-flex flex-column">
-  {% for order in orders %}
-    <div class="order-card border rounded-top">
-    <div class="order-header d-flex border rounded-top p-2">
-      <h4>Order ID: {{order.id}}</h4>
-      <p>Creation Date: {{order.created_at}}</p>
-      <p>Total Amount: ${{order.total_amount}}</p>
-      <p>Status: {{order.delivery_status}}</p>
-    </div>
-    <div class="order-items-container p-3">
-      <h6>Order items</h6>
-      <hr>
-      {% for item in order.order_items.all %}
-        <div class="order-item-card row d-flex border rounded m-3">
-          <div class="col-2">
-              <div class="card-img-bg">
-                <img
-                    class="product-img"
-                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                    data-src-high="{% url 'products:get_images' item.product.id %}"
-                    loading="lazy"
-                    alt="Product Image"
-                >
-              </div>
-          </div>
-          <div class="col-7">
-            <a href="{% url 'products:product_details' item.product.slug item.product.id %}">
-              <h6>{{item.product.name|truncatechars_html:130}}</h6>
-            </a>
-          </div>
-          <div class="col-1">
-            <p>Qty: {{item.quantity}}</p>
-          </div>
-          <div class="col-2">
-            <p>Price: ${{item.unit_price}}</p>
-          </div>
+<div class="orders-container d-flex flex-column align-items-center">
+    {% for order in orders %}
+    <div class="order-card border rounded-top m-3 w-75">
+        <div class="order-header d-flex flex-column border rounded-top p-2">
+            <div class="d-flex flex-start">
+                <h4 class="flex-fill">Order ID: {{order.id}}</h4>
+                <a class="mx-3" href="{% url 'transactions:cancel_order' order.id %}">
+                    Cancel order
+                </a>
+                <p class="text-end mx-3 badge bg-info">Status: {{order.delivery_status}}</p>
+            </div>
+            <div class="d-flex flex-column ml-auto">
+                <p class="mb-1">Creation Date: <strong>{{order.created_at}}</strong></p>
+                <p  class="mb-1">Total Amount: <strong>${{order.total_amount}}</strong></p>
+            </div>
         </div>
-      {% endfor %}
+        <div class="order-items-container p-3">
+            <h6>Order items</h6>
+            <hr>
+            {% for item in order.order_items.all %}
+            <div class="order-item-card row d-flex border rounded m-3">
+                <div class="col-2">
+                    <div class="card-img-bg">
+                        <img
+                                class="product-img"
+                                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                data-src-high="{% url 'products:get_images' %}"
+                                data-product-id="{{item.product.id}}"
+                                loading="lazy"
+                                alt="Product Image"
+                        >
+                    </div>
+                </div>
+                <div class="col-7">
+                    <a href="{% url 'products:product_details' item.product.slug item.product.id %}">
+                        <h6>{{item.product.name|truncatechars_html:130}}</h6>
+                    </a>
+                </div>
+                <div class="col-1">
+                    <p>Qty: {{item.quantity}}</p>
+                </div>
+                <div class="col-2">
+                    <p>Price: ${{item.unit_price}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-  </div>
-  {% endfor %}
+    {% endfor %}
 </div>

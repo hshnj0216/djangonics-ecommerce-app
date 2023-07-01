@@ -4,10 +4,14 @@ $(function() {
     images.each(function() {
         let image = $(this);
         let imgSrc = image.data('src-high');
-        $.get(imgSrc, function(data){
-            image.attr('src', data['img_urls'][0]);
+        let productId = image.data('product-id');
+        $.post(imgSrc, {product_id: productId}, function(data){
+            console.log(data);
+            if(data['status'] == 'success') {
+                image.attr('src', data['img_urls'][0]);
+            } else {
+
+            }
         });
     });
-
-
 });

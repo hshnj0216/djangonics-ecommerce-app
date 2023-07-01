@@ -55,3 +55,24 @@ header{
     color: #007bff;
     text-decoration: underline;
 }
+#paypal-logo{
+    width: 66px;
+    height: 30px;
+}
+.spinner{
+    width: 3rem;
+    height: 3rem;
+    border: 5px solid $util-nav-color;
+    border-color: $util-nav-color transparent $util-nav-color transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to {
+        transform: rotate(360deg);
+    }
+}
+.disabled-bg{
+    background-color: rgba(0, 0, 0, 0.2);
+}

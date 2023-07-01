@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.views.decorators.http import require_POST
+
 from .models import Order, OrderItem
 from django.shortcuts import render, redirect, reverse
 import json
@@ -142,8 +144,14 @@ def place_order(request):
 @login_required
 def orders(request):
     # Get the orders
-    orders = Order.objects.filter(user=request.user).prefetch_related('order_items')
+    orders = Order.objects.filter(user=request.user).order_by('-created_at').prefetch_related('order_items')
+    print(len(orders))
     context = {
         'orders': orders
     }
     return render(request, 'transactions/orders.html', context)
+
+@login_required
+def cancel_order(request, order_id):
+    Order.objects.get(pk=order_id).delete()
+    return redirect(reverse('transactions:orders'))

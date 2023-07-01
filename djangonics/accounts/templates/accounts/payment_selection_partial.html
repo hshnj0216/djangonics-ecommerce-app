@@ -1,12 +1,15 @@
-<div id="payment-selection-partial" class="border rounded">
-    <div class="p-3">
-        <h6>Payment methods</h6>
-        <hr>
-        <div>
-            <form id="payment-selection-form" class="list-group">
-                {% csrf_token %}
-                <div id="paypal-buttons-container" class="w-50"></div>
-            </form>
+<div id="payment-selection-partial">
+    <h5>2. Select a payment method</h5>
+    <div class="border rounded">
+        <div class="p-3">
+            <h6>Payment methods</h6>
+            <hr>
+            <div>
+                <form id="payment-selection-form" class="list-group">
+                    {% csrf_token %}
+                    <div id="paypal-buttons-container" class="w-50"></div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

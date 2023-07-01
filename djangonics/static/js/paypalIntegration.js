@@ -20,7 +20,6 @@ $(function() {
             },
             onApprove: function(data, actions) {
                 return actions.order.get().then(function(details) {
-                    console.log(details);
                     orderId = details.id;
                     let csrfToken = $('#payment-selection-partial form input[name=csrfmiddlewaretoken]').val();
 
@@ -48,7 +47,6 @@ $(function() {
                                 },
                                 success: function(data) {
                                     //Show the order review section
-                                    console.log(data);
                                     authorizationID = data['purchase_units'][0]['payments']['authorizations'][0]['id']
                                     $('#order-review-partial').slideDown(500, function() {
                                         $(this).siblings('h5').css('color', '#007fff');
@@ -62,7 +60,6 @@ $(function() {
 
                     $('.place-order-button').on('click', function(event) {
                         event.preventDefault();
-                        console.log('place order button clikced!');
                         //Make a call to the place_order view
                         $.ajax({
                             url: '/transactions/capture_payment/',
@@ -88,8 +85,7 @@ $(function() {
                                         total_amount: totalValue,
                                     },
                                     success: function(data) {
-                                        // Redirect to the orders page
-                                        window.location.href = '/transactions/orders/';
+
                                     },
                                     error: function(data) {
                                         alert('Something went wrong with your order.');

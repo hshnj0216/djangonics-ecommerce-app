@@ -8,7 +8,7 @@
                     <div class="card-img-bg d-flex justify-content-center align-items-center">
                         <img class="product-img mx-auto"
                              src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                             data-src="{% url 'products:get_images' selected_item.product.id %}"
+                             data-src="{% url 'products:get_images' %}"
                              loading="lazy"
                              alt="product_img"
                         >
@@ -24,7 +24,11 @@
         {% endfor %}
     </div>
     <div class="d-flex justify-content-center">
-        <button id="place-order-button" class="place-order-button btn btn-primary w-25 mt-2">
+        <button
+                class="place-order-button btn btn-primary w-25 mt-2"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+        >
             Place order
         </button>
     </div>

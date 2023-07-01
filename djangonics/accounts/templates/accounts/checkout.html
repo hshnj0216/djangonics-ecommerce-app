@@ -19,7 +19,8 @@
     <link type="text/x-scss" href="{% static 'scss/checkout.scss' %}" rel="stylesheet">
     {% endcompress %}
     <script src="{% static 'js/checkoutActionsHandler.js' %}"></script>
-    <!--<-->
+    <script src="{% static 'js/loadImages.js' %}"></script>
+    <!---->
     <script src="https://www.paypal.com/sdk/js?client-id=ATq1dwh2EUeN17EwoFcOdVylRg8jJAIt_9yDXDt83oO2EE2vwc8uUC-5LPcn6-7gPKsOVR0PjKjZG4x_&components=buttons,hosted-fields,marks&commit=false&intent=authorize"></script>
     <script src="{% static 'js/paypalIntegration.js' %}"></script>
     <title>Checkout</title>
@@ -40,7 +41,6 @@
         <hr>
         <!-- displays the list of payment methods -->
         <section id="payment-selection">
-            <h5>2. Payment method</h5>
             {% include 'accounts/payment_selection_partial.html' %}
         </section>
         <hr>
@@ -73,10 +73,43 @@
                 <h5>Order total:</h5>
                 <h5>${{ order_total|floatformat:2 }}</h5>
             </div>
-            <button class="btn btn-primary place-order-button disabled w-100 mt-3">Place order</button>
+            <button
+                    type="button"
+                    class="btn btn-primary place-order-button disabled w-100 mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+            >
+                Place order
+            </button>
         </section>
     </div>
 </div>
-<script src="{% static 'js/loadImages.js' %}"></script>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  Launch static backdrop modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <!--<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+      </div>
+      <div class="modal-body">
+          <h6>What would you like to do next?</h6>
+          <div>
+              <a href="{% url 'products:browse_all' %}">Continue shopping</a>
+              <a href="{% url 'transactions:orders' %}">Go to my orders</a>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

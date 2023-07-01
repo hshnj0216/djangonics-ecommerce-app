@@ -4,11 +4,9 @@
 <div class="container d-flex flex-column justify-content-center">
     <h3>Your orders</h3>
     <hr>
-    <div id="order-list" class="d-flex justify-content-center">
+    <div id="order-list" class="">
         {% if orders %}
-            {% for order in orders %}
-                {% include 'transactions/orders_partial.html' %}
-            {% endfor %}
+            {% include 'transactions/orders_partial.html' %}
         {% else %}
             <h3>You have no orders</h3>
         {% endif %}

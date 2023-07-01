@@ -340,15 +340,18 @@ def get_low_quality_images(request, product_id):
 
     return response
 
-def get_images(request, product_id):
+@csrf_exempt
+def get_images(request):
     # First, check if the response is already cached
+    product_id = request.POST.get('product_id')
     cache_key = f'product_images_high_{product_id}'
     cached_data = cache.get(cache_key)
     if cached_data:
         return JsonResponse(cached_data)
 
     # Set up the IBM COS client
-    cos_client = boto3.client('s3',
+    session = boto3.session.Session()
+    cos_client = session.client('s3',
                                 endpoint_url=settings.AWS_S3_ENDPOINT_URL,
                                 aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                                 aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
@@ -372,6 +375,7 @@ def get_images(request, product_id):
             'status': 'failed',
         }
 
+    print(data['status'])
     # Cache the response
     cache.set(cache_key, data)
 

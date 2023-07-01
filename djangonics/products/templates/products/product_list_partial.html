@@ -7,7 +7,7 @@
                     <img
                          src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                          data-src-low="{% url 'products:get_low_quality_images' product.id %}"
-                         data-src-high="{% url 'products:get_images' product.id %}"
+                         data-src-high="{% url 'products:get_images' %}"
                          data-product-id="{{product.id}}"
                          loading="lazy"
                          class="card-img-top product-img"

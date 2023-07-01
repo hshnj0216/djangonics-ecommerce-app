@@ -20,14 +20,13 @@ $(function() {
                 csrfmiddlewaretoken: csrfToken,
             },
             success: function(data) {
-                $('#address-selection h5').css('color', '#000000');
+
                 $('#address-selection').slideUp(300, function() {
                     $(this).html(data['selected_address_html']).slideDown(300);
                 });
                 $('#payment-selection-partial').slideDown(500, function() {
-                    console.log('payment selection slide down');
                     $(this).show();
-                    $(this).siblings('h5').text('2. Select a payment method').css('color', '#007fff');
+                    $(this).find('h5').css('color', '#007fff');
                 });
             }
           });
@@ -40,7 +39,6 @@ $(function() {
     //change address handler
     $('#address-selection').on('click', '#change-address-button', function(event) {
         event.preventDefault();
-        console.log('Change address');
         let csrfToken = $('#address-selection form input[name=csrfmiddlewaretoken]').val();
         $.ajax({
             type: 'POST',
@@ -62,25 +60,5 @@ $(function() {
         });
     });
 
-    //payment method selection handler
-    $('#payment-selection').on('click','#use-this-payment-method-button', function(event) {
-        event.preventDefault();
-        let csrfToken = $('#payment-selection form input[name=csrfmiddlewaretoken]').val();
-        $.ajax({
-            type: 'POST',
-            url: '/accounts/select_payment_method/',
-            data: {
-                csrfmiddlewaretoken: csrfToken,
-            },
-            success: function(data) {
-                $('#payment-selection').slideUp(300, function() {
-                    $(this).html(data).slideDown(500);
-                });
-                $('#order-review h5').text('3. Review your order').css('color', '#007fff');
-                $('#order-review-partial').slideDown(500, function() {
-                    $(this).show();
-                });
-            }
-        });
-    });
+
 });
