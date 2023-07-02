@@ -58,7 +58,7 @@ def todays_deals(request):
     return render(request, 'products/todays_deals.html', {'products':products, 'categories':categories})
 
 def best_sellers(request):
-    products = Product.objects.prefetch_related(
+    products = Product.objects.order_by('-units_sold').prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
         Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
     ).annotate(

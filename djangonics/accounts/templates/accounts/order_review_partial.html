@@ -4,17 +4,18 @@
     <div id="checkout-items-container" class="d-flex justify-content-center align-items-center flex-column">
         {% for selected_item in selected_items %}
             <div class="checkout-item-card w-100 p-3 mb-3 row d-flex">
-                <div class="col-1 d-flex justify-content-center p-0 mx-3">
+                <div class="col-2 d-flex justify-content-center p-0 mx-3">
                     <div class="card-img-bg d-flex justify-content-center align-items-center">
                         <img class="product-img mx-auto"
                              src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                             data-src="{% url 'products:get_images' %}"
+                             data-src-high="{% url 'products:get_images' %}"
+                             data-product-id="{{selected_item.product.id}}"
                              loading="lazy"
                              alt="product_img"
                         >
                     </div>
                 </div>
-                <div class="col-9 px-3">
+                <div class="col-8 p-0">
                     <h6>{{selected_item.product|truncatechars_html:130}}</h6>
                 </div>
                 <div class="col-1 flex-fill">

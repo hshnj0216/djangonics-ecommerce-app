@@ -90,31 +90,36 @@
         width: 240x;
         height: 170px;
         background-color: #FFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .product-img{
         object-fit: contain;
-        width: 238px;
-        height: 170px;
+        width: 220px;
+        height: 150px;
     }
     .card-title{
         display: inline-block;
         height: 38.4px;
     }
 }
+
 .cart-card{
     background-color: $card-bg-color;
     border: 1px solid rgba(0, 0, 0, 0.125);
     border-radius: 0.25rem;
     .card-img-bg{
         width: 95px;
-        height: 95px;
+        height: 90px;
         background-color: #FFF;
     }
     .product-img{
         object-fit: contain;
-        width: 90px;
-        height: 90px;
+        width: 75px;
+        height: 75px;
     }
+
 }
 .active{
     background-color: #00a2d1;
@@ -156,7 +161,6 @@
     color: #da7820  ;
     font-size: 16px;
 }
-//address actions
 li.address-action:not(:first-child)::before {
   content: "|";
   margin: 0 10px;

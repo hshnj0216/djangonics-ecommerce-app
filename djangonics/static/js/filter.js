@@ -1,3 +1,4 @@
+import { loadImages } from './loadImages.js';
 $(function() {
     let url = $('.filter-form').data('filter-url');
 
@@ -26,25 +27,7 @@ $(function() {
             },
             success: function(data) {
                 $('#product-list-partial').html(data);
-                 $('img[data-src]').each(function() {
-                    let $img = $(this);
-                    let highQualitySource = $img.data('src-high');
-                    let hqRetries = 3;
-
-                    function getHQImage() {
-                        $.get(highQualitySource, function(data) {
-                            if (data.status == 'success') {
-                                $img.attr('src', data.img_urls[0]);
-                            } else if (data.status == 'failed' && hqRetries > 0) {
-                                console.log("hq retry");
-                                hqRetries--;
-                                getHQImage();
-                            }
-                        });
-                    }
-
-                    getHQImage();
-                });
+                loadImages();
             }
         });
     }

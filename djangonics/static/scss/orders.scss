@@ -8,11 +8,17 @@
         width: 95px;
         height: 95px;
         background-color: #FFF;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .product-img{
         object-fit: contain;
-        width: 90px;
-        height: 90px;
+        width: 75px;
+        height: 70px;
+    }
+    .order-item-card{
+        border-bottom: solid 3px black;
     }
 }
 

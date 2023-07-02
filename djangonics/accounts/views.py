@@ -148,13 +148,9 @@ def remove_address(request, address_id):
 @login_required
 def checkout(request):
     context = {}
-    print(f"POST data: {request.POST.get('data')}")
-    print(f"POST object: {request.POST}")
     selected_item_ids = request.POST.getlist('cart_item')
-    print(f"Selected item ids: {selected_item_ids}")
     #Store the ids in the session for use on placing order
     request.session['cart_item_ids'] = selected_item_ids
-    print(f"Session cart item ids: { request.session['cart_item_ids']}")
     selected_items = CartItem.objects.filter(id__in=selected_item_ids)
     context['selected_items'] = selected_items
 

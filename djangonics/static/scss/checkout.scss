@@ -29,13 +29,16 @@ header{
     border-radius: 0.25rem;
     .card-img-bg{
         width: 95px;
-        height: 95px;
+        height: 90px;
         background-color: #FFF;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .product-img{
         object-fit: contain;
-        width: 90px;
-        height: 90px;
+        width: 75px;
+        height: 70px;
     }
 }
 #order-summary-wrapper {
