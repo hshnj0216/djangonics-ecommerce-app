@@ -1,14 +1,17 @@
-export function loadImages() {
+export function loadImages(quality, callback) {
     let images = $('.product-img');
+    let loadedImages = 0;
     images.each(function() {
         let image = $(this);
-        let imgSrc = image.data('src-high');
+        let imgSrc = image.data('src-url');
         let productId = image.data('product-id');
-        $.post(imgSrc, {product_id: productId}, function(data){
+        $.post(imgSrc, {quality: quality, product_id: productId}, function(data){
             if(data['status'] == 'success') {
                 image.attr('src', data['img_urls'][0]);
-            } else {
-
+            }
+            loadedImages++;
+            if (loadedImages == images.length && callback) {
+                callback();
             }
         });
     });
@@ -16,5 +19,7 @@ export function loadImages() {
 
 $(function() {
     console.log('loadImages.js loaded');
-    loadImages();
+    loadImages('low', function() {
+        loadImages('high');
+    });
 });

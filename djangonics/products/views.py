@@ -3,6 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.cache import patch_response_headers
 from django.views.decorators.csrf import csrf_exempt
 from .models import Product, Category, Cart, CartItem, Rating, Discount
@@ -36,14 +37,19 @@ def generate_low_quality_image(request, hq_image):
         response = HttpResponse(f.read(), content_type='image/jpeg')
     return response
 
-def browse_all(request):
+def get_products(request):
     products = Product.objects.prefetch_related(
-        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings')
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
     ).annotate(
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
     )
     products = list(enumerate(products, start=1))
+    return products
+
+def browse_all(request):
+    products = get_products(request)
     new_arrivals = Product.objects.order_by('-created_at')[:10]
     best_sellers = Product.objects.filter(units_sold__gt=0).order_by('-units_sold')
     discounted_products = Product.objects.filter(discount__gt=0)
@@ -52,41 +58,19 @@ def browse_all(request):
                   'best_sellers': best_sellers, 'discounted_products': discounted_products, 'categories': categories})
 
 def todays_deals(request):
-    products = Product.objects.prefetch_related(
-        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
-        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
-    ).annotate(
-        average_rating=Avg('ratings__value'),
-        num_ratings=Count('ratings')
-    )
-    products = list(enumerate(products, start=1))
+    products = get_products(request)
     categories = Category.objects.all()
     return render(request, 'products/todays_deals.html', {'products':products, 'categories':categories})
 
 def best_sellers(request):
-    products = Product.objects.filter(units_sold__gt=0).order_by('-units_sold').prefetch_related(
-        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
-        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
-    ).annotate(
-        average_rating=Avg('ratings__value'),
-        num_ratings=Count('ratings')
-    )
-    products = list(enumerate(products, start=1))
+    products = get_products(request)
     categories = Category.objects.all()
     return render(request, 'products/best_sellers.html', {'products': products, 'categories': categories})
 
 def new_arrivals(request):
-    products = Product.objects.order_by('-created_at')[:10].prefetch_related(
-        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
-        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
-    ).annotate(
-        average_rating=Avg('ratings__value'),
-        num_ratings=Count('ratings')
-    )
-    products = list(enumerate(products, start=1))
+    products = get_products(request)
     categories = Category.objects.all()
     return render(request, 'products/new_arrivals.html', {'products': products, 'categories': categories})
-
 
 def product_details(request, slug, product_id):
     product = Product.objects.prefetch_related(
@@ -148,7 +132,19 @@ def filter_products(request):
         max_rating = min_rating + 1
         products = products.filter(average_rating__gte=min_rating, average_rating__lt=max_rating)
 
-    return render(request, 'products/product_list_partial.html', {'products': products})
+    products = list(enumerate(products, start=1))
+    new_arrivals = Product.objects.order_by('-created_at')[:10]
+    best_sellers = Product.objects.filter(units_sold__gt=0).order_by('-units_sold')
+    discounted_products = Product.objects.filter(discount__gt=0)
+    categories = Category.objects.all()
+    context = {
+               'products': products,
+               'new_arrivals': new_arrivals,
+               'best_sellers': best_sellers,
+               'discounted_products': discounted_products,
+               'categories': categories
+    }
+    return render(request, 'products/product_list_partial.html', )
 
 
 def filter_search(request):
@@ -246,10 +242,7 @@ def add_to_cart(request):
 
 @login_required
 def buy_now(request):
-    if request.method == "GET":
-        pass
-    if request.method == "POST":
-        pass
+    return redirect(reverse('accounts:checkout'))
 
 
 def get_cart_item_count(request, user):
@@ -316,43 +309,12 @@ def update_item_quantity(request):
     }
     return JsonResponse(data)
 
-def get_low_quality_images(request, product_id):
-    # First, check if the response is already cached
-
-    # Set up the IBM COS client
-    cos_client = boto3.client('s3',
-                                endpoint_url=settings.AWS_S3_ENDPOINT_URL,
-                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                                config=Config(signature_version='s3v4'),
-                                region_name='jp-tok'
-                             )
-
-    # Get the list of objects in the bucket
-    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-    prefix = f"{product_id}/low-"
-    response = cos_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
-
-    # Generate a list of URLs for the image objects
-    if 'Contents' in response:
-        data = {
-            'img_urls': [f"{settings.AWS_S3_ENDPOINT_URL}/{bucket_name}/{obj['Key']}" for obj in response['Contents']],
-            'status': 'success',
-        }
-    else:
-        data = {
-            'status':'failed',
-        }
-
-    response = JsonResponse(data)
-
-    return response
-
 @csrf_exempt
 def get_images(request):
     # First, check if the response is already cached
     product_id = request.POST.get('product_id')
-    cache_key = f'product_images_high_{product_id}'
+    quality = request.POST.get('quality')
+    cache_key = f'product_images_{quality}_{product_id}'
     cached_data = cache.get(cache_key)
     if cached_data:
         return JsonResponse(cached_data)
@@ -369,7 +331,7 @@ def get_images(request):
 
     # Get the list of objects in the bucket
     bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-    prefix = f"{product_id}/high-"
+    prefix = f"{product_id}/{quality}-"
     response = cos_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
 
     # Generate a list of URLs for the image objects
@@ -383,7 +345,6 @@ def get_images(request):
             'status': 'failed',
         }
 
-    print(data['status'])
     # Cache the response
     cache.set(cache_key, data)
 
@@ -394,3 +355,4 @@ def get_images(request):
     patch_response_headers(response, cache_timeout=cache_timeout)
 
     return response
+

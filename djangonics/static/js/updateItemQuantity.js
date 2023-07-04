@@ -19,7 +19,6 @@ $(function() {
             },
             error: function() {
                 // Display an error message to the user
-                console.log(productId);
                 alert('An error occurred while updating the cart item count. Please try again.');
             }
         });
@@ -45,7 +44,33 @@ $(function() {
         });
     }
 
-    // Handle change event on .cart-item-qty element
+    // Handle focus event on .cart-item-qty element
+    $('.cart-item-options').on('focus', '.cart-item-qty', function() {
+        if($(this).val() !== 'expand') {
+            $(this).data('prev-value', $(this).val());
+        }
+    });
+
+    //Restore prefilled value on blur
+    $('.cart-item-options').on('blur', 'input.cart-item-qty', function() {
+        let prevValue = $(this).data('prev-value');
+        if($(this).val() === '') {
+            $(this).val(prevValue);
+        }
+    });
+
+
+    //toggle display of update button
+    $('.cart-item-options').on('input', 'input.cart-item-qty', function() {
+        console.log('changed');
+        if($(this).val() === '') {
+            $(this).closest('.cart-item-qty-container').find('.update-qty-button').addClass('d-none');
+        } else {
+            $(this).closest('.cart-item-qty-container').find('.update-qty-button').removeClass('d-none');
+        }
+    });
+
+    // Handle change event on .cart-item-qty class
     $('.cart-item-options').on('change', '.cart-item-qty', function() {
         // Make an AJAX call to update the cart item count
         let qty = $(this).val();
@@ -53,23 +78,24 @@ $(function() {
         let topMostDiv = $(this).closest('.cart-card');
         let cartItemId = $(this).data('cart-item-id');
 
-        if(qty < 10 && qty != 0) {
-            updateCounter(qty, productId, cartItemId);
-        } else if(qty == 0) {
+        if(parseInt(qty) === 0) {
             removeItem(qty, productId, cartItemId, topMostDiv);
-        } else if(qty == "10+") {
+        } else if(parseInt(qty) < 10) {
+            updateCounter(qty, productId, cartItemId);
+        } else if(qty === "expand") {
             // Show update button and use a number input instead of select
             let container = $(this).closest('.cart-item-qty-container');
             let price = $(this).data('price');
+            let prevValue = $(this).data('prev-value');
             container.html(`
                 <label class="me-1">Qty:
                     <input type="number"
                            class="cart-item-qty form-control-sm"
-                           maxlength="999"
-                           value=""
+                           value=${prevValue}
                            data-price=${price}
                            data-product-id=${productId}
                            data-cart-item-id=${cartItemId}
+                           data-prev-value=${prevValue}
                     >
                 </label>
                 <button type="button" class="btn btn-sm btn-primary update-qty-button ms-1 d-none">Update</button>
@@ -77,6 +103,7 @@ $(function() {
             container.find('button').removeClass('d-none');
         }
     });
+
 
     // Handle focus event on input.cart-item-qty element
     $('.cart-item-options').on('focus', 'input.cart-item-qty', function() {
@@ -87,12 +114,17 @@ $(function() {
     // Handle click event on .update-qty-button element
     $('.cart-item-options').on('click', '.update-qty-button', function(event) {
         event.preventDefault();
-        let qty = $(this).siblings('label').find('.cart-item-qty').val();
-        let productId = $(this).siblings('label').find('.cart-item-qty').data('product-id');
-        let cartItemId = $(this).siblings ('label').find('.cart-item-qty').data('cart-item-id');
+        let inputElement = $(this).siblings('label').find('input.cart-item-qty');
+        let qty = inputElement.val();
+        if (qty === '') {
+            qty = inputElement.data('prev-value');
+        }
+        let productId = inputElement.data('product-id');
+        let cartItemId = inputElement.data('cart-item-id');
         updateCounter(qty, productId, cartItemId);
         $(this).addClass('d-none');
     });
+
 
     // Handle click event on .remove-item-btn element
      $('.remove-item-btn').on('click', function() {

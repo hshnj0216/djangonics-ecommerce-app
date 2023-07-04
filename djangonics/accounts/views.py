@@ -152,7 +152,6 @@ def checkout(request):
     #Store the ids in the session for use on placing order
     request.session['cart_item_ids'] = selected_item_ids
     selected_items = CartItem.objects.filter(id__in=selected_item_ids)
-    context['selected_items'] = selected_items
 
     # Calculate total price and total item count
     total_price = 0
@@ -163,14 +162,18 @@ def checkout(request):
     tax_rate = Decimal(0.1)
     tax = Decimal(total_price) * tax_rate
     shipping_and_handling_rate = Decimal(100)
-    context['total_price'] = total_price
-    context['total_item_count'] = total_item_count
-    context['tax'] = tax
-    context['order_total'] = total_price + tax + shipping_and_handling_rate
 
     #get the user's addresses
     addresses = Address.objects.filter(user=request.user)
-    context['addresses'] = addresses
+
+    context = {
+        'address': addresses,
+        'selected_items': selected_items,
+        'total_price': total_price,
+        'total_item_count': total_item_count,
+        'tax': tax,
+        'order_total': total_price + tax + shipping_and_handling_rate
+    }
 
     return render(request, 'accounts/checkout.html', context)
 

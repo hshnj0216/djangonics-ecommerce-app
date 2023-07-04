@@ -1,9 +1,8 @@
 <div class="cart-item-option">
-    {% if product.quantity > 10 %}
+    {% if product.quantity >= 10 %}
     <div class="cart-item-qty-container d-flex align-items-center">
         <label>Qty:
             <input type="number"
-                   maxlength="999"
                    class="cart-item-qty form-control-sm"
                    value="{{product.quantity}}"
                    data-price="{{product.price}}"
@@ -26,7 +25,7 @@
                 {% for i in range %}
                 <option value="{{i}}" {% if i == product.quantity %} selected {% endif %}>{{i}}</option>
                 {% endfor %}
-                <option value="10+">10+</option>
+                <option value="expand">10+</option>
             </select>
         </label>
     </div>
