@@ -43,8 +43,13 @@ def browse_all(request):
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
     )
+    products = list(enumerate(products, start=1))
+    new_arrivals = Product.objects.order_by('-created_at')[:10]
+    best_sellers = Product.objects.filter(units_sold__gt=0).order_by('-units_sold')
+    discounted_products = Product.objects.filter(discount__gt=0)
     categories = Category.objects.all()
-    return render(request, 'products/browse_all.html', {'products': products, 'categories': categories})
+    return render(request, 'products/browse_all.html', {'products': products, 'new_arrivals': new_arrivals,
+                  'best_sellers': best_sellers, 'discounted_products': discounted_products, 'categories': categories})
 
 def todays_deals(request):
     products = Product.objects.prefetch_related(
@@ -54,17 +59,19 @@ def todays_deals(request):
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
     )
+    products = list(enumerate(products, start=1))
     categories = Category.objects.all()
     return render(request, 'products/todays_deals.html', {'products':products, 'categories':categories})
 
 def best_sellers(request):
-    products = Product.objects.order_by('-units_sold').prefetch_related(
+    products = Product.objects.filter(units_sold__gt=0).order_by('-units_sold').prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
         Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
     ).annotate(
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
     )
+    products = list(enumerate(products, start=1))
     categories = Category.objects.all()
     return render(request, 'products/best_sellers.html', {'products': products, 'categories': categories})
 
@@ -76,6 +83,7 @@ def new_arrivals(request):
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
     )
+    products = list(enumerate(products, start=1))
     categories = Category.objects.all()
     return render(request, 'products/new_arrivals.html', {'products': products, 'categories': categories})
 

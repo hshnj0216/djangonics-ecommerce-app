@@ -1,33 +1,66 @@
 {% load humanize %}
 <div class="row">
-    {% for product in products %}
-        <div class="card p-2 m-2 col-md-3 product" data-product-id="{{product.id}}">
-            <div class="headspace"></div>
+    {% for index, product in products %}
+    <div class="card m-2 col-md-3 product p-0" data-product-id="{{product.id}}">
+        <div class="headspace d-flex">
+            {% if request.path == '/products/best_sellers/' %}
+            <div class="ribbon-wrapper best-seller">
+                <p class="fw-600 text-center fs-7">#{{index}}</p>
+            </div>
+            {% elif request.path == '/products/todays_deals' %}
+            <div class="ribbon-wrapper discounted">
+                <p class="">{{product.discount.value|floatformat:0}}%</p>
+            </div>
+            {% elif request.path == '/products/new_arrivals/' %}
+            <div>
+
+            </div>
+            {% else %}
+                {% if product in discounted_products %}
+                    <div class="ribbon-wrapper discounted">
+                        <p>{{product.discount.value|floatformat:0}}% OFF</p>
+                    </div>
+                {% endif %}
+                {% if product in best_sellers %}
+                    <div class="ribbon-wrapper best-seller">
+                        <p>Best seller</p>
+                    </div>
+                {% endif %}
+                {% if product in new_arrivals %}
+                    <div class="ribbon-wrapper new-arrival">
+                        <p>New!</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="p-2">
             <a href="{% url 'products:product_details' product.slug product.id%}">
                 <div class="card-img-bg">
                     <img
-                         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                         data-src-low="{% url 'products:get_low_quality_images' product.id %}"
-                         data-src-high="{% url 'products:get_images' %}"
-                         data-product-id="{{product.id}}"
-                         loading="lazy"
-                         class="card-img-top product-img"
-                         alt="product-image">
+                            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                            data-src-low="{% url 'products:get_low_quality_images' product.id %}"
+                            data-src-high="{% url 'products:get_images' %}"
+                            data-product-id="{{product.id}}"
+                            loading="lazy"
+                            class="card-img-top product-img"
+                            alt="product-image">
                 </div>
             </a>
             <div class="card-body p-2">
                 <a href="{% url 'products:product_details' product.slug product.id%}">
-                    <h6 class="card-title mb-1">{{product.name|truncatechars_html:40}}</h6>
+                    <h6 class="card-title mb-2">{{product.name|truncatechars_html:50}}</h6>
                 </a>
-                <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
                 {% include 'products/rating_partial.html' %}
+                <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
             </div>
         </div>
-        {% if forloop.counter|divisibleby:4 and not forloop.last %}
-            </div><div class="row">
-        {% endif %}
-        {% empty %}
-            <h4>No results found.</h4>
+    </div>
+    {% if forloop.counter|divisibleby:4 and not forloop.last %}
+</div>
+<div class="row">
+    {% endif %}
+    {% empty %}
+    <h4>No results found.</h4>
     {% endfor %}
 </div>
 

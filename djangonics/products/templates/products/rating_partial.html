@@ -1,5 +1,5 @@
 {% if product.ratings is not None %}
-    <div class="d-flex align-items-start" style="height: 90px;" title="Average rating: {{product.average_rating|floatformat:1}}">
+    <div class="d-flex align-items-start rating-container mb-1" title="Average rating: {{product.average_rating|floatformat:1}}">
         <div class="text-nowrap mb-1 me-1 position-relative" style="width: 90px;">
             <div id="filled" class="overflow-hidden" style="position: absolute; width: calc(90px * {{product.average_rating|floatformat:1}} / 5); font-size: 0; z-index: 2;">
                 <span class="fa fa-star"></span>
