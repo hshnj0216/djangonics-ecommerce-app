@@ -10,6 +10,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.urls import reverse
+from django.utils import timezone
+from decimal import Decimal
 from storages.backends.s3boto3 import S3Boto3Storage
 from PIL import Image
 from accounts.models import User
@@ -60,6 +62,15 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_discounted_price(self):
+        if hasattr(self, 'discount'):
+            discount = self.discount
+            now = timezone.now()
+            if discount.start_date <= now <= discount.end_date:
+                discount_value = Decimal(discount.value) / 100
+                return (self.price - (self.price * discount_value)).quantize(Decimal('0.01'))
+            return self.price
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -1,3 +1,4 @@
+
 $(function() {
     console.log('checkoutActionsHandler.js loaded');
     //hide preloaded order items review partial and highlight current phase
@@ -59,6 +60,5 @@ $(function() {
             }
         });
     });
-
 
 });

@@ -3,13 +3,45 @@
 {% block content %}
 <div class="container d-flex flex-column justify-content-center">
     <h3>Your orders</h3>
+    <div class="input-group d-flex w-25">
+        <label for="order-status flex-grow-1" class="input-group-text">
+            Status:
+        </label>
+        <select name="status" id="order-status" class="form-select flex-grow-1">
+            <option value="All" selected>All</option>
+            <option value="Open">Open</option>
+            <option value="Canceled">Canceled</option>
+        </select>
+    </div>
     <hr>
-    <div id="order-list" class="">
+    <div id="order-list" class="px-3">
         {% if orders %}
-            {% include 'transactions/orders_partial.html' %}
+        {% include 'transactions/orders_partial.html' %}
         {% else %}
-            <h3>You have no orders</h3>
+        <h3>You have no orders</h3>
         {% endif %}
     </div>
 </div>
+<!-- Cancel Order Modal -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to cancel this order?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button class="btn btn-danger" data-bs-dismiss="modal" id="cancel-order-confirm">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% load static %}
+{% block script %}
+<script type="module" src="{% static 'js/orderActions.js' %}"></script>
 {% endblock %}

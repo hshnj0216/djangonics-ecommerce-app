@@ -11,24 +11,23 @@ from django.db.models import Sum, Avg, Prefetch, Count
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
 import boto3
-from threading import Semaphore
 from django.conf import settings
 from PIL import Image
 
-cos_client_semaphore = Semaphore(4)
+
 
 # Create your views here.
 def home(request):
     return render(request, 'products/home.html')
 
 def generate_low_quality_image(request, hq_image):
-    #open the high quality image
+    # open the high quality image
     image = Image.open(hq_image)
 
-    #resize image
+    # resize image
     resized_image = image.resize((148, 138))
 
-    #compress image
+    # compress image
     compressed_image_path = 'static/images/'
     resized_image.save(compressed_image_path, quality=60)
 
@@ -36,6 +35,7 @@ def generate_low_quality_image(request, hq_image):
     with open(compressed_image_path, 'rb') as f:
         response = HttpResponse(f.read(), content_type='image/jpeg')
     return response
+
 
 def get_products(request):
     products = Product.objects.prefetch_related(
@@ -45,7 +45,41 @@ def get_products(request):
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
     )
-    products = list(enumerate(products, start=1))
+
+    return products
+
+def get_best_sellers(request):
+    products = Product.objects.filter(units_sold__gt=0).order_by('-units_sold'
+    ).prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    )
+    return products
+
+def get_todays_deals(request):
+    products = Product.objects.filter(discount__gt=0
+    ).prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    ).order_by('-discount')
+    return products
+
+
+def get_new_arrivals(request):
+    products = Product.objects.order_by('-created_at'
+    ).prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
+    ).annotate(
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    )[:10]
     return products
 
 def browse_all(request):
@@ -54,22 +88,32 @@ def browse_all(request):
     best_sellers = Product.objects.filter(units_sold__gt=0).order_by('-units_sold')
     discounted_products = Product.objects.filter(discount__gt=0)
     categories = Category.objects.all()
-    return render(request, 'products/browse_all.html', {'products': products, 'new_arrivals': new_arrivals,
-                  'best_sellers': best_sellers, 'discounted_products': discounted_products, 'categories': categories})
+    products = list(enumerate(products, start=1))
+    context = {
+        'products': products,
+        'new_arrivals': new_arrivals,
+        'best_sellers': best_sellers,
+        'discounted_products': discounted_products,
+        'categories': categories
+    }
+    return render(request, 'products/browse_all.html', context)
 
 def todays_deals(request):
-    products = get_products(request)
+    products = get_todays_deals(request)
     categories = Category.objects.all()
-    return render(request, 'products/todays_deals.html', {'products':products, 'categories':categories})
+    products = list(enumerate(products, start=1))
+    return render(request, 'products/todays_deals.html', {'products': products, 'categories': categories})
 
 def best_sellers(request):
-    products = get_products(request)
+    products = get_best_sellers(request)
     categories = Category.objects.all()
+    products = list(enumerate(products, start=1))
     return render(request, 'products/best_sellers.html', {'products': products, 'categories': categories})
 
 def new_arrivals(request):
-    products = get_products(request)
+    products = get_new_arrivals(request)
     categories = Category.objects.all()
+    products = list(enumerate(products, start=1))
     return render(request, 'products/new_arrivals.html', {'products': products, 'categories': categories})
 
 def product_details(request, slug, product_id):
@@ -87,96 +131,80 @@ def product_details(request, slug, product_id):
     else:
         stock_range = range(1, 31)
     product_images = product.images.all()
-    return render(request, 'products/product_details.html',
-                  {'product': product, 'range': stock_range, 'product_images': product_images})
+    context = {
+        'product': product,
+        'range': stock_range,
+        'product_images': product_images,
+    }
+    return render(request, 'products/product_details.html', context)
 
-
+@csrf_exempt
 def filter_products(request):
-    #get the page
+    # get the initial products queryset based on the current page
     current_page = request.GET.get('current_page')
     if current_page == 'new_arrivals':
-        products = Product.objects.all()
+        products = get_products(request).order_by('-created_at')
     elif current_page == 'todays_deals':
-        products = Product.objects.all()
+        products = get_products(request).filter(discount__gt=0)
     elif current_page == 'best_sellers':
-        products = Product.objects.all()
-    elif current_page == 'browse_all':
-        products = Product.objects.all()
+        products = get_products(request).filter(units_sold__gt=0).order_by('-units_sold')
+    elif current_page == 'search_products':
+        query = request.GET.get('query')
+        products = get_products(request)
+        products = products.annotate(search=SearchVector('name', 'category__name'),
+                                     average_rating=Avg('ratings__value'),
+                                     num_ratings=Count('ratings')).filter(search=SearchQuery(query))
+    else:
+        products = get_products(request)
 
-    # get the selected categories from the request parameters
+    # apply category filters if provided
     categories = request.GET.get('categories', '').split(',')
-
-    # filter the products based on the selected categories
     if len(categories) == 1 and categories[0] != '':
         products = products.filter(category__slug__in=categories)
 
     # apply price filters if provided
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-
     if max_price and min_price and not (min_price == 'NaN' or max_price == 'NaN'):
         products = products.filter(price__range=(min_price, max_price))
 
-    # prefetch related ratings model
-    products = products.prefetch_related(
-        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='rating')
-    ).annotate(
-        average_rating=Avg('ratings__value'),
-        num_ratings=Count('ratings')
-    )
-
-    #filter the average rating
+    # apply rating filter if provided
     rating = request.GET.get('rating')
     if rating:
         min_rating = float(rating)
         max_rating = min_rating + 1
         products = products.filter(average_rating__gte=min_rating, average_rating__lt=max_rating)
 
-    products = list(enumerate(products, start=1))
-    new_arrivals = Product.objects.order_by('-created_at')[:10]
-    best_sellers = Product.objects.filter(units_sold__gt=0).order_by('-units_sold')
-    discounted_products = Product.objects.filter(discount__gt=0)
+    new_arrivals = products.order_by('-created_at')[:10]
+    best_sellers = products.filter(units_sold__gt=0).order_by('-units_sold')
+    discounted_products = products.filter(discount__gt=0)
+
     categories = Category.objects.all()
+    products = list(enumerate(products, start=1))
     context = {
-               'products': products,
-               'new_arrivals': new_arrivals,
-               'best_sellers': best_sellers,
-               'discounted_products': discounted_products,
-               'categories': categories
+        'products': products,
+        'new_arrivals': new_arrivals,
+        'best_sellers': best_sellers,
+        'discounted_products': discounted_products,
+        'categories': categories
     }
-    return render(request, 'products/product_list_partial.html', )
+    return render(request, 'products/product_list_partial.html', context)
 
-
-def filter_search(request):
-    # get the selected categories from the request parameters
-    categories = request.GET.get('categories', '').split(',')
-
-    # filter the products based on the selected categories
-    if len(categories) == 1 and categories[0] == '':
-        products = Product.objects.all()
-    else:
-        products = Product.objects.filter(category__slug__in=categories)
-
-    # apply price filters if provided
-    min_price = request.GET.get('min_price')
-    max_price = request.GET.get('max_price')
-
-    if max_price and min_price and not (min_price == 'NaN' or max_price == 'NaN'):
-        products = products.filter(price__range=(min_price, max_price))
-
-    return render(request, 'products/product_list_partial.html', {'products': products})
 
 def search_products(request):
     query = request.GET.get('query')
     # search the name and category name columns
-    products = Product.objects.prefetch_related(
-        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings')
-    ).annotate(search=SearchVector('name', 'category__name'), average_rating=Avg('ratings__value'),
-        num_ratings=Count('ratings')).filter(
-        search=SearchQuery(query))
+    products = get_products(request)
+    products = products.annotate(search=SearchVector('name', 'category__name'), average_rating=Avg('ratings__value'),
+               num_ratings=Count('ratings')).filter(search=SearchQuery(query))
     categories = Category.objects.all()
-    return render(request, 'products/search.html', {'products': products, 'query': query, 'categories': categories})
-
+    products = list(enumerate(products, start=1))
+    context = {
+        'products': products,
+        'query': query,
+        'categories': categories
+    }
+    return render(request, 'products/search.html', context)
 
 @login_required
 def cart(request):
@@ -203,10 +231,8 @@ def cart(request):
     context['range'] = qty_range
     return render(request, 'products/cart.html', context)
 
-
 @login_required
 def add_to_cart(request):
-
     # get the product from the POST data
     product_id = request.POST.get('product_id')
     product = get_object_or_404(Product, id=product_id)
@@ -236,14 +262,11 @@ def add_to_cart(request):
     # get the number of items from the cart for the indicator
     cart_item_count = cart.items.aggregate(Sum('quantity'))['quantity__sum']
     request.session['cart_item_count'] = cart_item_count
-
     return JsonResponse({'cart_item_count': cart_item_count})
-
 
 @login_required
 def buy_now(request):
     return redirect(reverse('accounts:checkout'))
-
 
 def get_cart_item_count(request, user):
     cart_item_count = request.session.get('cart_item_count')
@@ -254,7 +277,6 @@ def get_cart_item_count(request, user):
             request.session['cart_item_count'] = cart_item_count
     data = {'cart_item_count': cart_item_count}
     return JsonResponse(data)
-
 
 @login_required
 @csrf_exempt
@@ -267,13 +289,12 @@ def remove_item(request):
     cart = request.user.cart
     cart_item_count = cart.items.aggregate(Sum('quantity'))['quantity__sum']
     request.session['cart_item_count'] = cart_item_count
-    removed_html = render_to_string('products/removed.html', {'product':product}, request)
+    removed_html = render_to_string('products/removed.html', {'product': product}, request)
     data = {
         'cart_item_count': cart_item_count,
         'removed_html': removed_html,
     }
     return JsonResponse(data)
-
 
 @login_required
 @csrf_exempt
@@ -302,12 +323,14 @@ def update_item_quantity(request):
     cart_item_count = cart.items.aggregate(Sum('quantity'))['quantity__sum']
     request.session['cart_item_count'] = cart_item_count
     qty_range = range(1, 10)
-    cart_item_options_html = render_to_string('products/cart_item_options_partial.html', {'product':cart_item_info, 'range': qty_range}, request)
+    cart_item_options_html = render_to_string('products/cart_item_options_partial.html',
+                                              {'product': cart_item_info, 'range': qty_range}, request)
     data = {
         'cart_item_count': cart_item_count,
         'cart_item_options_html': cart_item_options_html,
     }
     return JsonResponse(data)
+
 
 @csrf_exempt
 def get_images(request):
@@ -327,7 +350,7 @@ def get_images(request):
                                 aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                                 config=Config(signature_version='s3v4'),
                                 region_name='jp-tok'
-                             )
+                                )
 
     # Get the list of objects in the bucket
     bucket_name = settings.AWS_STORAGE_BUCKET_NAME
@@ -355,4 +378,3 @@ def get_images(request):
     patch_response_headers(response, cache_timeout=cache_timeout)
 
     return response
-

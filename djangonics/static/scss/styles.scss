@@ -6,9 +6,9 @@
         background-color: #00A4CC;
         color: #FFEEDB;
     }
-    input#search-button{
+    #search-button{
         background-color: $contrast-orange;
-        border: solid 1px #FFA500;
+        border: solid 2px #767676;
     }
     ul a{
         color: $nav-text-color;
@@ -271,7 +271,7 @@ input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-input[type="number"], select {
+input[type="number"], select.cart-item-qty {
     max-width: 8ch;
 }
 .cart-item-option:not(:first-child)::before {

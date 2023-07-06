@@ -7,13 +7,13 @@
             <div class="ribbon-wrapper best-seller">
                 <p class="fw-600 text-center fs-7">#{{index}}</p>
             </div>
-            {% elif request.path == '/products/todays_deals' %}
+            {% elif request.path == '/products/todays_deals/' %}
             <div class="ribbon-wrapper discounted">
-                <p class="">{{product.discount.value|floatformat:0}}%</p>
+                <p class="">{{product.discount.value|floatformat:0}}% OFF</p>
             </div>
             {% elif request.path == '/products/new_arrivals/' %}
-            <div>
-
+            <div class="ribbon-wrapper new-arrival">
+                <p>New!</p>
             </div>
             {% else %}
                 {% if product in discounted_products %}
@@ -50,7 +50,15 @@
                     <h6 class="card-title mb-2">{{product.name|truncatechars_html:50}}</h6>
                 </a>
                 {% include 'products/rating_partial.html' %}
-                <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
+                {% if product in discounted_products %}
+                    <div class="d-flex justify-content-start">
+                        <h5 class="card-text mb-1">${{product.get_discounted_price|floatformat:2|intcomma}}</h5>
+                        <span class="mx-1"> | </span>
+                        <h5 class="card-text mb-1 text-muted text-decoration-line-through">${{product.price|floatformat:2|intcomma}}</h5>
+                    </div>
+                {% else %}
+                    <h5 class="card-text mb-1">${{product.price|floatformat:2|intcomma}}</h5>
+                {% endif %}
             </div>
         </div>
     </div>

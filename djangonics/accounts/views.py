@@ -147,7 +147,6 @@ def remove_address(request, address_id):
 
 @login_required
 def checkout(request):
-    context = {}
     selected_item_ids = request.POST.getlist('cart_item')
     #Store the ids in the session for use on placing order
     request.session['cart_item_ids'] = selected_item_ids
@@ -167,7 +166,7 @@ def checkout(request):
     addresses = Address.objects.filter(user=request.user)
 
     context = {
-        'address': addresses,
+        'addresses': addresses,
         'selected_items': selected_items,
         'total_price': total_price,
         'total_item_count': total_item_count,

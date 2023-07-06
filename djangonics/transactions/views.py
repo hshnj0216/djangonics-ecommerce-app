@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from .models import Order, OrderItem
@@ -126,12 +127,17 @@ def place_order(request):
         # Retrieve cart item info and create order items
         for cart_item_id in cart_item_ids:
             cart_item = CartItem.objects.get(pk=cart_item_id)
-            OrderItem.objects.create(
+            order_item = OrderItem.objects.create(
                 order=order,
                 product=cart_item.product,
                 unit_price=cart_item.product.price,
                 quantity=cart_item.quantity
             )
+            # Update the stock of the associated product
+            request.session['cart_item_count'] -= order_item.quantity
+            order_item.product.stock -= order_item.quantity
+            order_item.product.units_sold += order_item.quantity
+            order_item.product.save()
             cart_item.delete()
 
     # Delete cart item ids session data
@@ -145,13 +151,33 @@ def place_order(request):
 def orders(request):
     # Get the orders
     orders = Order.objects.filter(user=request.user).order_by('-created_at').prefetch_related('order_items')
-    print(len(orders))
     context = {
         'orders': orders
     }
     return render(request, 'transactions/orders.html', context)
 
 @login_required
+@csrf_exempt
 def cancel_order(request, order_id):
-    Order.objects.get(pk=order_id).delete()
-    return redirect(reverse('transactions:orders'))
+    order = Order.objects.get(pk=order_id)
+    #Get order items
+    order_items = OrderItem.objects.filter(order=order)
+    #Restore product stocks and reduce units sold
+    for order_item in order_items:
+        order_item.product.stock += order_item.quantity
+        order_item.product.units_sold -= order_item.quantity
+    #Change order status to canceled
+    order.status = 'Canceled'
+    order.save()
+
+    # Render the updated list of orders as a string
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'transactions/orders_partial.html', {'orders': orders})
+@csrf_exempt
+def filter_orders(request):
+    status = request.GET.get('status')
+    if status != 'All':
+        orders = Order.objects.filter(status=status, user=request.user)
+    else:
+        orders = Order.objects.filter(user=request.user)
+    return render(request, 'transactions/orders_partial.html', {'orders': orders})

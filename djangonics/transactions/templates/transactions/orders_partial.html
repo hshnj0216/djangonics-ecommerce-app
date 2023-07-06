@@ -1,30 +1,41 @@
-<div class="orders-container d-flex flex-column align-items-center">
+<div id="orders-container" class="d-flex flex-column">
     {% for order in orders %}
-    <div class="order-card border rounded-top m-3 w-75">
+    <div class="order-card border rounded-top m-3">
         <div class="order-header d-flex flex-column border rounded-top p-2">
             <div class="d-flex flex-start">
                 <h4 class="flex-fill">Order ID: {{order.id}}</h4>
-                <a class="mx-3" href="{% url 'transactions:cancel_order' order.id %}">
+                <a
+                        class="mx-3 cancel-order-btn"
+                        data-order-id="{{order.id}}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#cancelOrderModal">
                     Cancel order
                 </a>
-                <p class="text-end mx-3 badge bg-info">Status: {{order.delivery_status}}</p>
+                {% if order.status == 'Open' %}
+                    <p class="text-end mx-3 badge bg-info">Delivery status: {{order.delivery_status}}</p>
+                {% else %}
+                    <p class="text-end mx-3 badge bg-danger">Order status: {{order.status}}</p>
+                {% endif %}
             </div>
             <div class="d-flex flex-column ml-auto">
                 <p class="mb-1">Creation Date: <strong>{{order.created_at}}</strong></p>
-                <p  class="mb-1">Total Amount: <strong>${{order.total_amount}}</strong></p>
+                <p class="mb-1">Total Amount: <strong>${{order.total_amount}}</strong></p>
             </div>
         </div>
         <div class="order-items-container p-3">
-            <h6>Order items</h6>
+            <div class="d-flex justify-content-between">
+                <h6>Order items</h6>
+                <h6 class="me-4">Price</h6>
+            </div>
             <hr>
             {% for item in order.order_items.all %}
             <div class="order-item-card row d-flex border-bottom m-3 pb-3">
-                <div class="col-2">
+                <div class="col-1 p-0">
                     <div class="card-img-bg">
                         <img
                                 class="product-img"
                                 src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                                data-src-high="{% url 'products:get_images' %}"
+                                data-src-url="{% url 'products:get_images' %}"
                                 data-product-id="{{item.product.id}}"
                                 loading="lazy"
                                 alt="Product Image"
@@ -37,10 +48,13 @@
                     </a>
                 </div>
                 <div class="col-1">
+
+                </div>
+                <div class="col-1">
                     <p>Qty: {{item.quantity}}</p>
                 </div>
-                <div class="col-2">
-                    <p>Price: ${{item.unit_price}}</p>
+                <div class="col-2 flex-fill">
+                    <p class="text-end"><strong>${{item.unit_price}}</strong></p>
                 </div>
             </div>
             {% endfor %}

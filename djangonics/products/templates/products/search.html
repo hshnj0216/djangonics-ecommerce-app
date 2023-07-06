@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Search Results{% endblock %}
 {% block content %}
-    <div class="container-fluid d-flex row">
+    <div id="content-container" class="container-fluid d-flex row" data-page="search_products">
         <section class="col-md-3 mt-3">
             {% include 'products/filter_partial.html' %}
         </section>

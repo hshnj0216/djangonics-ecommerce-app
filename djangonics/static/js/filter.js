@@ -27,7 +27,7 @@ $(function() {
             },
             success: function(data) {
                 $('#product-list-partial').html(data);
-                loadImages();
+                loadImages('high');
             }
         });
     }
