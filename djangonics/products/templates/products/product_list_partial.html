@@ -3,19 +3,19 @@
     {% for index, product in products %}
     <div class="card m-2 col-md-3 product p-0" data-product-id="{{product.id}}">
         <div class="headspace d-flex">
-            {% if request.path == '/products/best_sellers/' %}
+            {% if current_page == 'best_sellers' or request.path == '/products/best_sellers/' %}
             <div class="ribbon-wrapper best-seller">
                 <p class="fw-600 text-center fs-7">#{{index}}</p>
             </div>
-            {% elif request.path == '/products/todays_deals/' %}
+            {% elif current_page == 'todays_deals' or request.path == '/products/todays_deals/'%}
             <div class="ribbon-wrapper discounted">
                 <p class="">{{product.discount.value|floatformat:0}}% OFF</p>
             </div>
-            {% elif request.path == '/products/new_arrivals/' %}
+            {% elif current_page == 'new_arrivals' or request.path == '/products/new_arrivals/' %}
             <div class="ribbon-wrapper new-arrival">
                 <p>New!</p>
             </div>
-            {% else %}
+            {% elif current_page == 'browse_all' or request.path == '/products/browse_all/' or current_page == 'search_products' or request.path == '/products/search_products/'  %}
                 {% if product in discounted_products %}
                     <div class="ribbon-wrapper discounted">
                         <p>{{product.discount.value|floatformat:0}}% OFF</p>
@@ -50,7 +50,7 @@
                     <h6 class="card-title mb-2">{{product.name|truncatechars_html:50}}</h6>
                 </a>
                 {% include 'products/rating_partial.html' %}
-                {% if product in discounted_products %}
+                {% if product.discount.value > 0 %}
                     <div class="d-flex justify-content-start">
                         <h5 class="card-text mb-1">${{product.get_discounted_price|floatformat:2|intcomma}}</h5>
                         <span class="mx-1"> | </span>

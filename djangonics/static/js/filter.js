@@ -8,6 +8,7 @@ $(function() {
         let minPrice = parseInt($('#min_price').val()) || 0;
         let maxPrice = parseInt($('#max_price').val()) || 9999;
         let currentPage = $('#content-container').data('page');
+        let query = $('#content-container').data('query');
         let rating = $('.star-rating-filter.selected-rating').data('rating');
 
         // iterate over the checkboxes to get the selected categories
@@ -24,6 +25,7 @@ $(function() {
                 max_price: maxPrice,
                 rating: rating,
                 current_page: currentPage,
+                query
             },
             success: function(data) {
                 $('#product-list-partial').html(data);

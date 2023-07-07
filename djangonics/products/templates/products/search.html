@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}Search Results{% endblock %}
 {% block content %}
-    <div id="content-container" class="container-fluid d-flex row" data-page="search_products">
-        <section class="col-md-3 mt-3">
+    <div id="content-container" class="container-fluid d-flex row justify-content-center m-0 mt-3" data-page="search_products" data-query="{{query}}">
+        <section class="col-md-3 mt-3 ps-5">
             {% include 'products/filter_partial.html' %}
         </section>
         <section class="col-md-9">

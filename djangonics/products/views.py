@@ -67,7 +67,7 @@ def get_todays_deals(request):
     ).annotate(
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
-    ).order_by('-discount')
+    ).order_by('-discount__value')
     return products
 
 
@@ -79,7 +79,7 @@ def get_new_arrivals(request):
     ).annotate(
         average_rating=Avg('ratings__value'),
         num_ratings=Count('ratings')
-    )[:10]
+    )
     return products
 
 def browse_all(request):
@@ -143,17 +143,23 @@ def filter_products(request):
     # get the initial products queryset based on the current page
     current_page = request.GET.get('current_page')
     if current_page == 'new_arrivals':
-        products = get_products(request).order_by('-created_at')
+        products = get_new_arrivals(request)
     elif current_page == 'todays_deals':
-        products = get_products(request).filter(discount__gt=0)
+        products = get_todays_deals(request)
     elif current_page == 'best_sellers':
-        products = get_products(request).filter(units_sold__gt=0).order_by('-units_sold')
+        products = get_best_sellers(request)
     elif current_page == 'search_products':
         query = request.GET.get('query')
-        products = get_products(request)
-        products = products.annotate(search=SearchVector('name', 'category__name'),
-                                     average_rating=Avg('ratings__value'),
-                                     num_ratings=Count('ratings')).filter(search=SearchQuery(query))
+        print(query)
+        products = Product.objects.prefetch_related(
+            Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+            Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
+        ).annotate(
+            search=SearchVector('name', 'category__name'),
+            average_rating=Avg('ratings__value'),
+            num_ratings=Count('ratings')
+        ).filter(search=SearchQuery(query))
+        print(products)
     else:
         products = get_products(request)
 
@@ -170,6 +176,7 @@ def filter_products(request):
 
     # apply rating filter if provided
     rating = request.GET.get('rating')
+    print(rating)
     if rating:
         min_rating = float(rating)
         max_rating = min_rating + 1
@@ -182,6 +189,7 @@ def filter_products(request):
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
     context = {
+        'current_page': current_page,
         'products': products,
         'new_arrivals': new_arrivals,
         'best_sellers': best_sellers,
@@ -192,16 +200,34 @@ def filter_products(request):
 
 
 def search_products(request):
+    current_page = request.GET.get('current_page')
     query = request.GET.get('query')
+
     # search the name and category name columns
-    products = get_products(request)
-    products = products.annotate(search=SearchVector('name', 'category__name'), average_rating=Avg('ratings__value'),
-               num_ratings=Count('ratings')).filter(search=SearchQuery(query))
+    products = Product.objects.prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
+    ).annotate(
+        search=SearchVector('name', 'category__name'),
+        average_rating=Avg('ratings__value'),
+        num_ratings=Count('ratings')
+    ).filter(search=SearchQuery(query))
+
+    print(f"Products in search: {products}")
+
+    new_arrivals = products.order_by('-created_at')[:10]
+    best_sellers = products.filter(units_sold__gt=0).order_by('-units_sold')
+    discounted_products = products.filter(discount__gt=0)
+
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
     context = {
-        'products': products,
         'query': query,
+        'current_page': current_page,
+        'products': products,
+        'new_arrivals': new_arrivals,
+        'best_sellers': best_sellers,
+        'discounted_products': discounted_products,
         'categories': categories
     }
     return render(request, 'products/search.html', context)
