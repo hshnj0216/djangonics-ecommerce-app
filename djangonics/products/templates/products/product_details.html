@@ -13,11 +13,11 @@
                      data-src-url="{% url 'products:get_images' %}"
                      data-product-id="{{product.id}}"
                      loading="lazy"
-                     class="product-detail-img w-100 product-img"
+                     class="product-detail-img w-100 product-img zoom"
                      alt="product-image"
                 />
             </div>
-            <section class="col-lg-6 border d-flex flex-column flex-grow-1">
+            <section class="col-lg-6 d-flex flex-column flex-grow-1">
                 <div class="border-bottom border-3 flex-grow-1 h-100">
                     <h4 class="fs-2">{{product.name}}</h4>
                     {% if product.stock > 20 %}
@@ -44,30 +44,37 @@
                     <p>{{product.description}}</p>
                 </article>
             </section>
-            <div class="col-lg-2 border">
-                <h6>Payment</h6>
+            <div class="col-lg-2 border rounded p-3 h-25">
                 <form action="{% url 'products:buy_now' product.id %}"
                       class="buy-add-to-cart-form"
                       data-add-to-cart-url="{% url 'products:add_to_cart' %}"
                       data-product-id="{{product.id}}"
+
                 >
                     {% csrf_token %}
-                    <div>
-                        <label for="qty">Quantity:</label>
-                        <select name="qty" id="qty" class="qty">
-                            {% for i in range %}
-                            <option value="{{i}}">{{i}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button class="add-to-cart-button" type="submit">Add to Cart</button>
-                    <button class="buy-button" type="submit">Buy Now</button>
+                    {% if product.stock == 0 %}
+                        <p class="form-text text-center text-danger">This product is out of stock</p>
+                    {% else %}
+                        <div class="input-group w-75 mx-auto">
+                            <label for="qty" class="input-group-text">Qty:</label>
+                            <select name="qty" id="qty" class="qty form-select">
+                                {% for i in range %}
+                                <option value="{{i}}">{{i}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+                    <button class="add-to-cart-button" type="submit" {% if product.stock == 0 %}disabled{% endif %}>Add to Cart</button>
+                    <button class="buy-button" type="submit" {% if product.stock == 0 %}disabled{% endif %}>Buy Now</button>
                 </form>
             </div>
         </div>
+        <hr>
     </section>
-    <section>
+
+    <section class="mx-5">
         <h2>Product Reviews</h2>
+        {% include 'products/customer_rating_partial.html' %}
     </section>
 </div>
 <div id="toast-container">

@@ -1,4 +1,5 @@
 from botocore.config import Config
+from django.db.models.functions import Coalesce
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
@@ -84,9 +85,9 @@ def get_new_arrivals(request):
 
 def browse_all(request):
     products = get_products(request)
-    new_arrivals = Product.objects.order_by('-created_at')[:10]
-    best_sellers = Product.objects.filter(units_sold__gt=0).order_by('-units_sold')
-    discounted_products = Product.objects.filter(discount__gt=0)
+    new_arrivals = get_new_arrivals(request)
+    best_sellers = get_best_sellers(request)
+    discounted_products = get_todays_deals(request)
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
     context = {
@@ -313,7 +314,7 @@ def remove_item(request):
     cart_item.delete()
     product = Product.objects.get(id=product_id)
     cart = request.user.cart
-    cart_item_count = cart.items.aggregate(Sum('quantity'))['quantity__sum']
+    cart_item_count = cart.items.aggregate(quantity_sum=Coalesce(Sum('quantity'), 0))['quantity_sum']
     request.session['cart_item_count'] = cart_item_count
     removed_html = render_to_string('products/removed.html', {'product': product}, request)
     data = {

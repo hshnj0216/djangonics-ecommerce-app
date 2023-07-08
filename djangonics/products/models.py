@@ -1,6 +1,5 @@
 import io
 from io import BytesIO
-
 import boto3
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
@@ -147,10 +146,28 @@ class ProductImage(models.Model):
 
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     value = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('product', 'user')
+
 
 class Discount(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='discount')
     value = models.FloatField()
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    content = models.TextField(max_length=1000)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('product', 'user')
+

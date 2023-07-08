@@ -19,6 +19,7 @@ $(function() {
         // make an AJAX request with the selected categories, price range, and product IDs
         $.ajax({
             url: url,
+            type: 'GET',
             data: {
                 categories: selectedCategories.join(','),
                 min_price: minPrice,
