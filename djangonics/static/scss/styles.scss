@@ -224,11 +224,11 @@
     height: 10rem;
 }
 .fa-star{
-    color: #da7820;
+    color: $rating-color;
     font-size: 16px;
 }
 .far{
-    color: #da7820  ;
+    color: $rating-color;
     font-size: 16px;
 }
 li.address-action:not(:first-child)::before {
@@ -289,7 +289,25 @@ input[type="number"], select.cart-item-qty {
     min-height: 1rem;
     height: 1rem;
 }
-
-.zoom:hover{
-
+.bar-container{
+    min-height: 24px;
+    max-width: 8rem;
+    display: flex;
+    align-items: center;
+}
+.grey-bar{
+    background-color: #e9ecef;
+    min-width: 6rem;
+    min-height: 16.8px;
+    max-height: 16.8px;
+}
+.rating-bar{
+    background-color: $rating-color;
+    min-height: 16.8px;
+    max-height: 16.8px;
+}
+#user-rating{
+    div .fa-star, div .far{
+        font-size: 2rem;
+    }
 }

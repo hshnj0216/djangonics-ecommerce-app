@@ -1,77 +1,128 @@
-<div class="d-flex">
-    <div id="average-rating" class="d-flex flex-column">
-        <div class="d-flex align-items-start rating-container mb-1"
-             title="Average rating: {{product.average_rating|floatformat:1}}">
-        </div>
-        <h1>{{product.average_rating|floatformat:1}}/5</h1>
-        <div class="text-nowrap mb-3 me-1 position-relative" style="width: 90px;">
-            <div id="filled" class="overflow-hidden"
-                 style="position: absolute; width: calc(90px * {{product.average_rating|floatformat:1}} / 5); font-size: 0; z-index: 2;">
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
+<div id="customer-ratings-container" class="d-flex justify-content-between px-5">
+    <div class="d-flex flex-grow-1">
+        <div id="average-rating" class="d-flex flex-column me-5">
+            <div class="d-flex align-items-start rating-container mb-1"
+                 title="Average rating: {{product.average_rating|floatformat:1}}">
             </div>
-            <div id="hollow" style="position: absolute; width: 90px; font-size: 0; z-index: 1;">
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
+            <h1>{{product.average_rating|floatformat:1}}/5</h1>
+            <div class="text-nowrap mb-3 me-1 position-relative" style="width: 90px;">
+                <div id="filled" class="overflow-hidden"
+                     style="position: absolute; width: calc(90px * {{product.average_rating|floatformat:1}} / 5); font-size: 0; z-index: 2;">
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                </div>
+                <div id="hollow" style="position: absolute; width: 90px; font-size: 0; z-index: 1;">
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                </div>
+            </div>
+            <p>{{product.num_ratings}} ratings</p>
+        </div>
+        <div class="d-flex">
+            <div id="stars" class="me-3">
+                <div>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                </div>
+                <div>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="far fa-star"></span>
+                </div>
+                <div>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                </div>
+                <div>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                </div>
+                <div>
+                    <span class="fa fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                    <span class="far fa-star"></span>
+                </div>
+            </div>
+            <div id="bars">
+                <div class="bg-bar" style="position: absolute; z-index: 0;">
+                    <div class="bar-container">
+                        <div class="grey-bar me-2"></div>
+                        <span>{{rating_5_percentage|floatformat:2}}%</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="grey-bar me-2"></div>
+                        <span>{{rating_4_percentage|floatformat:2}}%</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="grey-bar me-2"></div>
+                        <span>{{rating_3_percentage|floatformat:2}}%</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="grey-bar me-2"></div>
+                        <span>{{rating_2_percentage|floatformat:2}}%</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="grey-bar me-2"></div>
+                        <span>{{rating_1_percentage|floatformat:2}}%</span>
+                    </div>
+                </div>
+                <div class="fg-bar" style="position: absolute; z-index: 0;">
+                    <div class="bar-container d-flex">
+                        <div class="rating-bar"
+                             style="width: calc(6rem * {{product.rating_5|floatformat:1}} / {{product.num_ratings}});">
+                        </div>
+                    </div>
+                    <div class="bar-container">
+                        <div class="rating-bar"
+                             style="width: calc(6rem * {{product.rating_4|floatformat:1}} / {{product.num_ratings}});">
+                        </div>
+                    </div>
+                    <div class="bar-container">
+                        <div class="rating-bar"
+                             style="width: calc(6rem * {{product.rating_3|floatformat:1}} / {{product.num_ratings}});">
+                        </div>
+                    </div>
+                    <div class="bar-container">
+                        <div class="rating-bar"
+                             style="width: calc(6rem * {{product.rating_2|floatformat:1}} / {{product.num_ratings}});">
+                        </div>
+                    </div>
+                    <div class="bar-container">
+                        <div class="rating-bar"
+                             style="width: calc(6rem * {{product.rating_1|floatformat:1}} / {{product.num_ratings}});">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <p>{{product.num_ratings}} ratings</p>
     </div>
-    <div class="d-flex">
-        <div id="stars">
-            <div>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-            </div>
-            <div>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="far fa-star"></span>
-            </div>
-            <div>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-            </div>
-            <div>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-            </div>
-            <div>
-                <span class="fa fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-                <span class="far fa-star"></span>
-            </div>
-        </div>
-        <div id="bars">
-            <div class="grey">
-                <div class="bg-secondary">ACCC</div>
-                <div class="bg-secondary"></div>
-                <div class="bg-secondary"></div>
-                <div class="bg-secondary"></div>
-                <div class="bg-secondary"></div>
-            </div>
-            <div>
-
-            </div>
+    <div id="user-rating" class="d-flex flex-grow-1 align-items-center">
+        <h3>Your rating:</h3>
+        <div>
+            <span class="far fa-star" data-rating="1" data-product-id="{{product.id}}"></span>
+            <span class="far fa-star" data-rating="2" data-product-id="{{product.id}}"></span>
+            <span class="far fa-star" data-rating="3" data-product-id="{{product.id}}"></span>
+            <span class="far fa-star" data-rating="4" data-product-id="{{product.id}}"></span>
+            <span class="far fa-star" data-rating="5" data-product-id="{{product.id}}"></span>
         </div>
     </div>
 </div>

@@ -5,7 +5,7 @@
 {% load humanize %}
 {% block content %}
 <div>
-    <section class="px-5">
+    <section class="px-5 mx-5">
         <h2>Product Details</h2>
         <div class="row w-100 m-0 d-flex">
             <div class="col-lg-4 border d-flex align-items-center">
@@ -72,9 +72,10 @@
         <hr>
     </section>
 
-    <section class="mx-5">
+    <section class="px-5 mx-5">
         <h2>Product Reviews</h2>
         {% include 'products/customer_rating_partial.html' %}
+        {% include 'products/customer_reviews_partial.html' %}
     </section>
 </div>
 <div id="toast-container">
@@ -94,4 +95,5 @@
 {% endblock %}
 {% block script %}
 <script src="{% static 'js/addToCart.js' %}"></script>
+<script src="{% static 'js/productDetailsInteractions.js' %}"></script>
 {% endblock %}

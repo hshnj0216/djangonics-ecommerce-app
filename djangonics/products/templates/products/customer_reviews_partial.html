@@ -1,0 +1,32 @@
+<div id="customer-reviews-container" class="d-flex flex-column align-items-center px-5">
+    <form class="w-75" action="">
+        <h5>Post your review</h5>
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="form-label">Review title</label>
+            <input class="form-control" type="text" name="review-title" placeholder="Review title or summary"/>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Review title</label>
+            <textarea col="100"
+                      row="10"
+                      class="form-control"
+                      type="text"
+                      name="review-content"
+                      placeholder="Review title or summary">
+
+            </textarea>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Post review">
+    </form>
+    {% for review in product_reviews %}
+    <div class="d-flex review">
+        <img src="" alt="">
+        <div>customer rating</div>
+        <h6>review title or summary</h6>
+        <p>review created_at</p>
+        <h6>verified purchase</h6>
+        <p>review content</p>
+    </div>
+    {% endfor %}
+</div>

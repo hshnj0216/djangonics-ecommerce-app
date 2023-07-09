@@ -18,4 +18,6 @@ urlpatterns = [
     path('remove_item/', views.remove_item, name='remove_item'),
     path('update_item_quantity/', views.update_item_quantity, name='update_item_quantity'),
     path('get_images/', views.get_images, name='get_images'),
+    path('submit_rating/', views.submit_rating, name='submit_rating'),
+    path('post_review/', views.post_review, name='post_review'),
 ]

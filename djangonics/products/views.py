@@ -1,5 +1,5 @@
 from botocore.config import Config
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, Cast
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.cache import cache
@@ -7,14 +7,15 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.cache import patch_response_headers
 from django.views.decorators.csrf import csrf_exempt
-from .models import Product, Category, Cart, CartItem, Rating, Discount
-from django.db.models import Sum, Avg, Prefetch, Count
+from .models import Product, Category, Cart, CartItem, Rating, Discount, Review
+from django.db.models import Sum, Avg, Prefetch, Count, Q, FloatField
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
 import boto3
 from django.conf import settings
 from PIL import Image
 
+from transactions.models import Order
 
 
 # Create your views here.
@@ -120,10 +121,16 @@ def new_arrivals(request):
 def product_details(request, slug, product_id):
     product = Product.objects.prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
-        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
+        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount'),
+        Prefetch('reviews', queryset=Review.objects.all(), to_attr='product_reviews')
     ).annotate(
         average_rating=Avg('ratings__value'),
-        num_ratings=Count('ratings')
+        num_ratings=Count('ratings'),
+        rating_1=Count('ratings', filter=Q(ratings__value=1)),
+        rating_2=Count('ratings', filter=Q(ratings__value=2)),
+        rating_3=Count('ratings', filter=Q(ratings__value=3)),
+        rating_4=Count('ratings', filter=Q(ratings__value=4)),
+        rating_5=Count('ratings', filter=Q(ratings__value=5)),
     ).get(
         pk=product_id
     )
@@ -132,10 +139,40 @@ def product_details(request, slug, product_id):
     else:
         stock_range = range(1, 31)
     product_images = product.images.all()
+    # Calculate percentages
+    if product.num_ratings > 0:
+        rating_1_percentage = (product.rating_1 / product.num_ratings) * 100
+        rating_2_percentage = (product.rating_2 / product.num_ratings) * 100
+        rating_3_percentage = (product.rating_3 / product.num_ratings) * 100
+        rating_4_percentage = (product.rating_4 / product.num_ratings) * 100
+        rating_5_percentage = (product.rating_5 / product.num_ratings) * 100
+    else:
+        rating_1_percentage = 0
+        rating_2_percentage = 0
+        rating_3_percentage = 0
+        rating_4_percentage = 0
+        rating_5_percentage = 0
+
+    # Check if the user is allowed to submit a review
+    can_submit_review = False
+    if request.user.is_authenticated:
+        has_completed_order = Order.objects.filter(
+            user=request.user,
+            order_items__product_id=product_id,
+            delivery_status='Delivered'
+        ).exists()
+        can_submit_review = has_completed_order
+
     context = {
         'product': product,
+        'can_submit_review': can_submit_review,
         'range': stock_range,
         'product_images': product_images,
+        'rating_1_percentage': rating_1_percentage,
+        'rating_2_percentage': rating_2_percentage,
+        'rating_3_percentage': rating_3_percentage,
+        'rating_4_percentage': rating_4_percentage,
+        'rating_5_percentage': rating_5_percentage,
     }
     return render(request, 'products/product_details.html', context)
 
@@ -405,3 +442,31 @@ def get_images(request):
     patch_response_headers(response, cache_timeout=cache_timeout)
 
     return response
+
+@login_required
+def submit_rating(request):
+    rating = request.POST.get('rating')
+    product_id = request.POST.get('product_id')
+    rating = Rating.objects.create(
+        user=request.user,
+        product=product_id,
+        value=rating
+    )
+    rating.save()
+
+
+@login_required
+def post_review(request):
+    review_title = request.POST.get('review_title')
+    review_content = request.POST.get('review_content')
+    product_id = request.POST.get('product_id')
+    #Create review
+    review = Review.objects.create(
+        user=request.user,
+        product=product_id,
+        title=review_title,
+        content=review_content
+    )
+    review.save()
+
+

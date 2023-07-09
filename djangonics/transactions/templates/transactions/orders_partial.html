@@ -4,13 +4,15 @@
         <div class="order-header d-flex flex-column border rounded-top p-2">
             <div class="d-flex flex-start">
                 <h4 class="flex-fill">Order ID: {{order.id}}</h4>
-                <a
+                {% if order.status == 'Open' and order.delivery_status == 'Processing' %}
+                    <a
                         class="mx-3 cancel-order-btn"
                         data-order-id="{{order.id}}"
                         data-bs-toggle="modal"
                         data-bs-target="#cancelOrderModal">
-                    Cancel order
-                </a>
+                        Cancel order
+                    </a>
+                {% endif %}
                 {% if order.status == 'Open' %}
                     <p class="text-end mx-3 badge bg-info">Delivery status: {{order.delivery_status}}</p>
                 {% else %}
