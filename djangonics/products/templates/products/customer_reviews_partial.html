@@ -1,32 +1,44 @@
-<div id="customer-reviews-container" class="d-flex flex-column align-items-center px-5">
-    <form class="w-75" action="">
+<div id="customer-reviews-container" class="px-5">
+    <form class="w-75" action="" novalidate>
         <h5>Post your review</h5>
         {% csrf_token %}
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label class="form-label">Review title</label>
-            <input class="form-control" type="text" name="review-title" placeholder="Review title or summary"/>
+            <input class="form-control invalid" type="text" name="review-title" placeholder="Review title or summary"/>
+            <p class="form-text text-danger error-message">Title must be at least 5 characters.</p>
         </div>
-        <div class="form-group">
-            <label class="form-label">Review title</label>
+        <div class="form-group mb-3">
+            <label class="form-label">Review</label>
             <textarea col="100"
                       row="10"
-                      class="form-control"
+                      class="form-control invalid"
                       type="text"
                       name="review-content"
-                      placeholder="Review title or summary">
-
+                      placeholder="Write your detailed review here..."
+            >
             </textarea>
+            <p class="form-text text-danger error-message">Review must at least be 50 characters.</p>
         </div>
-        <input class="btn btn-primary" type="submit" value="Post review">
+        <input id="post-review-btn" class="btn btn-primary disabled" type="submit" value="Post review">
     </form>
-    {% for review in product_reviews %}
+    {% if product.product_reviews %}
+    {% for rating in product.product_ratings %}
+    {% if rating.review %}
     <div class="d-flex review">
         <img src="" alt="">
-        <div>customer rating</div>
-        <h6>review title or summary</h6>
-        <p>review created_at</p>
+        <div>{{ rating.value }} stars</div>
+        <h6>{{ rating.review.title }}</h6>
+        <p>{{ rating.review.created_at }}</p>
         <h6>verified purchase</h6>
-        <p>review content</p>
+        <p>{{ rating.review.content }}</p>
+        <hr>
     </div>
+    {% endif %}
     {% endfor %}
+    {% else %}
+    <div class="py-5 my-5">
+        <h3>There are no reviews for this product yet.</h3>
+    </div>
+    {% endif %}
+
 </div>

@@ -1,5 +1,5 @@
-<div id="customer-ratings-container" class="d-flex justify-content-between px-5">
-    <div class="d-flex flex-grow-1">
+<div id="customer-ratings-container" class="d-flex flex-column px-5 mb-3">
+    <div class="d-flex flex-grow-1 mb-3">
         <div id="average-rating" class="d-flex flex-column me-5">
             <div class="d-flex align-items-start rating-container mb-1"
                  title="Average rating: {{product.average_rating|floatformat:1}}">
@@ -115,14 +115,17 @@
             </div>
         </div>
     </div>
-    <div id="user-rating" class="d-flex flex-grow-1 align-items-center">
-        <h3>Your rating:</h3>
-        <div>
-            <span class="far fa-star" data-rating="1" data-product-id="{{product.id}}"></span>
-            <span class="far fa-star" data-rating="2" data-product-id="{{product.id}}"></span>
-            <span class="far fa-star" data-rating="3" data-product-id="{{product.id}}"></span>
-            <span class="far fa-star" data-rating="4" data-product-id="{{product.id}}"></span>
-            <span class="far fa-star" data-rating="5" data-product-id="{{product.id}}"></span>
-        </div>
+    <div id="user-rating" class="d-flex flex-column flex-grow-1 mb-3">
+       <div class="d-flex align-items-center">
+            <h3 class="me-3">Your rating:</h3>
+            <div>
+                <span class="far fa-star" data-rating="1" data-product-id="{{product.id}}"></span>
+                <span class="far fa-star" data-rating="2" data-product-id="{{product.id}}"></span>
+                <span class="far fa-star" data-rating="3" data-product-id="{{product.id}}"></span>
+                <span class="far fa-star" data-rating="4" data-product-id="{{product.id}}"></span>
+                <span class="far fa-star" data-rating="5" data-product-id="{{product.id}}"></span>
+            </div>
+       </div>
+       <p class="form-text">You have not rated this product yet.</p>
     </div>
 </div>

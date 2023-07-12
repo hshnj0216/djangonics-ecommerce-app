@@ -144,6 +144,12 @@ class ProductImage(models.Model):
 
         super().save(*args, **kwargs)
 
+class Discount(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='discount')
+    value = models.FloatField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -154,15 +160,9 @@ class Rating(models.Model):
     class Meta:
         unique_together = ('product', 'user')
 
-
-class Discount(models.Model):
-    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='discount')
-    value = models.FloatField()
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.OneToOneField(Rating, on_delete=models.CASCADE, related_name='review')
     title = models.CharField(max_length=120)
     content = models.TextField(max_length=1000)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -170,5 +170,6 @@ class Review(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('product', 'user')
+        unique_together = ('rating', 'user', 'product')
+
 

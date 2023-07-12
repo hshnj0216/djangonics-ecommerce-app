@@ -138,7 +138,6 @@ def product_details(request, slug, product_id):
         stock_range = range(1, product.stock + 1)
     else:
         stock_range = range(1, 31)
-    product_images = product.images.all()
     # Calculate percentages
     if product.num_ratings > 0:
         rating_1_percentage = (product.rating_1 / product.num_ratings) * 100
@@ -153,6 +152,21 @@ def product_details(request, slug, product_id):
         rating_4_percentage = 0
         rating_5_percentage = 0
 
+    #Check if the user is allowed to submit a rating
+    can_submit_rating = False
+    if request.user.is_authenticated:
+        has_completed_order = Order.objects.filter(
+            user=request.user,
+            order_items__product_id=product_id,
+            delivery_status='Delivered'
+        ).exists()
+        has_submitted_rating = Rating.objects.filter(
+            user=request.user,
+            product=product_id
+        ).exists()
+        if has_completed_order and not has_submitted_rating:
+            can_submit_rating = True
+
     # Check if the user is allowed to submit a review
     can_submit_review = False
     if request.user.is_authenticated:
@@ -161,13 +175,18 @@ def product_details(request, slug, product_id):
             order_items__product_id=product_id,
             delivery_status='Delivered'
         ).exists()
-        can_submit_review = has_completed_order
+        has_submitted_review = Review.objects.filter(
+            user=request.user,
+            product_id=product_id,
+        ).exists()
+        if has_completed_order and not has_submitted_review:
+            can_submit_review = True
 
     context = {
         'product': product,
         'can_submit_review': can_submit_review,
+        'can_submit_rating': can_submit_rating,
         'range': stock_range,
-        'product_images': product_images,
         'rating_1_percentage': rating_1_percentage,
         'rating_2_percentage': rating_2_percentage,
         'rating_3_percentage': rating_3_percentage,
@@ -468,5 +487,22 @@ def post_review(request):
         content=review_content
     )
     review.save()
+    product = Product.objects.prefetch_related(
+        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
+        Prefetch('reviews', queryset=Review.objects.all(), to_attr='product_reviews')
+    ).get(
+        pk=product_id
+    )
+    related_ratings = {}
+    for rating in product.product_ratings:
+        if rating.user_id not in related_ratings:
+            related_ratings[rating.user_id] = []
+        related_ratings[rating.user_id].append((rating, None))
+
+    for review in product.product_reviews:
+        if review.user_id not in related_ratings:
+            related_ratings[review.user_id] = []
+        related_ratings[review.user_id].append((None, review))
+    return render(request, 'products/customer_reviews_partial.html', {'product': product})
 
 
