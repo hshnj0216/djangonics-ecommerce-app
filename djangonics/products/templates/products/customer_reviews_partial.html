@@ -15,20 +15,29 @@
                       type="text"
                       name="review-content"
                       placeholder="Write your detailed review here..."
-            >
-            </textarea>
+            ></textarea>
             <p class="form-text text-danger error-message">Review must at least be 50 characters.</p>
         </div>
-        <input id="post-review-btn" class="btn btn-primary disabled" type="submit" value="Post review">
+        <input id="post-review-btn" class="btn btn-primary disabled" type="submit" value="Post review" data-product-id="{{product.id}}">
     </form>
+    {% load bootstrap_icons %}
     {% if product.product_reviews %}
+    <h5 class="my-3">Customer reviews</h5>
     {% for rating in product.product_ratings %}
     {% if rating.review %}
-    <div class="d-flex review">
-        <img src="" alt="">
-        <div>{{ rating.value }} stars</div>
-        <h6>{{ rating.review.title }}</h6>
-        <p>{{ rating.review.created_at }}</p>
+    <div class="review border-bottom w-75">
+        {% bs_icon 'person-circle' %}
+        <div class="d-flex m-0">
+                {% for i in "12345" %}
+                {% if rating.value >= forloop.counter %}
+                <span class="fas fa-star m-0" data-rating="{{ forloop.counter }}" data-product-id="{{ product.id }}"></span>
+                {% else %}
+                <span class="far fa-star m-0" data-rating="{{ forloop.counter }}" data-product-id="{{ product.id }}"></span>
+                {% endif %}
+                {% endfor %}
+                <h6 class="ms-2 text-center">{{ rating.review.title }}</h6>
+        </div>
+        <p class="m-0">{{ rating.review.created_at }}</p>
         <h6>verified purchase</h6>
         <p>{{ rating.review.content }}</p>
         <hr>
@@ -40,5 +49,4 @@
         <h3>There are no reviews for this product yet.</h3>
     </div>
     {% endif %}
-
 </div>

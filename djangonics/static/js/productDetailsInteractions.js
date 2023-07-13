@@ -1,12 +1,14 @@
 $(function() {
     //Fill the stars when hovering
     $('#user-rating span').hover(function() {
-        if($(this).hasClass('fa')) {
-            $(this).prevAll().addBack().removeClass('fa');
-            $(this).prevAll().addBack().addClass('far');
-        } else {
-             $(this).prevAll().addBack().removeClass('far');
-             $(this).prevAll().addBack().addClass('fa');
+        if(!$('#user-rating').hasClass('rated')) {
+            if($(this).hasClass('fa')) {
+                $(this).prevAll().addBack().removeClass('fa');
+                $(this).prevAll().addBack().addClass('far');
+            } else {
+                 $(this).prevAll().addBack().removeClass('far');
+                 $(this).prevAll().addBack().addClass('fa');
+            }
         }
     });
 
@@ -14,23 +16,23 @@ $(function() {
     $('#user-rating span').click(function() {
         let rating = $(this).data('rating');
         let productId = $(this).data('product-id');
-        console.log('clicked');
-        $('#user-rating span').off('mouseenter mouseleave click');
         $('#user-rating p').hide();
-        $.ajax({
-            url: '/products/submit_rating/',
-            type: 'POST',
-            data: {
-                rating,
-                product_id: productId,
-            },
-            success: function(data) {
-
-            },
-            error: function(data) {
-                alert('An error occured');
-            }
-        });
+        if(!('#user-rating').hasClass('rated')) {
+             $.ajax({
+                url: '/products/submit_rating/',
+                type: 'POST',
+                data: {
+                    rating,
+                    product_id: productId,
+                },
+                success: function(data) {
+                    $('#customer-ratings-container').replaceWith(data);
+                },
+                error: function(data) {
+                    alert('An error occured');
+                }
+            });
+        }
     });
 
     //Review submission validation
@@ -39,6 +41,12 @@ $(function() {
     let reviewTitleInput = $('input[name="review-title"]');
     let reviewContentTextarea = $('textarea[name="review-content"]');
     let postButton = $('#post-review-btn');
+
+    //set the textarea selection at the start
+    reviewContentTextarea.on('focus', function() {
+        this.setSelectionRange(0, 0);
+    });
+
 
     //Add event listeners for the input and textarea elements
     reviewTitleInput.on('input', function() {
@@ -82,4 +90,29 @@ $(function() {
         }
     });
 
+    //Handle review submission
+    postButton.click(function(event) {
+        event.preventDefault();
+        let reviewTitle = reviewTitleInput.val();
+        let reviewContent = reviewContentTextarea.val();
+        let productId = $(this).data('product-id');
+        let csrfToken = $(this).siblings('input[name="csrfmiddlewaretoken"]').val();
+        console.log(csrfToken);
+        console.log(productId);
+        $.ajax({
+            url: '/products/post_review/',
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+            data: {
+                product_id: productId,
+                review_title: reviewTitle,
+                review_content: reviewContent,
+            },
+            success: function(data) {
+                $('#customer-reviews-container').replaceWith(data);
+            },
+        })
+    });
 });

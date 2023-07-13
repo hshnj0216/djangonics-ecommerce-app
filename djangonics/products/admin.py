@@ -18,6 +18,9 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
 
+@admin.register(Discount)
+class DiscountAdmin(admin.ModelAdmin):
+    list_display = ('value', )
 class DiscountInline(admin.TabularInline):
     model = Discount
 
@@ -25,15 +28,22 @@ class DiscountInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
     inlines = [ProductImageInline, DiscountInline]
-    list_display = ['name', 'slug', 'price', 'stock', 'units_sold', 'created_at', 'updated_at']
+    list_display = ['name', 'slug', 'price', 'stock', 'discount', 'units_sold', 'created_at', 'updated_at']
     list_editable = ['price', 'stock',]
     prepopulated_fields = {'slug': ('name',)}
+
+    def discount_value(self, obj):
+        if obj.discount:
+            return obj.discount.value
+        else:
+            return None
+
+    discount_value.short_description = 'Discount Value'
+
 
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ('product', 'image',)
     list_editable = ['image']
 
-@admin.register(Discount)
-class DiscountAdmin(admin.ModelAdmin):
-    list_display = ('value', )
+
