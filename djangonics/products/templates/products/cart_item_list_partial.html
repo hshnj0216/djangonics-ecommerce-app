@@ -27,7 +27,11 @@
                 </div>
             </div>
             <div class="col-1 p-0 flex-fill">
+                {% if product.discounted_price %}
+                <h6 class="text-end">${{product.discounted_price}}</h6>
+                {% else %}
                 <h6 class="text-end">${{product.price}}</h6>
+                {% endif %}
             </div>
         </div>
         {% endfor %}

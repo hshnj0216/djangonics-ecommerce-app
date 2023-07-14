@@ -1,6 +1,5 @@
 $(function() {
     //render the buttons
-    console.log('Paypal integration script loaded');
     let totalValue = parseFloat($('#order-total').data('value')).toFixed(2);
     let authorizationID;
     let orderId;
@@ -35,6 +34,8 @@ $(function() {
                         success: function(data) {
                             $('#payment-selection').find('h5').hide();
                             $('#payment-selection').html(data);
+                            $('#order-review h5').hide();
+                            $('#order-review div.disabled-bg').show();
                             //Make an authorization request
                             $.ajax({
                                 url: '/transactions/authorize_payment/',
@@ -48,8 +49,10 @@ $(function() {
                                 success: function(data) {
                                     //Show the order review section
                                     authorizationID = data['purchase_units'][0]['payments']['authorizations'][0]['id']
+                                    $('#order-review div.disabled-bg').hide();
+                                    $('#order-review h5').show();
+                                    $('#order-review h5').css('color', '#007fff');
                                     $('#order-review-partial').slideDown(500, function() {
-                                        $(this).siblings('h5').css('color', '#007fff');
                                         $(this).show();
                                         $('.place-order-button').removeClass('disabled');
                                     });

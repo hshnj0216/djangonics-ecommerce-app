@@ -18,7 +18,7 @@
                 />
             </div>
             <section class="col-lg-6 d-flex flex-column flex-grow-1">
-                <div class="border-bottom border-3 flex-grow-1 h-100">
+                <div class="border-bottom border-3 pb-3 flex-grow-1 h-100">
                     <h4 class="fs-2">{{product.name}}</h4>
                     {% if product.stock > 20 %}
                     <p class="text-success fw-bold">In Stock</p>
@@ -28,15 +28,15 @@
                     <p class="text-danger fw-bold">Out of stock</p>
                     {% endif %}
                     {% include 'products/rating_partial.html' %}
-                    {% if product.discount.value > 0 %}
+                    {% if product.discount.value > 0 and product.stock > 0 %}
                     <div class="d-flex justify-content-start my-2">
                         <h5 class="card-text mb-1">${{product.get_discounted_price|floatformat:2|intcomma}}</h5>
                         <span class="mx-1"> | </span>
                         <h5 class="card-text mb-1 text-muted text-decoration-line-through">
                             ${{product.price|floatformat:2|intcomma}}</h5>
                     </div>
-                    {% else %}
-                    <h5 class="my-2">${{product.price|floatformat:2|intcomma}}</h5>
+                    {% elif product.stock > 0 %}
+                        <h5 class="my-2">${{product.price|floatformat:2|intcomma}}</h5>
                     {% endif %}
                 </div>
                 <article class="mt-3">

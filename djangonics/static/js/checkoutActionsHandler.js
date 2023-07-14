@@ -4,6 +4,7 @@ $(function() {
     //hide preloaded order items review partial and highlight current phase
     $('#payment-selection-partial').hide();
     $('#order-review-partial').hide();
+    $('.disabled-bg').hide();
     $('#address-selection h5').css('color', '#007fff');
 
     //use address button handler
@@ -27,7 +28,8 @@ $(function() {
                 });
                 $('#payment-selection-partial').slideDown(500, function() {
                     $(this).show();
-                    $(this).find('h5').css('color', '#007fff');
+                    $(this).siblings('h5').text('2. Select a payment method');
+                    $(this).siblings('h5').css('color', '#007fff');
                 });
             }
           });
@@ -60,5 +62,7 @@ $(function() {
             }
         });
     });
+
+
 
 });

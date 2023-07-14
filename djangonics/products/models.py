@@ -86,8 +86,10 @@ class CartItem(models.Model):
         unique_together = ('cart', 'product')
 
     def save(self, *args, **kwargs):
-        self.total_price = self.quantity * self.product.price
+        price = self.product.get_discounted_price() if hasattr(self.product, 'discount') else self.product.price
+        self.total_price = self.quantity * price
         super().save(*args, **kwargs)
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')

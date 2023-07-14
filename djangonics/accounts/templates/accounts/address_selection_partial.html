@@ -5,22 +5,31 @@
             <h6>Your addresses</h6>
             <hr>
             <div>
-                <form class="list-group">
+                <form class="list-group" action="">
                     {% csrf_token %}
                     {% for address in addresses %}
-                    <label class="list-group-item d-flex">
-                        <input class="form-check-input me-2"
-                               type="radio"
-                               name="address"
-                               value="{{address.id}}"
-                               {% if address.is_default %}checked{% endif %}
+                    <div class="d-flex justify-content-between list-group-item" >
+                        <label class="d-flex">
+                            <input class="form-check-input me-2"
+                                   type="radio"
+                                   name="address"
+                                   value="{{address.id}}"
+                                   {% if address.is_default %}checked{% endif %}
+                            >
+                            <p>
+                                <strong>{{address.recipient_name}}</strong>
+                                {{address.street_address}} {{address.apartment_address}}, {{address.city}},
+                                {{address.state}}, {{address.zip_code}}
+                            </p>
+                        </label>
+                        <button
+                                class="btn change-action edit-address"
+                                data-bs-toggle="modal"
+                                data-bs-target="#place-order-modal"
                         >
-                        <p>
-                            <strong>{{address.recipient_name}}</strong>
-                            {{address.street_address}} {{address.apartment_address}}, {{address.city}},
-                            {{address.state}}, {{address.zip_code}} <a href="">Edit address</a>
-                        </p>
-                    </label>
+                            Edit Address
+                        </button>
+                    </div>
                     {% endfor %}
                 </form>
                 <div class="d-flex add-address my-3">

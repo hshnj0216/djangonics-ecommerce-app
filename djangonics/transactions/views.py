@@ -180,4 +180,5 @@ def filter_orders(request):
         orders = Order.objects.filter(status=status, user=request.user)
     else:
         orders = Order.objects.filter(user=request.user)
+    orders = orders.order_by('-created_at')
     return render(request, 'transactions/orders_partial.html', {'orders': orders})

@@ -113,8 +113,7 @@ def add_address(request):
 
 @login_required
 def edit_address(request, address_id):
-    address = get_object_or_404(Address, id=address_id)
-
+    address = Address.objects.get(Address, id=address_id)
     #if GET request, send the data
     if request.method == 'GET':
         data = {'address': address}

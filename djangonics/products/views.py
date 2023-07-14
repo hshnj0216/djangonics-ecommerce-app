@@ -312,6 +312,7 @@ def cart(request):
             'quantity': item.quantity,
             'total_price': item.total_price,
             'slug': item.product.slug,
+            'discounted_price': item.product.get_discounted_price()
         }
         products.append(product_info)
     context['products'] = products

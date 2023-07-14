@@ -63,9 +63,9 @@ header{
     height: 30px;
 }
 .spinner{
-    width: 3rem;
-    height: 3rem;
-    border: 5px solid $util-nav-color;
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid $util-nav-color;
     border-color: $util-nav-color transparent $util-nav-color transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -78,4 +78,8 @@ header{
 }
 .disabled-bg{
     background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: .5rem 0;
 }

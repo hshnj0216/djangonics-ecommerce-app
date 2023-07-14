@@ -23,7 +23,6 @@
     {% endcompress %}
     <script type="module" src="{% static 'js/checkoutActionsHandler.js' %}"></script>
     <script type="module" src="{% static 'js/loadImages.js' %}"></script>
-    <!---->
     <script src="https://www.paypal.com/sdk/js?client-id=ATq1dwh2EUeN17EwoFcOdVylRg8jJAIt_9yDXDt83oO2EE2vwc8uUC-5LPcn6-7gPKsOVR0PjKjZG4x_&components=buttons,hosted-fields,marks&commit=false&intent=authorize"></script>
     <script src="{% static 'js/paypalIntegration.js' %}"></script>
     <title>Checkout</title>
@@ -39,7 +38,6 @@
          <h1 class="text-light text-center">Checkout</h1>
     </div>
     <div class="col-4">
-
     </div>
 </header>
 <div class="m-0 px-5 py-2 row w-100 d-flex justify-content-center">
@@ -51,12 +49,14 @@
         <hr>
         <!-- displays the list of payment methods -->
         <section id="payment-selection">
+            <h5>2. Payment selection</h5>
             {% include 'accounts/payment_selection_partial.html' %}
         </section>
         <hr>
         <!-- displays the list of items and prices, including other charges -->
         <section id="order-review">
             <h5>3. Review order</h5>
+            <div class="disabled-bg"><div class="spinner"></div></div>
             {% include 'accounts/order_review_partial.html' %}
         </section>
         <hr>
@@ -87,15 +87,15 @@
                     type="button"
                     class="btn btn-primary place-order-button disabled w-100 mt-3"
                     data-bs-toggle="modal"
-                    data-bs-target="#staticBackdrop"
+                    data-bs-target="#place-order-modal"
             >
                 Place order
             </button>
         </section>
     </div>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!--Place order modal
+<div class="modal fade" id="place-order-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -111,5 +111,58 @@
     </div>
   </div>
 </div>
+modal end -->
+<!-- Edit address modal form -->
+<div class="modal modal-dialog w-50" tabindex="-1" id="edit-address-modal" data-bs-backdrop="">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="">
+                    {% csrf_token %}
+                    <div class="">
+                        <label for="full-name" class="form-label">Full Name</label>
+                        <input class="form-control" type="text" id="full-name" placeholder="Recipient's full name">
+                    </div>
+                    <div class="">
+                        <label for="address-line-1" class="form-label">Address line 1</label>
+                        <input class="form-control" type="text" placeholder="Street address, P.O Box"
+                               id="address-line-1">
+                    </div>
+                    <div class="">
+                        <label for="address-line-2" class="form-label">Address line 2</label>
+                        <input class="form-control" type="text"
+                               placeholder="Apartment, Suite, unit, building, floor, etc" id="address-line-2">
+                    </div>
+                    <div class="">
+                        <label for="city" class="form-label">City</label>
+                        <input class="form-control" type="text" id="city" placeholder="City">
+                    </div>
+                    <div class="">
+                        <label for="state" class="form-label">State</label>
+                        <input class="form-control" type="text" id="state" placeholder="State">
+                    </div>
+                    <div class="">
+                        <label for="zip" class="form-label">Zip</label>
+                        <input class="form-control" type="text" id="zip" placeholder="Zip code">
+                    </div>
+                    <div class="">
+                        <label for="number" class="form-label">Phone Number</label>
+                        <input class="form-control" type="text" id="number" placeholder="Phone number">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="add-address" data-bs-dismiss="modal">Add Address
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal form end -->
 </body>
 </html>

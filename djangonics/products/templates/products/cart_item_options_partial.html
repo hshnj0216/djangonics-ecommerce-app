@@ -5,7 +5,11 @@
             <input type="number"
                    class="cart-item-qty form-control-sm"
                    value="{{product.quantity}}"
+                   {% if product.discounted_price %}
+                   data-price="{{product.discounted_price}}"
+                   {% else %}
                    data-price="{{product.price}}"
+                   {% endif %}
                    data-product-id="{{product.product_id}}"
                    data-cart-item-id="{{product.cart_item_id}}"
             >
@@ -17,7 +21,11 @@
         <label>Qty:
             <select name="qty"
                     class="cart-item-qty form-select-sm p-1"
+                    {% if product.discounted_price %}
+                    data-price="{{product.discounted_price}}"
+                    {% else %}
                     data-price="{{product.price}}"
+                    {% endif %}
                     data-product-id="{{product.product_id}}"
                     data-cart-item-id="{{product.cart_item_id}}"
             >
