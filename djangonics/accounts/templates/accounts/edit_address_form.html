@@ -1,0 +1,89 @@
+<form class="modal-dialog" id="edit-address-form" method="post">
+    {% csrf_token %}
+    <input  type="hidden" name="address_id" value="{{address.id}}">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Edit Address</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="">
+                <label for="full-name" class="form-label">Recipient's full name</label>
+                <input
+                        class="form-control"
+                        type="text" id="full-name"
+                        placeholder="Recipient's full name"
+                        name="recipient_name"
+                        value="{{address.recipient_name}}"
+                >
+            </div>
+            <div class="">
+                <label for="address-line-1" class="form-label">Address line 1</label>
+                <input class="form-control"
+                       type="text"
+                       placeholder="Street address, P.O Box"
+                       id="address-line-1"
+                       name="street_address"
+                       value="{{address.street_address}}"
+                >
+            </div>
+            <div class="">
+                <label for="address-line-2" class="form-label">Address line 2</label>
+                <input class="form-control"
+                       type="text"
+                       placeholder="Apartment, Suite, unit, building, floor, etc"
+                       id="address-line-2"
+                       name="apartment_address"
+                       value="{{address.apartment_address}}"
+                >
+            </div>
+            <div class="">
+                <label for="city" class="form-label">City</label>
+                <input
+                        class="form-control"
+                        type="text"
+                        id="city"
+                        placeholder="City"
+                        name="city"
+                        value="{{address.city}}"
+                >
+            </div>
+            <div class="">
+                <label for="state" class="form-label">State</label>
+                <input
+                        class="form-control"
+                        type="text"
+                        id="state"
+                        placeholder="State"
+                        name="state"
+                        value="{{address.state}}"
+                >
+            </div>
+            <div class="">
+                <label for="zip" class="form-label">Zip</label>
+                <input
+                        class="form-control"
+                        type="text"
+                        id="zip"
+                        placeholder="Zip code"
+                        name="zip_code"
+                        value="{{address.zip_code}}"
+                >
+            </div>
+            <div class="">
+                <label for="number" class="form-label">Phone Number</label>
+                <input
+                        class="form-control"
+                        type="text" id="number"
+                        placeholder="Phone number"
+                        name="phone_number"
+                        value="{{address.phone_number}}"
+                >
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+        </div>
+    </div>
+</form>

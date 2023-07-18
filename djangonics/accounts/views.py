@@ -7,6 +7,9 @@ from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from django.template.loader import render_to_string
 from decimal import Decimal
+
+from django.views.decorators.csrf import csrf_exempt
+
 from .models import User, Address
 from products.views import get_cart_item_count
 from products.models import Cart, CartItem
@@ -112,12 +115,22 @@ def add_address(request):
         return JsonResponse({'success': False, 'error': 'Address already exists'}, status=400)
 
 @login_required
-def edit_address(request, address_id):
-    address = Address.objects.get(Address, id=address_id)
-    #if GET request, send the data
+@csrf_exempt
+def edit_address(request):
     if request.method == 'GET':
-        data = {'address': address}
-        return JsonResponse(data)
+        address_id = request.GET.get('address_id')
+        address = Address.objects.get(pk=address_id)
+        return render(request, 'accounts/edit_address_form.html', {'address': address})
+    if request.method == 'POST':
+        address_id = request.POST.get('address_id')
+        address = Address.objects.get(pk=address_id)
+        form_data = request.POST.dict()
+        address.__dict__.update(**form_data)
+        address.save()
+        addresses = Address.objects.filter(user=request.user)
+        return render(request, 'accounts/address_selection_partial.html', {'addresses': addresses})
+
+
 
 
 @login_required

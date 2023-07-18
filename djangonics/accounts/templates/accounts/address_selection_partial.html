@@ -18,15 +18,14 @@
                             >
                             <p>
                                 <strong>{{address.recipient_name}}</strong>
-                                {{address.street_address}} {{address.apartment_address}}, {{address.city}},
-                                {{address.state}}, {{address.zip_code}}
+                                {{address.street_address}}{% if address.apartment_address %} {{address.apartment_address}}{% endif %},
+                                {{address.city}}, {{address.state}}, {{address.zip_code}}
                             </p>
                         </label>
                         <button
                                 type="button"
                                 class="btn change-action edit-address"
-                                data-bs-toggle="modal"
-                                data-bs-target="#place-order-modal"
+                                data-address-id="{{address.id}}"
                         >
                             Edit Address
                         </button>

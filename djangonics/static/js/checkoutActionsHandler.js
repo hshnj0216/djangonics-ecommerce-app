@@ -41,7 +41,6 @@ $(function() {
 
     //change address handler
     $('#address-selection').on('click', '#change-address-button', function(event) {
-        event.preventDefault();
         let csrfToken = $('#address-selection form input[name=csrfmiddlewaretoken]').val();
         $.ajax({
             type: 'POST',
@@ -59,6 +58,34 @@ $(function() {
                     $(this).hide();
                     $('#order-review h5').text('3. Review order').css('color', '#000000');
                 });
+            }
+        });
+    });
+
+    //handle edit address button click
+    $('.edit-address').on('click', function(event) {
+        let addressId = $(this).data('address-id');
+        $.ajax({
+            url: `/accounts/edit_address/`,
+            type: 'GET',
+            data: {address_id: addressId},
+            success: function(data) {
+                $('#edit-address-modal').html(data);
+                $('#edit-address-modal').modal('show');
+            }
+        })
+    });
+
+    //handle edit address submission
+    $('#edit-address-modal').on('submit', '#edit-address-form', function(event) {
+        event.preventDefault();
+        let formData = $(this).serialize();
+        $.ajax({
+            type: "POST",
+            url: "/accounts/edit_address/",
+            data: formData,
+            success: function(data){
+              $("#address-selection").html(data);
             }
         });
     });
