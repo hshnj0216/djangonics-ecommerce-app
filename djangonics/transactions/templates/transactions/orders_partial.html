@@ -1,6 +1,6 @@
 <div id="orders-container" class="d-flex flex-column">
     {% for order in orders %}
-    <div class="order-card border rounded-top m-3">
+    <div class="order-card border rounded-top m-3" id="order-{{order.id}}">
         <div class="order-header d-flex flex-column border rounded-top p-2">
             <div class="d-flex flex-start">
                 <h4 class="flex-fill">Order ID: {{order.id}}</h4>

@@ -482,7 +482,6 @@ def submit_rating(request):
         value=rating
     )
     rating.save()
-    print('rating added')
 
     product = Product.objects.prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),

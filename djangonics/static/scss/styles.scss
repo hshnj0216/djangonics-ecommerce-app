@@ -233,7 +233,7 @@
 }
 li.address-action:not(:first-child)::before {
   content: "|";
-  margin: 0 10px;
+  margin: 0 1px;
 }
 .address-action{
     border: none;
@@ -242,8 +242,8 @@ li.address-action:not(:first-child)::before {
     color: #007bff;
 }
 .address-card{
-    height: 18rem;
-    width: 20.2rem;
+    height: 13rem;
+    width: 17.25rem;
     .header{
         height: 2rem;
     }
@@ -315,4 +315,11 @@ input[type="number"], select.cart-item-qty {
     width: 2rem;
     height: 2rem;
     margin-bottom: 0.3rem;
+}
+.mini-product-img{
+    width: 4rem;
+    height: 4rem;
+    object-fit: contain;
+    border: solid 1px #dee2e6;
+    border-radius: 5px;
 }

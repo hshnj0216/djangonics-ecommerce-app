@@ -1,0 +1,32 @@
+<table class="table">
+    <thead>
+    <tr>
+        <th class="col-2">Order ID</th>
+        <th class="col-2">Created at</th>
+        <th class="col-4">Items</th>
+        <th class="col-2">Order total</th>
+        <th class="col-2"></th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+            <tr>
+                <td class="col-2 align-middle">{{order.id}}</td>
+                <td class="col-2 align-middle">{{order.created_at|date:'d/m/y'}}</td>
+                <td class="col-5 align-middle">
+                    {% for item in order.items %}
+                        <img
+                                class="product-img mini-product-img"
+                                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                data-src-url="{% url 'products:get_images' %}"
+                                data-product-id="{{item.product.id}}"
+                                alt="product_img"
+                        >
+                    {% endfor %}
+                </td>
+                <td class="col-2 align-middle">${{order.total_amount}}</td>
+                <td class="col-1 align-middle"><a href="{% url 'transactions:orders' %}#order-{{order.id}}">Manage</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

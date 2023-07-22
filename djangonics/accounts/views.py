@@ -2,6 +2,7 @@ import json
 import traceback
 import uuid
 from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
@@ -13,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import User, Address
 from products.views import get_cart_item_count
 from products.models import Cart, CartItem
+from transactions.models import Order, OrderItem
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 import logging
@@ -72,18 +74,21 @@ def logout(request):
     return redirect(reverse("products:home"))
 
 def account(request):
-    return render(request, 'accounts/account.html')
+    addresses = Address.objects.all().order_by('-is_default')
+    orders = Order.objects.prefetch_related(
+        Prefetch('order_items', queryset=OrderItem.objects.all(), to_attr='items')
+    ).filter(user=request.user)
+    context = {
+        'addresses': addresses,
+        'orders': orders,
+    }
+    return render(request, 'accounts/account.html', context)
 
 @receiver(post_save, sender=User)
 def create_user_cart(sender, instance, created, **kwargs):
     if created:
         cart = Cart.objects.create(user=instance)
         cart.save()
-
-@login_required
-def addresses(request):
-    addresses = Address.objects.all().order_by('-is_default')
-    return render(request, 'accounts/addresses.html', {'addresses': addresses})
 
 @login_required
 def add_address(request):
@@ -129,8 +134,6 @@ def edit_address(request):
         address.save()
         addresses = Address.objects.filter(user=request.user)
         return render(request, 'accounts/address_selection_partial.html', {'addresses': addresses})
-
-
 
 
 @login_required

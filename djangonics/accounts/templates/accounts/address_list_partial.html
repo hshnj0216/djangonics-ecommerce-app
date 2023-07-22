@@ -1,4 +1,4 @@
-<div class="d-flex flex-wrap m-0 w-100" id="address-list-partial">
+<div class="d-flex flex-wrap m-0 w-100 justify-content-start px-3" id="address-list-partial">
     <button
             class="btn d-flex flex-column align-items-center
                    justify-content-center p-4 border rounded m-3 address-card"
@@ -15,12 +15,12 @@
             {% else %}
                 <h6 class="header rounded-top text-center border-bottom"></h6>
             {% endif %}
-            <div class="p-3">
-                <h6>{{address.recipient_name}}</h6>
-                <p>{{address.street_address}}, {{address.apartment_address}}</p>
-                <p>{{address.city}}, {{address.state}} {{address.zip_code}}</p>
-                <p>United States</p>
-                <p>Phone number: {{address.phone_number}}</p>
+            <div class="px-3">
+                <h6 class="m-0">{{address.recipient_name}}</h6>
+                <p class="m-0">{{address.street_address}}, {{address.apartment_address}}</p>
+                <p class="m-0">{{address.city}}, {{address.state}} {{address.zip_code}}</p>
+                <p class="m-0">United States</p>
+                <p class="m-0 mb-2">{{address.phone_number}}</p>
                 <form class="address-action-form" method="post" data-address-id="{{address.id}}">
                     {% csrf_token %}
                     <ul class="list-unstyled d-flex">
