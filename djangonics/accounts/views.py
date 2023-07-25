@@ -13,30 +13,32 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Address
 from products.views import get_cart_item_count
-from products.models import Cart, CartItem
+from products.models import Cart, CartItem, Product
 from transactions.models import Order, OrderItem
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 # Create your views here.
 def signup(request):
-    #if the request is GET render the template
+    # if the request is GET render the template
     if request.method == "GET":
         return render(request, 'accounts/signup.html')
-    #if the request if POST process the registration
+    # if the request if POST process the registration
     if request.method == "POST":
         context = {}
-        #extract credentials
+        # extract credentials
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
-        contact_number =  request.POST['contact_number']
+        contact_number = request.POST['contact_number']
         password = request.POST['password']
-        #generate username
-        username = email.split('@')[0]+str(uuid.uuid4()).replace('-', '')[:10]
-        #create user
+        # generate username
+        username = email.split('@')[0] + str(uuid.uuid4()).replace('-', '')[:10]
+        # create user
         User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
@@ -47,7 +49,8 @@ def signup(request):
         )
         success_message = "Account created successfully, you can now log in."
         context['success_message'] = success_message
-        return render(request,  'accounts/login.html', context)
+        return render(request, 'accounts/login.html', context)
+
 
 def login(request):
     context = {}
@@ -69,9 +72,11 @@ def login(request):
             context['error_message'] = error_message
             return render(request, "accounts/login.html", context)
 
+
 def logout(request):
     auth_logout(request)
     return redirect(reverse("products:home"))
+
 
 def account(request):
     addresses = Address.objects.all().order_by('-is_default')
@@ -84,11 +89,13 @@ def account(request):
     }
     return render(request, 'accounts/account.html', context)
 
+
 @receiver(post_save, sender=User)
 def create_user_cart(sender, instance, created, **kwargs):
     if created:
         cart = Cart.objects.create(user=instance)
         cart.save()
+
 
 @login_required
 def add_address(request):
@@ -118,6 +125,7 @@ def add_address(request):
         return JsonResponse({'success': True, 'id': address.id}, status=200)
     else:
         return JsonResponse({'success': False, 'error': 'Address already exists'}, status=400)
+
 
 @login_required
 @csrf_exempt
@@ -152,32 +160,47 @@ def set_default_address(request, address_id):
     sorted_addresses = Address.objects.filter(user=request.user).order_by('-is_default')
 
     return render(request, 'accounts/address_list_partial.html', {'addresses': sorted_addresses})
+
+
 @login_required
 def remove_address(request, address_id):
-    #get the address to remove
-    address =  Address.objects.get(pk=address_id)
+    # get the address to remove
+    address = Address.objects.get(pk=address_id)
     address.delete()
     sorted_addresses = Address.objects.filter(user=request.user).order_by('-is_default')
     return render(request, 'accounts/address_list_partial.html', {'addresses': sorted_addresses})
 
+
 @login_required
 def checkout(request):
-    selected_item_ids = request.POST.getlist('cart_item')
-    #Store the ids in the session for use on placing order
-    request.session['cart_item_ids'] = selected_item_ids
-    selected_items = CartItem.objects.filter(id__in=selected_item_ids)
+    if request.POST.get('buy_now'):
+        product_id = int(request.POST.get('product_id'))
+        product = Product.objects.get(pk=product_id)
+        price = Decimal(request.POST.get('price'))
+        qty = int(request.POST.get('qty'))
+        total_price =  price * qty
+        selected_items = [{
+            'product': product,
+            'quantity': qty,
+        }]
+        total_item_count = qty
 
-    # Calculate total price and total item count
-    total_price = 0
-    total_item_count = 0
-    for item in selected_items:
-        total_price += item.total_price
-        total_item_count += item.quantity
+    else:
+        selected_item_ids = request.POST.getlist('cart_item')
+        # Store the ids in the session for use on placing order
+        request.session['cart_item_ids'] = selected_item_ids
+        selected_items = CartItem.objects.filter(id__in=selected_item_ids)
+
+        # Calculate total price and total item count
+        total_price = 0
+        total_item_count = 0
+        for item in selected_items:
+            total_price += item.total_price
+            total_item_count += item.quantity
     tax_rate = Decimal(0.1)
     tax = Decimal(total_price) * tax_rate
     shipping_and_handling_rate = Decimal(100)
-
-    #get the user's addresses
+    # get the user's addresses
     addresses = Address.objects.filter(user=request.user)
 
     context = {
@@ -190,6 +213,7 @@ def checkout(request):
     }
 
     return render(request, 'accounts/checkout.html', context)
+
 
 def use_address(request):
     address_id = request.POST['address_id']
@@ -204,11 +228,11 @@ def use_address(request):
     }
     return JsonResponse(data)
 
+
 def change_selected_address(request):
     addresses = Address.objects.filter(user=request.user)
     return render(request, 'accounts/address_selection_partial.html', {'addresses': addresses})
 
+
 def select_payment_method(request):
     return render(request, 'accounts/selected_payment.html')
-
-

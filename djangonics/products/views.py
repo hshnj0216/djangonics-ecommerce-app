@@ -352,10 +352,6 @@ def add_to_cart(request):
     request.session['cart_item_count'] = cart_item_count
     return JsonResponse({'cart_item_count': cart_item_count})
 
-@login_required
-def buy_now(request):
-    return redirect(reverse('accounts:checkout'))
-
 def get_cart_item_count(request, user):
     cart_item_count = request.session.get('cart_item_count')
     if cart_item_count is None:

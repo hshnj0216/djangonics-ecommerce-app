@@ -45,12 +45,18 @@
                 </article>
             </section>
             <div class="col-lg-2 border rounded p-3 h-25">
-                <form action="{% url 'products:buy_now' product.id %}"
+                <form action="{% url 'accounts:checkout' %}"
+                      method="post"
                       class="buy-add-to-cart-form"
                       data-add-to-cart-url="{% url 'products:add_to_cart' %}"
                       data-product-id="{{product.id}}"
 
                 >
+                    <!--hidden field for the buy now button -->
+                    <input type="hidden" name="product_id" value="{{product.id}}">
+                    <input type="hidden" name="buy_now" value="true">
+                    <input type="hidden" name="price" value="{% if product.get_discounted_price %}
+                    {{ product.get_discounted_price }}{% else %}{{ product.price }}{% endif %}">
                     {% csrf_token %}
                     {% if product.stock == 0 %}
                         <p class="form-text text-center text-danger">This product is out of stock</p>
@@ -96,6 +102,5 @@
 </div>
 {% endblock %}
 {% block script %}
-<script src="{% static 'js/addToCart.js' %}"></script>
 <script src="{% static 'js/productDetailsInteractions.js' %}"></script>
 {% endblock %}
