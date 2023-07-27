@@ -19,8 +19,6 @@ from transactions.models import Order
 
 
 # Create your views here.
-def home(request):
-    return render(request, 'products/home.html')
 
 def generate_low_quality_image(request, hq_image):
     # open the high quality image
@@ -83,6 +81,19 @@ def get_new_arrivals(request):
         num_ratings=Count('ratings')
     )
     return products
+
+def home(request):
+    #Get 5 items from each nav link
+    todays_deals = list(enumerate(get_todays_deals(request)[:4], start=1))
+    best_sellers = list(enumerate(get_best_sellers(request)[:4], start=1))
+    new_arrivals = list(enumerate(get_new_arrivals(request)[:4], start=1))
+    context = {
+        'todays_deals': todays_deals,
+        'best_sellers': best_sellers,
+        'new_arrivals': new_arrivals,
+    }
+    return render(request, 'products/home.html', context)
+
 
 def browse_all(request):
     products = get_products(request)

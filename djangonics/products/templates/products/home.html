@@ -1,26 +1,67 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
 {% load static %}
+{% load bootstrap_icons %}
 {% block content %}
 <section class="container" id="banner-container">
     <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="{% static 'images/banner.jpg' %}" class="d-block w-100" alt="...">
+        <div class="carousel-inner d-flex justify-content-center p-3">
+            <div class="carousel-item active p-3">
+                <a href="{% url 'products:todays_deals' %}">
+                    <img src="{% static 'images/banner.jpg' %}" class="d-block w-100" alt="...">
+                </a>
             </div>
         </div>
     </div>
 </section>
 <section class="px-5 mt-3 mx-5">
-    <h3>Display a section for each nav except the browse all</h3>
-    <div class="product-section my-3 p-3">
+    <div class="product-section my-3 p-3 border rounded mx-auto">
         <h4>Best Sellers</h4>
+        <div class="d-flex products-container">
+            {% for index, product in best_sellers %}
+            {% include 'products/product_card_partial.html' %}
+            {% endfor %}
+            <div class="d-flex align-items-center justify-content-center flex-fill">
+                <a href="{% url 'products:best_sellers' %}" class="text-decoration-none">
+                    <btn class="see-all-btn d-flex flex-column align-items-center justify-content-center h-100">
+                        <span>See all</span>
+                        {% bs_icon 'grid' %}
+                    </btn>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="product-section my-3 p-3">
+    <div class="product-section my-3 p-3 border rounded mx-auto">
         <h4>Today's deals</h4>
+        <div class="d-flex products-container">
+            {% for index, product in todays_deals %}
+            {% include 'products/product_card_partial.html' %}
+            {% endfor %}
+            <div class="d-flex align-items-center justify-content-center flex-fill">
+                <a href="{% url 'products:best_sellers' %}" class="text-decoration-none">
+                    <btn class="see-all-btn d-flex flex-column align-items-center justify-content-center h-100">
+                        <span>See all</span>
+                        {% bs_icon 'grid' %}
+                    </btn>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="product-section my-3 p-3">
+    <div class="product-section my-3 p-3 border rounded mx-auto">
         <h4>New Arrivals</h4>
+        <div class="d-flex products-container">
+            {% for index, product in new_arrivals %}
+            {% include 'products/product_card_partial.html' %}
+            {% endfor %}
+            <div class="d-flex align-items-center justify-content-center flex-fill">
+                <a href="{% url 'products:best_sellers' %}" class="text-decoration-none">
+                    <btn class="see-all-btn d-flex flex-column align-items-center justify-content-center h-100">
+                        <span>See all</span>
+                        {% bs_icon 'grid' %}
+                    </btn>
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 {% endblock %}
