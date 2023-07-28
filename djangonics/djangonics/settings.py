@@ -36,6 +36,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+SITE_ID = 2
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,13 +47,28 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.postgres',
+    'django.contrib.sites',
     'django_bootstrap_icons',
     'compressor',
     'products',
     'accounts',
     'transactions',
     'storages',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email'
+        ],
+        'AUTH_PARAMS': {'access_type': 'online'}
+    }
+}
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -172,6 +189,11 @@ AWS_SECRET_ACCESS_KEY = 'dbadfc1b734b589131caeaeeab76d4917741f95eacf85163'
 AWS_STORAGE_BUCKET_NAME = 'djangonics'
 AWS_S3_ENDPOINT_URL = 'https://s3.jp-tok.cloud-object-storage.appdomain.cloud'
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+)
 
-
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 

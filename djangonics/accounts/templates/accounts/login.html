@@ -31,7 +31,9 @@
 
             </div>
             <div class="col-5">
-                login with google account
+                {% load socialaccount %}
+                <h5>Google Login</h5>
+                <a href="{% provider_login_url 'google' %}?next=/">Login with Google</a>
             </div>
         </div>
     </div>
