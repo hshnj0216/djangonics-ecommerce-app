@@ -6,7 +6,10 @@ UserModel = get_user_model()
 class CustomBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):
         try:
+            print(email)
+            print(password)
             user = UserModel.objects.get(email=email)
+            print(user)
         except UserModel.DoesNotExist:
             return None
 

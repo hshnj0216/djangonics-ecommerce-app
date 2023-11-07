@@ -191,6 +191,7 @@ AWS_S3_ENDPOINT_URL = 'https://s3.jp-tok.cloud-object-storage.appdomain.cloud'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'accounts.backend.CustomBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 

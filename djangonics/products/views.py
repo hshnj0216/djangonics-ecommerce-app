@@ -195,13 +195,12 @@ def product_details(request, slug, product_id):
         ).exists()
         if has_completed_order and not has_submitted_review:
             can_submit_review = True
-    print(f"user rating: {user_rating.value}")
     context = {
         'product': product,
         'can_submit_review': can_submit_review,
         'can_submit_rating': can_submit_rating,
         'range': stock_range,
-        'user_rating': user_rating.value,
+        'user_rating': user_rating.value if user_ratingcd else None,
         'rating_1_percentage': rating_1_percentage,
         'rating_2_percentage': rating_2_percentage,
         'rating_3_percentage': rating_3_percentage,
@@ -556,6 +555,7 @@ def submit_rating(request):
 
     # get user rating
     user_rating = Rating.objects.filter(user=request.user, product=product).first()
+    print(user_rating)
 
     context = {
         'product': product,

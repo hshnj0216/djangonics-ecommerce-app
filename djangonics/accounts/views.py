@@ -59,6 +59,8 @@ def login(request):
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
+        print(email)
+        print(password)
         if email and password:
             user = authenticate(email=email, password=password)
         if user is not None:
