@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+    <link type="text/x-scss" href="{% static 'scss/custom_admin.css' %}">
+{% endblock %}
+{% block nav-global %}
+    <img class="brand_img" src="{% static 'images/ic_launcher.png'%}" width="50" height="50" alt="logo">
+{% endblock %}
+{% block branding %}
+    <div class="head">
+        <h1 id="name">Custom Admin Dashboard</h1>
+    </div>
+{% endblock %}

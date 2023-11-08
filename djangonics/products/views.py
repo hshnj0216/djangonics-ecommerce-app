@@ -200,7 +200,7 @@ def product_details(request, slug, product_id):
         'can_submit_review': can_submit_review,
         'can_submit_rating': can_submit_rating,
         'range': stock_range,
-        'user_rating': user_rating.value if user_ratingcd else None,
+        'user_rating': user_rating.value if user_rating else None,
         'rating_1_percentage': rating_1_percentage,
         'rating_2_percentage': rating_2_percentage,
         'rating_3_percentage': rating_3_percentage,
