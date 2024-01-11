@@ -11,12 +11,12 @@ import sys
 from django.http import JsonResponse
 from accounts.models import Address
 from products.models import CartItem
+from django.conf import settings
 
 # Create your views here.
 
-client_id = 'ATq1dwh2EUeN17EwoFcOdVylRg8jJAIt_9yDXDt83oO2EE2vwc8uUC-5LPcn6-7gPKsOVR0PjKjZG4x_'
-client_secret = 'ECe8YLL6r3g0D57lwc7-s4CPh2EVgWNlxEdn81K8vizlEENGJh9MF-hK0DfLeUTkILV3FlK-5AElab6V'
 
+client_id = settings.CLIENT_ID
 
 @login_required
 def authorize_payment(request):

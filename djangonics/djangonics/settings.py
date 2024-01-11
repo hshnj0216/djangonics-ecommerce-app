@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import logging
 from pathlib import Path
 import os
+import environ
+env = environ.Env()
+environ.Env.read_env()
 """
 logging.basicConfig(
     level=logging.DEBUG,
@@ -183,11 +186,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # IBM Cloud Object Storage configuration
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = '32e802b8e9b74517a2f6959457c17cb7'
-AWS_SECRET_ACCESS_KEY = 'dbadfc1b734b589131caeaeeab76d4917741f95eacf85163'
-AWS_STORAGE_BUCKET_NAME = 'djangonics'
-AWS_S3_ENDPOINT_URL = 'https://s3.jp-tok.cloud-object-storage.appdomain.cloud'
+DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE')
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
+
+#PayPal API credentials
+CLIENT_ID = env('CLIENT_ID')
+CLIENT_SECRET = env('CLIENT_SECRET')
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
