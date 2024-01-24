@@ -59,8 +59,7 @@ def login(request):
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
-        print(email)
-        print(password)
+        user = None
         if email and password:
             user = authenticate(email=email, password=password)
         if user is not None:
@@ -70,7 +69,7 @@ def login(request):
             auth_login(request, user=user)
             return redirect('products:home')
         else:
-            error_message = "Invalid email or password."
+            error_message = "Invalid credentials."
             context['error_message'] = error_message
             return render(request, "accounts/login.html", context)
 

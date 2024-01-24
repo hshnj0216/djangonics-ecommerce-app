@@ -17,6 +17,7 @@ from django.conf import settings
 
 
 client_id = settings.CLIENT_ID
+client_secret = settings.CLIENT_SECRET
 
 @login_required
 def authorize_payment(request):

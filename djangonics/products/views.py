@@ -284,8 +284,6 @@ def search_products(request):
         num_ratings=Count('ratings')
     ).filter(search=SearchQuery(query))
 
-    print(f"Products in search: {products}")
-
     new_arrivals = products.order_by('-created_at')[:10]
     best_sellers = products.filter(units_sold__gt=0).order_by('-units_sold')
     discounted_products = products.filter(discount__gt=0)
