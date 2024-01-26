@@ -6,41 +6,44 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="">
+                <form action="" method="post">
                     {% csrf_token %}
                     <div class="">
-                        <label for="full-name" class="form-label">Full Name</label>
-                        <input class="form-control" type="text" id="full-name" placeholder="Recipient's full name">
+                        <label for="full_name" class="form-label">Full Name</label>
+                        <input class="form-control" name="full_name" type="text" id="full_name" placeholder="Recipient's full name">
                     </div>
                     <div class="">
-                        <label for="address-line-1" class="form-label">Address line 1</label>
-                        <input class="form-control" type="text" placeholder="Street address, P.O Box" id="address-line-1">
+                        <label for="street_address" class="form-label">Address line 1</label>
+                        <input class="form-control" type="text" placeholder="Street address, P.O Box" name="street_address" id="street_address">
                     </div>
                     <div class="">
-                        <label for="address-line-2" class="form-label">Address line 2</label>
-                        <input class="form-control" type="text" placeholder="Apartment, Suite, unit, building, floor, etc" id="address-line-2">
+                        <label for="apartment_address" class="form-label">Address line 2</label>
+                        <input class="form-control" type="text" placeholder="Apartment, Suite, unit, building, floor, etc" name="apartment_address" id="apartment_address">
                     </div>
                     <div class="">
                         <label for="city" class="form-label">City</label>
-                        <input class="form-control" type="text" id="city" placeholder="City">
+                        <input class="form-control" type="text" name="city" id="city" placeholder="City">
                     </div>
                     <div class="">
                         <label for="state" class="form-label">State</label>
-                        <input class="form-control" type="text" id="state" placeholder="State">
+                        <input class="form-control" type="text" name="state" id="state" placeholder="State">
                     </div>
                     <div class="">
-                        <label for="zip" class="form-label">Zip</label>
-                        <input class="form-control" type="text" id="zip" placeholder="Zip code">
+                        <label for="zip_code" class="form-label">Zip</label>
+                        <input class="form-control" type="text" name="zip_code" id="zip_code" placeholder="Zip code">
                     </div>
                     <div class="">
-                        <label for="number" class="form-label">Phone Number</label>
-                        <input class="form-control" type="text" id="number" placeholder="Phone number">
+                        <label for="phone_number" class="form-label">Phone Number</label>
+                        <input class="form-control" type="text" name="phone_number" id="phone_number" placeholder="e.g (123) 456-78910">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="add-address" data-bs-dismiss="modal">Add Address
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" id="add-address" data-bs-dismiss="modal">
+                    Add Address
                 </button>
             </div>
         </div>

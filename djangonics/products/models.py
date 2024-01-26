@@ -1,14 +1,8 @@
 import io
 from io import BytesIO
-import boto3
-from botocore.config import Config
-from botocore.exceptions import NoCredentialsError
 from django.conf import settings
-from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
-from django.contrib.postgres.search import SearchVector, SearchVectorField
-from django.urls import reverse
 from django.utils import timezone
 from decimal import Decimal
 from storages.backends.s3boto3 import S3Boto3Storage

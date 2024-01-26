@@ -1,6 +1,6 @@
-<form class="modal-dialog" id="edit-address-form" method="post">
+ <form class="modal-dialog" id="edit-address-form" method="post">
     {% csrf_token %}
-    <input  type="hidden" name="address_id" value="{{address.id}}">
+    <input  type="hidden" name="id" value="{{address.id}}">
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">Edit Address</h5>
@@ -8,31 +8,31 @@
         </div>
         <div class="modal-body">
             <div class="">
-                <label for="full-name" class="form-label">Recipient's full name</label>
+                <label for="full_name" class="form-label">Recipient's full name</label>
                 <input
                         class="form-control"
-                        type="text" id="full-name"
+                        type="text" id="full_name"
                         placeholder="Recipient's full name"
-                        name="recipient_name"
+                        name="full_name"
                         value="{{address.recipient_name}}"
                 >
             </div>
             <div class="">
-                <label for="address-line-1" class="form-label">Address line 1</label>
+                <label for="street_address" class="form-label">Address line 1</label>
                 <input class="form-control"
                        type="text"
                        placeholder="Street address, P.O Box"
-                       id="address-line-1"
+                       id="street_address"
                        name="street_address"
                        value="{{address.street_address}}"
                 >
             </div>
             <div class="">
-                <label for="address-line-2" class="form-label">Address line 2</label>
+                <label for="apartment_address" class="form-label">Address line 2</label>
                 <input class="form-control"
                        type="text"
                        placeholder="Apartment, Suite, unit, building, floor, etc"
-                       id="address-line-2"
+                       id="apartment_address"
                        name="apartment_address"
                        value="{{address.apartment_address}}"
                 >
@@ -60,21 +60,21 @@
                 >
             </div>
             <div class="">
-                <label for="zip" class="form-label">Zip</label>
+                <label for="zip_code" class="form-label">Zip</label>
                 <input
                         class="form-control"
                         type="text"
-                        id="zip"
+                        id="zip_code"
                         placeholder="Zip code"
                         name="zip_code"
                         value="{{address.zip_code}}"
                 >
             </div>
             <div class="">
-                <label for="number" class="form-label">Phone Number</label>
+                <label for="phone_number" class="form-label">Phone Number</label>
                 <input
                         class="form-control"
-                        type="text" id="number"
+                        type="text" id="phone_number"
                         placeholder="Phone number"
                         name="phone_number"
                         value="{{address.phone_number}}"
@@ -83,7 +83,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+            <button type="button" id="save-changes" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
         </div>
     </div>
 </form>

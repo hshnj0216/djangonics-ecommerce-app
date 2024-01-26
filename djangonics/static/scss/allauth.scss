@@ -1,5 +1,37 @@
 @import 'variables';
 
-#main-container {
-    backround-color: $card-bg-color;
+html {
+    height: 100%;
+}
+
+#main-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    #card-container {
+        background-color: $card-bg-color;
+        display: flex;
+        flex-direction: column;
+        border: solid 1px black;
+        border-radius: 5px;
+        padding: 3rem;
+        justify-content: center;
+            form{
+                display: flex;
+                justify-content: center;
+                button {
+                    background-color: $util-nav-color;
+                    color: white;
+                    padding: 0.5rem;
+                    border-radius: 3px;
+                    margin: .5rem auto;
+                }
+            }
+    }
+}
+
+body{
+    height: 100%;
+
 }

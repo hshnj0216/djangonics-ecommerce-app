@@ -1,0 +1,32 @@
+/* line 3, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+html {
+  height: 100%; }
+
+/* line 7, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+#main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; }
+  /* line 12, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+  #main-container #card-container {
+    background-color: #E6F0FF;
+    display: flex;
+    flex-direction: column;
+    border: solid 1px black;
+    border-radius: 5px;
+    padding: 3rem;
+    justify-content: center; }
+    /* line 20, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+    #main-container #card-container form {
+      display: flex;
+      justify-content: center; }
+      /* line 23, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+      #main-container #card-container form button {
+        padding: 0.2rem;
+        border-radius: 3px;
+        margin: .5rem auto; }
+
+/* line 32, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+body {
+  height: 100%; }

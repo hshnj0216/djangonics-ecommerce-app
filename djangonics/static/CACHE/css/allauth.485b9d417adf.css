@@ -1,0 +1,12 @@
+/* line 3, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+html {
+  height: 100%; }
+
+/* line 7, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+#main-container {
+  background-color: #E6F0FF;
+  display: flex; }
+
+/* line 16, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+body {
+  height: 100%; }

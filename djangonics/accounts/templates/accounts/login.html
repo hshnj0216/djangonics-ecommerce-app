@@ -30,10 +30,15 @@
             <div class="divider col-2">
 
             </div>
-            <div class="col-5">
+            <div class="col-5 d-flex align-items-center">
                 {% load socialaccount %}
-                <h5>Google Login</h5>
-                <a href="{% provider_login_url 'google' %}?next=/">Login with Google</a>
+                <a href="{% provider_login_url 'google' %}?next=/" class="text-decoration-none">
+                    <div class="d-flex border rounded p-2 align-items-center justify-content-center">
+                        {% load static %}
+                        <img src="{% static 'images/google_icon.png' %}" alt="google logo" class="me-3"/>
+                        <h5 class="text-decoration-none m-0">Sign in with Google</h5>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

@@ -25,6 +25,7 @@ urlpatterns = [
     path('', lambda request: redirect('products:home'), name='home'),
     path('products/', include('products.urls')),
     path('accounts/', include('accounts.urls')),
+    path('accounts/', include('allauth.urls')),
     path('transactions/', include('transactions.urls')),
 ]
 

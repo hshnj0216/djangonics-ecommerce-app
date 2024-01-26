@@ -23,40 +23,14 @@
         {% block extra_head %}
         {% endblock extra_head %}
     </head>
-    <body class=" ">
-        {% block body %}
-            {% if messages %}
-                <div>
-                    <strong>{% trans "Messages:" %}</strong>
-                    <ul>
-                        {% for message in messages %}<li>{{ message }}</li>{% endfor %}
-                    </ul>
+    <body>
+       {% block body %}
+            <div id="main-container">
+                <div id="card-container">
+                    {% block content %}
+                    {% endblock content %}
                 </div>
-            {% endif %}
-            <div class="border border-rounded w-100" id="main-container">
-                <strong>{% trans "Menu:" %}</strong>
-                <ul class="list-unstyled">
-                    {% if user.is_authenticated %}
-                        <li>
-                            <a href="{% url 'account_email' %}">{% trans "Change Email" %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
-                        </li>
-                    {% endif %}
-                </ul>
             </div>
-            {% block content %}
-            {% endblock content %}
         {% endblock body %}
-        {% block extra_body %}
-        {% endblock extra_body %}
     </body>
 </html>

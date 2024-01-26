@@ -20,10 +20,10 @@
         </div>
     </div>
     {% include 'accounts/address_form_partial.html' %}
+    {% include 'accounts/edit_address_modal.html' %}
 </div>
 {% endblock %}
 {% load static %}
 {% block script %}
-    <script src="{% static 'js/addAddress.js' %}"></script>
     <script src="{% static 'js/addressActions.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,19 @@
+/* line 3, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+html {
+  height: 100%; }
+
+/* line 7, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+#main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: green; }
+  /* line 12, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+  #main-container #card-container {
+    background-color: #E6F0FF;
+    display: flex;
+    justify-content: c button; }
+
+/* line 22, e:/projects/e-commerce/djangonics/static/scss/allauth.scss */
+body {
+  height: 100%; }

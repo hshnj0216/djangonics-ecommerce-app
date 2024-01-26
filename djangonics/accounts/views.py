@@ -80,15 +80,19 @@ def logout(request):
 
 
 def account(request):
-    addresses = Address.objects.all().order_by('-is_default')
+    addresses = Address.objects.filter(user=request.user).order_by('-is_default')
     orders = Order.objects.prefetch_related(
         Prefetch('order_items', queryset=OrderItem.objects.all(), to_attr='items')
     ).filter(user=request.user)
+    response = get_cart_item_count(request=request, user=request.user)
+    cart_item_count = json.loads(response.content)['cart_item_count']
+    request.session['cart_item_count'] = cart_item_count
     context = {
         'addresses': addresses,
         'orders': orders,
     }
     return render(request, 'accounts/account.html', context)
+
 
 
 @receiver(post_save, sender=User)
@@ -102,19 +106,19 @@ def create_user_cart(sender, instance, created, **kwargs):
 def add_address(request):
     # retrieve form data from AJAX request
     full_name = request.POST.get('full_name')
-    address_line_1 = request.POST.get('address_line_1')
-    address_line_2 = request.POST.get('address_line_2')
+    street_address = request.POST.get('street_address')
+    apartment_address = request.POST.get('apartment_address')
     city = request.POST.get('city')
     state = request.POST.get('state')
-    zip_code = request.POST.get('zip')
+    zip_code = request.POST.get('zip_code')
     phone_number = request.POST.get('phone_number')
 
     # perform some logic to add the address to the database
     address, created = Address.objects.update_or_create(
         user=request.user,
         recipient_name=full_name,
-        street_address=address_line_1,
-        apartment_address=address_line_2,
+        street_address=street_address,
+        apartment_address=apartment_address,
         city=city,
         state=state,
         zip_code=zip_code,
@@ -123,26 +127,33 @@ def add_address(request):
 
     # return a JSON response indicating success or failure and the ID of the newly created address
     if created:
-        return JsonResponse({'success': True, 'id': address.id}, status=200)
+        address = Address.objects.filter(user=request.user).latest('id')
+        print(address)
+        return render(request, 'accounts/address_card_partial.html', {'address': address})
     else:
         return JsonResponse({'success': False, 'error': 'Address already exists'}, status=400)
 
 
+
+
 @login_required
 @csrf_exempt
-def edit_address(request):
+def edit_address(request, address_id):
     if request.method == 'GET':
-        address_id = request.GET.get('address_id')
+        print("get request received")
         address = Address.objects.get(pk=address_id)
         return render(request, 'accounts/edit_address_form.html', {'address': address})
+
+
+def save_address_changes(request):
     if request.method == 'POST':
-        address_id = request.POST.get('address_id')
+        address_id = request.POST.get('id')
         address = Address.objects.get(pk=address_id)
         form_data = request.POST.dict()
         address.__dict__.update(**form_data)
         address.save()
-        addresses = Address.objects.filter(user=request.user)
-        return render(request, 'accounts/address_selection_partial.html', {'addresses': addresses})
+    return render(request, 'accounts/address_card_partial.html', {'address': address})
+
 
 
 @login_required
