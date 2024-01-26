@@ -1,4 +1,4 @@
-<div class="modal modal-dialog w-50" tabindex="-1" id="modal-form" data-bs-backdrop="static">
+<div class="modal modal-dialog w-50" tabindex="-1" id="add-address-modal-form" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,8 +9,8 @@
                 <form action="" method="post">
                     {% csrf_token %}
                     <div class="">
-                        <label for="full_name" class="form-label">Full Name</label>
-                        <input class="form-control" name="full_name" type="text" id="full_name" placeholder="Recipient's full name">
+                        <label for="recipient_name" class="form-label">Recipient's full name</label>
+                        <input class="form-control" name="recipient_name" type="text" id="recipient_name" placeholder="Recipient's full name">
                     </div>
                     <div class="">
                         <label for="street_address" class="form-label">Address line 1</label>

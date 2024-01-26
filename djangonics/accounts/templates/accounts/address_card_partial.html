@@ -16,7 +16,8 @@
                     {% csrf_token %}
                     <ul class="list-unstyled d-flex">
                         <li class="address-action">
-                            <input type="submit" name="action" value="Edit" class="address-action edit-address">
+                            <input type="submit" name="action" value="Edit" class="address-action edit-address" data-bs-toggle="modal"
+                                data-bs-target="#edit-address-modal-form">
                         </li>
                         <li class="address-action">
                             <input type="submit" name="action" value="Remove" class="address-action remove-address">

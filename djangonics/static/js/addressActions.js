@@ -56,19 +56,15 @@ $(function() {
             url: `/accounts/edit_address/${addressId}/`,
             type: 'GET',
             success: function(data) {
-                 $('#edit-address-form').replaceWith(data);
-                 $('#edit-address-modal').modal('show');
+                 $('#edit-address-modal-form .modal-body').html(data);
+                 $('#edit-address-modal-form').modal('show');
             }
         });
     });
     $('#save-changes').on('click', function(event) {
         event.preventDefault();
-        console.log('save changes btn clicked');
-        let addressId = $('input[name=address_id]').val();
+        let addressId = $('#edit-address-form input[name=id]').val();
         let formData = $('#edit-address-form').serializeArray();
-        console.log(formData);
-        console.log(addressId);
-        /*
         $.ajax({
             type: 'POST',
             url: `/accounts/save_address_changes/`,
@@ -77,7 +73,6 @@ $(function() {
                 $(`#address-card-${addressId}`).replaceWith(data);
             }
         })
-        */
     })
 
 });

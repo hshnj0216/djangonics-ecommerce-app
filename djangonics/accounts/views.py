@@ -105,7 +105,7 @@ def create_user_cart(sender, instance, created, **kwargs):
 @login_required
 def add_address(request):
     # retrieve form data from AJAX request
-    full_name = request.POST.get('full_name')
+    recipient_name = request.POST.get('recipient_name')
     street_address = request.POST.get('street_address')
     apartment_address = request.POST.get('apartment_address')
     city = request.POST.get('city')
@@ -116,7 +116,7 @@ def add_address(request):
     # perform some logic to add the address to the database
     address, created = Address.objects.update_or_create(
         user=request.user,
-        recipient_name=full_name,
+        recipient_name=recipient_name,
         street_address=street_address,
         apartment_address=apartment_address,
         city=city,
@@ -142,7 +142,8 @@ def edit_address(request, address_id):
     if request.method == 'GET':
         print("get request received")
         address = Address.objects.get(pk=address_id)
-        return render(request, 'accounts/edit_address_form.html', {'address': address})
+        print(address)
+        return render(request, 'accounts/edit_address_form_partial.html', {'address': address})
 
 
 def save_address_changes(request):
