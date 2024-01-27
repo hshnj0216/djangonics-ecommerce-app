@@ -95,26 +95,9 @@
     </div>
 </div>
 <div id="modals-container" class="d-flex justify-content-center align-items-center">
-    {% include 'accounts/edit_address_modal.html' %}
-
+    {% include 'accounts/order_placement_modal.html' %}
 </div>
-<!--Place order modal -->
-<div class="modal fade" id="place-order-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Order placed</h5>
-      </div>
-      <div class="modal-body">
-        <h6>You've successfully placed your order. What's next?</h6>
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-          <a href="{% url 'products:browse_all' %}" class="btn btn-primary mx-3">Continue shopping</a>
-          <a href="{% url 'transactions:orders'  %}" class="btn btn-primary mx-3">Go to my orders</a>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- modal end -->
+{% include 'accounts/edit_address_modal.html' %}
+{% include 'accounts/address_form_partial.html' %}
 </body>
 </html>

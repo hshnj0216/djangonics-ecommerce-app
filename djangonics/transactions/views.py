@@ -10,7 +10,7 @@ import requests
 import sys
 from django.http import JsonResponse
 from accounts.models import Address
-from products.models import CartItem
+from products.models import CartItem, Product
 from django.conf import settings
 
 # Create your views here.
@@ -122,30 +122,33 @@ def place_order(request):
             total_amount=total_amount,
         )
 
-        # Get the cart item ids of the ordered items from the session
-        cart_item_ids = request.session['cart_item_ids']
+        # Get the checkout item ids of the ordered items from the session
+        checkout_item_ids = request.session['checkout_item_ids']
 
-        # Retrieve cart item info and create order items
-        for cart_item_id in cart_item_ids:
-            cart_item = CartItem.objects.get(pk=cart_item_id)
+        # Retrieve checkout item info and create order items
+        for item in checkout_item_ids:
+            product = Product.objects.get(pk=item['product_id'])
             order_item = OrderItem.objects.create(
                 order=order,
-                product=cart_item.product,
-                unit_price=cart_item.product.price,
-                quantity=cart_item.quantity
+                product=product,
+                unit_price=product.price,
+                quantity=item['quantity']
             )
-            # Update the stock of the associated product
-            request.session['cart_item_count'] -= order_item.quantity
+            if not request.session.get('is_buy_now'):
+                # Delete the specific cart item
+                CartItem.objects.filter(id=item['cart_item_id']).delete()
+                request.session['cart_item_count'] -= order_item.quantity
             order_item.product.stock -= order_item.quantity
             order_item.product.units_sold += order_item.quantity
             order_item.product.save()
-            cart_item.delete()
 
-    # Delete cart item ids session data
-    del request.session['cart_item_ids']
+
+    # Delete checkout item ids session data
+    del request.session['checkout_item_ids']
 
     # Redirect to the orders page
     return redirect(reverse('transactions:orders'))
+
 
 
 @login_required

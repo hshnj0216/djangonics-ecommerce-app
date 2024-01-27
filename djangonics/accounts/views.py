@@ -188,28 +188,35 @@ def remove_address(request, address_id):
 def checkout(request):
     if request.POST.get('buy_now'):
         product_id = int(request.POST.get('product_id'))
-        product = Product.objects.get(pk=product_id)
-        price = Decimal(request.POST.get('price'))
         qty = int(request.POST.get('qty'))
-        total_price =  price * qty
+        product = Product.objects.get(pk=product_id)
         selected_items = [{
             'product': product,
             'quantity': qty,
         }]
-        total_item_count = qty
-
+        request.session['is_buy_now'] = True
     else:
         selected_item_ids = request.POST.getlist('cart_item')
-        # Store the ids in the session for use on placing order
-        request.session['cart_item_ids'] = selected_item_ids
         selected_items = CartItem.objects.filter(id__in=selected_item_ids)
+        selected_items = [{'cart_item_id': item.id, 'product': item.product, 'quantity': item.quantity} for item in selected_items]
+        request.session['is_buy_now'] = False
 
-        # Calculate total price and total item count
-        total_price = 0
-        total_item_count = 0
-        for item in selected_items:
-            total_price += item.total_price
-            total_item_count += item.quantity
+    # Store the selected items in the session
+    checkout_item_ids = []
+    for item in selected_items:
+        checkout_item = {'product_id': item['product'].id, 'quantity': item['quantity']}
+        if not request.session['is_buy_now']:
+            checkout_item['cart_item_id'] = item['cart_item_id']
+        checkout_item_ids.append(checkout_item)
+    request.session['checkout_item_ids'] = checkout_item_ids
+
+    # Calculate total price and total item count
+    total_price = 0
+    total_item_count = 0
+    for item in selected_items:
+        total_price += item['product'].price * item['quantity']
+        total_item_count += item['quantity']
+
     tax_rate = Decimal(0.1)
     tax = Decimal(total_price) * tax_rate
     shipping_and_handling_rate = Decimal(100)
@@ -226,6 +233,9 @@ def checkout(request):
     }
 
     return render(request, 'accounts/checkout.html', context)
+
+
+
 
 
 def use_address(request):

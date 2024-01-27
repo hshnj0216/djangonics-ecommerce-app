@@ -26,17 +26,16 @@
                                 type="button"
                                 class="btn change-action edit-address"
                                 data-address-id="{{address.id}}"
+
                         >
                             Edit Address
                         </button>
                     </div>
                     {% endfor %}
                 </form>
-                <div class="d-flex add-address my-3">
-                    <i class="fas fa-plus"></i>
-                    <span>Add new address</span>
-                </div>
-                {% include 'accounts/address_form_partial.html' %}
+                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#add-address-modal-form">
+                    Add new address
+                </button>
             </div>
         </div>
         <div id="address-selection-bottom" class="border rounded-bottom p-3">
