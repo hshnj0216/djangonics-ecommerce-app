@@ -1,45 +1,38 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
 {% block content %}
-    <div class="d-flex align-items-center h-100">
-        <div class="w-50 row border border-round p-3 my-5 mx-auto">
-            <div>
-                <h3>Welcome to Djangonics! Please log in.</h3>
-                <p>New customer? <a href="{% url 'accounts:signup' %}">Sign up here.</a></p>
-            </div>
-            <div class="col-5">
-                {% if success_message %}
-                    <p class="text-success">{{success_message}}</p>
-                {% endif %}
-                {% if error_message %}
-                    <p class="text-danger">{{error_message}}</p>
-                {% endif %}
-                <form action="{% url 'accounts:login' %}" method="post">
-                   {% csrf_token %}
-                   <div class="mb-2">
-                       <label class="form-label mb-0" for="email">Email</label>
-                       <input class="form-control" type="email" id="email" name="email">
-                   </div>
-                   <div class="mb-2">
-                       <label class="form-label mb-0" for="password">Password</label>
-                       <input class="form-control" type="password" id="password" name="password">
-                   </div>
-                    <input class="btn btn-primary" type="submit" value="Login">
-                </form>
-            </div>
-            <div class="divider col-2">
-
-            </div>
-            <div class="col-5 d-flex align-items-center">
-                {% load socialaccount %}
-                <a href="{% provider_login_url 'google' %}?next=/" class="text-decoration-none">
-                    <div class="d-flex border rounded p-2 align-items-center justify-content-center">
-                        {% load static %}
-                        <img src="{% static 'images/google_icon.png' %}" alt="google logo" class="me-3"/>
-                        <h5 class="text-decoration-none m-0">Sign in with Google</h5>
-                    </div>
-                </a>
-            </div>
+<div class="d-flex align-items-center h-100">
+    <div class="w-50 row border border-round p-3 my-5 mx-auto">
+        <div>
+            <h3>Welcome to Djangonics! Please log in.</h3>
+            <p>New customer? <a href="{% url 'accounts:signup' %}">Sign up here.</a></p>
+        </div>
+        <div class="col-5">
+            {% load crispy_forms_tags %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="text-danger">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <form action="{% url 'accounts:login' %}" method="post">
+                {% csrf_token %}
+                {{ login_form|crispy }}
+                <input class="btn btn-primary" type="submit" value="Login">
+            </form>
+        </div>
+        <div class="divider col-2 d-flex align-items-center justify-content-center">
+            <span>Or</span>
+        </div>
+        <div class="col-5 d-flex align-items-center">
+            {% load socialaccount %}
+            <a href="{% provider_login_url 'google' %}?next=/" class="text-decoration-none">
+                <div class="d-flex border rounded p-2 align-items-center justify-content-center">
+                    {% load static %}
+                    <img src="{% static 'images/google_icon.png' %}" alt="google logo" class="me-3"/>
+                    <h5 class="text-decoration-none m-0">Sign in with Google</h5>
+                </div>
+            </a>
         </div>
     </div>
+</div>
 {% endblock %}

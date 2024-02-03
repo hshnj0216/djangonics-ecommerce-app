@@ -163,12 +163,13 @@ def product_details(request, slug, product_id):
         rating_4_percentage = 0
         rating_5_percentage = 0
 
-    #get user rating
-    user_rating = Rating.objects.filter(user=request.user, product=product).first()
 
+    user_rating = None
     #Check if the user is allowed to submit a rating
     can_submit_rating = False
     if request.user.is_authenticated:
+        # get user rating
+        user_rating = Rating.objects.filter(user=request.user, product=product).first()
         has_completed_order = Order.objects.filter(
             user=request.user,
             order_items__product_id=product_id,

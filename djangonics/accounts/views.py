@@ -1,5 +1,4 @@
 import json
-import traceback
 import uuid
 from django.contrib.auth.decorators import login_required
 from django.db.models import Prefetch
@@ -17,61 +16,78 @@ from products.models import Cart, CartItem, Product
 from transactions.models import Order, OrderItem
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-import logging
-
-logger = logging.getLogger(__name__)
+from accounts.forms import LoginForm, SignUpForm
+from django.contrib import messages
 
 
 # Create your views here.
 def signup(request):
     # if the request is GET render the template
     if request.method == "GET":
-        return render(request, 'accounts/signup.html')
+        form = SignUpForm()
+        return render(request, 'accounts/signup.html', {'form': form})
     # if the request if POST process the registration
     if request.method == "POST":
+        # context = {}
+        # # extract credentials
+        # first_name = request.POST['first_name']
+        # last_name = request.POST['last_name']
+        # email = request.POST['email']
+        # contact_number = request.POST['contact_number']
+        # password = request.POST['password']
+        # # create user
+        # User.objects.create_user(
+        #     first_name=first_name,
+        #     last_name=last_name,
+        #     email=email,
+        #     contact_number=contact_number,
+        #     password=password,
+        # )
+        # success_message = "Account created successfully, you can now log in."
+        # context['success_message'] = success_message
+        # return render(request, 'accounts/login.html', context)
+
+        details = SignUpForm(request.POST)
         context = {}
-        # extract credentials
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-        contact_number = request.POST['contact_number']
-        password = request.POST['password']
-        # generate username
-        username = email.split('@')[0] + str(uuid.uuid4()).replace('-', '')[:10]
-        # create user
-        User.objects.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            contact_number=contact_number,
-            password=password,
-            username=username
-        )
-        success_message = "Account created successfully, you can now log in."
-        context['success_message'] = success_message
-        return render(request, 'accounts/login.html', context)
+
+        if details.is_valid():
+            print('success')
+            user = details.save(commit=False)
+
+            user.save()
+            success_message = "Account created successfully, you can now log in."
+            context['success_message'] = success_message
+
+            return render(request, 'accounts/login.html', context)
+
+        else:
+            print('fail')
+            success_message = "Not a success message."
+            context['success_message'] = success_message
+
+            return render(request, 'accounts/signup.html', {'form': details})
 
 
 def login(request):
-    context = {}
     if request.method == "GET":
-        return render(request, 'accounts/login.html')
+        login_form = LoginForm()
+        return render(request, 'accounts/login.html', {'login_form': login_form})
     if request.method == "POST":
-        email = request.POST['email']
-        password = request.POST['password']
-        user = None
-        if email and password:
-            user = authenticate(email=email, password=password)
-        if user is not None:
-            response = get_cart_item_count(request=request, user=user)
-            cart_item_count = json.loads(response.content)['cart_item_count']
-            request.session['cart_item_count'] = cart_item_count
-            auth_login(request, user=user)
-            return redirect('products:home')
-        else:
-            error_message = "Invalid credentials."
-            context['error_message'] = error_message
-            return render(request, "accounts/login.html", context)
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                response = get_cart_item_count(request=request, user=user)
+                cart_item_count = json.loads(response.content)['cart_item_count']
+                request.session['cart_item_count'] = cart_item_count
+                auth_login(request, user=user)
+                return redirect('products:home')
+        messages.error(request, 'Invalid credentials.')
+    else:
+        form = LoginForm()
+    return render(request, 'accounts/login.html', {'login_form': form})
 
 
 def logout(request):
@@ -92,7 +108,6 @@ def account(request):
         'orders': orders,
     }
     return render(request, 'accounts/account.html', context)
-
 
 
 @receiver(post_save, sender=User)
@@ -134,8 +149,6 @@ def add_address(request):
         return JsonResponse({'success': False, 'error': 'Address already exists'}, status=400)
 
 
-
-
 @login_required
 @csrf_exempt
 def edit_address(request, address_id):
@@ -154,7 +167,6 @@ def save_address_changes(request):
         address.__dict__.update(**form_data)
         address.save()
     return render(request, 'accounts/address_card_partial.html', {'address': address})
-
 
 
 @login_required
@@ -198,7 +210,8 @@ def checkout(request):
     else:
         selected_item_ids = request.POST.getlist('cart_item')
         selected_items = CartItem.objects.filter(id__in=selected_item_ids)
-        selected_items = [{'cart_item_id': item.id, 'product': item.product, 'quantity': item.quantity} for item in selected_items]
+        selected_items = [{'cart_item_id': item.id, 'product': item.product, 'quantity': item.quantity} for item in
+                          selected_items]
         request.session['is_buy_now'] = False
 
     # Store the selected items in the session
@@ -233,9 +246,6 @@ def checkout(request):
     }
 
     return render(request, 'accounts/checkout.html', context)
-
-
-
 
 
 def use_address(request):
