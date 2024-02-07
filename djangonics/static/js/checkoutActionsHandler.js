@@ -41,6 +41,7 @@ $(function() {
 
     //change address handler
     $('#address-selection').on('click', '#change-address-button', function(event) {
+        event.preventDefault();
         let csrfToken = $('#address-selection form input[name=csrfmiddlewaretoken]').val();
         $.ajax({
             type: 'POST',
@@ -49,15 +50,19 @@ $(function() {
                 'X-CSRFToken': csrfToken,
             },
             success: function(data) {
-                $('#payment-selection-partial').slideUp(300);
-                $('#address-selection').slideUp(300, function() {
-                    $(this).html(data).slideDown(500);
-                    $('#address-selection h5').css('color', '#007fff');
-                });
                 $('#order-review-partial').slideUp(300, function() {
                     $(this).hide();
                     $('#order-review h5').text('3. Review order').css('color', '#000000');
                 });
+                $('#payment-selection-partial').slideUp(300, function() {
+                    $(this).hide();
+                    $('#payment-selection h5').text('2. Payment selection').css('color', '#000000');
+                });
+                $('#address-selection').slideUp(300, function() {
+                    $(this).html(data).slideDown(500);
+                    $('#address-selection h5').css('color', '#007fff');
+                });
+
             }
         });
     });
