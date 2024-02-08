@@ -1,0 +1,23 @@
+<div>
+    <h5>1. Choose a shipping address</h5>
+    <div class="border rounded">
+        <div class="p-3">
+            <h6>Your addresses</h6>
+            <hr>
+            <div>
+                <form class="list-group" action="" id="address-list-form">
+                    {% csrf_token %}
+                    {% for address in addresses %}
+                        {% include 'accounts/checkout/address_selection_entry.html' %}
+                    {% endfor %}
+                </form>
+                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#add-address-modal-form">
+                    Add new address
+                </button>
+            </div>
+        </div>
+        <div id="address-selection-bottom" class="border rounded-bottom p-3">
+            <button id="use-this-address-button" class="btn btn-primary">Use this address</button>
+        </div>
+    </div>
+</div>

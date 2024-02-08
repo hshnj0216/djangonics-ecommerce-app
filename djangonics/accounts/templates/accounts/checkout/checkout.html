@@ -44,20 +44,20 @@
     <section id="checkout-section" class="col-8">
         <!-- displays the list of addresses with the default address being first -->
         <section id="address-selection">
-            {% include 'accounts/address_selection_partial.html' %}
+            {% include 'accounts/checkout/address_selection_partial.html' %}
         </section>
         <hr>
         <!-- displays the list of payment methods -->
         <section id="payment-selection">
             <h5>2. Payment selection</h5>
-            {% include 'accounts/payment_selection_partial.html' %}
+            {% include 'accounts/checkout/payment_selection_partial.html' %}
         </section>
         <hr>
         <!-- displays the list of items and prices, including other charges -->
         <section id="order-review">
             <h5>3. Review order</h5>
             <div class="disabled-bg"><div class="spinner"></div></div>
-            {% include 'accounts/order_review_partial.html' %}
+            {% include 'accounts/checkout/order_review_partial.html' %}
         </section>
         <hr>
     </section>
@@ -95,7 +95,7 @@
     </div>
 </div>
 <div id="modals-container" class="d-flex justify-content-center align-items-center">
-    {% include 'accounts/order_placement_modal.html' %}
+    {% include 'accounts/checkout/order_placement_modal.html' %}
 </div>
 {% include 'accounts/edit_address_modal.html' %}
 {% include 'accounts/address_form_partial.html' %}

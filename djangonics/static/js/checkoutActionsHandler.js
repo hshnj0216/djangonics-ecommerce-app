@@ -66,7 +66,25 @@ $(function() {
             }
         });
     });
+    //handle address addition
+    $('#add-address').on('click', function() {
+        // Get the form data
+        let formData = $('#add-address-modal-form form').serializeArray();
 
+        console.log(formData);
+
+        // Send an AJAX POST request to the server
+        $.ajax({
+          type: 'POST',
+          url: '/accounts/add_address_from_checkout/',
+          data: formData,
+          success: function(data) {
+            // Clear the form
+                $('#add-address-modal-form form')[0].reset();
+                $('#address-list-form').append(data);
+          }
+        });
+    });
     //handle edit address button click
     $('.edit-address').on('click', function(event) {
         let addressId = $(this).data('address-id');

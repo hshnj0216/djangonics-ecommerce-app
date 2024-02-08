@@ -25,7 +25,7 @@ def signup(request):
     # if the request is GET render the template
     if request.method == "GET":
         form = SignUpForm()
-        return render(request, 'accounts/signup.html', {'form': form})
+        return render(request, 'accounts/account/signup.html', {'form': form})
     # if the request if POST process the registration
     if request.method == "POST":
         # context = {}
@@ -58,20 +58,20 @@ def signup(request):
             success_message = "Account created successfully, you can now log in."
             context['success_message'] = success_message
 
-            return render(request, 'accounts/login.html', context)
+            return render(request, 'accounts/account/login.html', context)
 
         else:
             print('fail')
             success_message = "Not a success message."
             context['success_message'] = success_message
 
-            return render(request, 'accounts/signup.html', {'form': details})
+            return render(request, 'accounts/account/signup.html', {'form': details})
 
 
 def login(request):
     if request.method == "GET":
         login_form = LoginForm()
-        return render(request, 'accounts/login.html', {'login_form': login_form})
+        return render(request, 'accounts/account/login.html', {'login_form': login_form})
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -87,7 +87,7 @@ def login(request):
         messages.error(request, 'Invalid credentials.')
     else:
         form = LoginForm()
-    return render(request, 'accounts/login.html', {'login_form': form})
+    return render(request, 'accounts/account/login.html', {'login_form': form})
 
 
 def logout(request):
@@ -107,7 +107,7 @@ def account(request):
         'addresses': addresses,
         'orders': orders,
     }
-    return render(request, 'accounts/account.html', context)
+    return render(request, 'accounts/account/account.html', context)
 
 
 @receiver(post_save, sender=User)
@@ -144,7 +144,7 @@ def add_address(request):
     if created:
         address = Address.objects.filter(user=request.user).latest('id')
         print(address)
-        return render(request, 'accounts/address_card_partial.html', {'address': address})
+        return render(request, 'accounts/account/address_card_partial.html', {'address': address})
     else:
         return JsonResponse({'success': False, 'error': 'Address already exists'}, status=400)
 
@@ -166,7 +166,7 @@ def save_address_changes(request):
         form_data = request.POST.dict()
         address.__dict__.update(**form_data)
         address.save()
-    return render(request, 'accounts/address_card_partial.html', {'address': address})
+    return render(request, 'accounts/account/address_card_partial.html', {'address': address})
 
 
 @login_required
@@ -184,7 +184,7 @@ def set_default_address(request, address_id):
 
     sorted_addresses = Address.objects.filter(user=request.user).order_by('-is_default')
 
-    return render(request, 'accounts/address_list_partial.html', {'addresses': sorted_addresses})
+    return render(request, 'accounts/account/address_list_partial.html', {'addresses': sorted_addresses})
 
 
 @login_required
@@ -193,7 +193,7 @@ def remove_address(request, address_id):
     address = Address.objects.get(pk=address_id)
     address.delete()
     sorted_addresses = Address.objects.filter(user=request.user).order_by('-is_default')
-    return render(request, 'accounts/address_list_partial.html', {'addresses': sorted_addresses})
+    return render(request, 'accounts/account/address_list_partial.html', {'addresses': sorted_addresses})
 
 
 @login_required
@@ -245,7 +245,7 @@ def checkout(request):
         'order_total': total_price + tax + shipping_and_handling_rate
     }
 
-    return render(request, 'accounts/checkout.html', context)
+    return render(request, 'accounts/checkout/checkout.html', context)
 
 
 def use_address(request):
@@ -265,6 +265,35 @@ def use_address(request):
 def change_selected_address(request):
     addresses = Address.objects.filter(user=request.user)
     return render(request, 'accounts/address_selection_partial.html', {'addresses': addresses})
+
+def add_address_from_checkout(request):
+    # retrieve form data from AJAX request
+    recipient_name = request.POST.get('recipient_name')
+    street_address = request.POST.get('street_address')
+    apartment_address = request.POST.get('apartment_address')
+    city = request.POST.get('city')
+    state = request.POST.get('state')
+    zip_code = request.POST.get('zip_code')
+    phone_number = request.POST.get('phone_number')
+
+    # perform some logic to add the address to the database
+    address, created = Address.objects.update_or_create(
+        user=request.user,
+        recipient_name=recipient_name,
+        street_address=street_address,
+        apartment_address=apartment_address,
+        city=city,
+        state=state,
+        zip_code=zip_code,
+        phone_number=phone_number,
+    )
+
+    # return a JSON response indicating success or failure and the ID of the newly created address
+    if created:
+        address = Address.objects.filter(user=request.user).latest('id')
+        return render(request, 'accounts/checkout/address_selection_entry.html', {'address': address})
+    else:
+        return JsonResponse({'success': False, 'error': 'Address already exists'}, status=400)
 
 
 def select_payment_method(request):

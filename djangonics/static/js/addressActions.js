@@ -14,7 +14,7 @@ $(function() {
           success: function(data) {
             // Clear the form
                 $('#modal-form form')[0].reset();
-                $('#address-list-partial').append(data);
+                $('#address-list').append(data);
           }
         });
     });

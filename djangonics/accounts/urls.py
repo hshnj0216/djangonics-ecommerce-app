@@ -14,6 +14,7 @@ urlpatterns = [
     path('edit_address/<int:address_id>/', views.edit_address, name='edit_address'),
     path('save_address_changes/', views.save_address_changes, name='save_address_changes'),
     path('checkout/', views.checkout, name='checkout'),
+    path('add_address_from_checkout/', views.add_address_from_checkout, name='add_address_from_checkout'),
     path('use_address/', views.use_address, name='use_address'),
     path('change_selected_address/', views.change_selected_address, name='change_selected_address'),
     path('select_payment_method/', views.select_payment_method, name='select_payment_method'),
