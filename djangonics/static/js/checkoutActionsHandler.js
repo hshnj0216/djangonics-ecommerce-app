@@ -88,30 +88,30 @@ $(function() {
     //handle edit address button click
     $('.edit-address').on('click', function(event) {
         let addressId = $(this).data('address-id');
-        $.ajax({
-            url: `/accounts/edit_address/`,
+         $.ajax({
+            url: `/accounts/edit_address/${addressId}/`,
             type: 'GET',
-            data: {address_id: addressId},
             success: function(data) {
-                $('#edit-address-modal').html(data);
-                $('#edit-address-modal').modal('show');
-            }
-        })
-    });
-
-    //handle edit address submission
-    $('#edit-address-modal').on('submit', '#edit-address-form', function(event) {
-        event.preventDefault();
-        let formData = $(this).serialize();
-        $.ajax({
-            type: "POST",
-            url: "/accounts/edit_address/",
-            data: formData,
-            success: function(data){
-              $("#address-selection").html(data);
+                 $('#edit-address-modal-form .modal-body').html(data);
+                 $('#edit-address-modal-form').modal('show');
             }
         });
     });
+
+    //handle edit address submission
+    $('#save-changes').on('click', function(event) {
+        event.preventDefault();
+        let addressId = $('#edit-address-form input[name=id]').val();
+        let formData = $('#edit-address-form').serializeArray();
+        $.ajax({
+            type: 'POST',
+            url: `/accounts/save_address_changes_from_checkout/`,
+            data: formData,
+            success: function(data) {
+                $(`#address-entry-${addressId}`).replaceWith(data);
+            }
+        })
+    })
 
 
 

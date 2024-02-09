@@ -1,12 +1,12 @@
-<div class="d-flex justify-content-between list-group-item">
-    <label class="d-flex">
+<div id="address-entry-{{address.id}}" class="d-flex justify-content-between list-group-item">
+    <label class="d-flex align-items-center">
         <input class="form-check-input me-2"
                type="radio"
                name="address"
                value="{{address.id}}"
                {% if address.is_default %}checked{% endif %}
         >
-        <p>
+        <p class="mb-0">
             <strong>{{address.recipient_name}}</strong>
             {{address.street_address}}{% if address.apartment_address %} {{address.apartment_address}}{% endif %},
             {{address.city}}, {{address.state}}, {{address.zip_code}}

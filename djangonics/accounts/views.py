@@ -153,9 +153,7 @@ def add_address(request):
 @csrf_exempt
 def edit_address(request, address_id):
     if request.method == 'GET':
-        print("get request received")
         address = Address.objects.get(pk=address_id)
-        print(address)
         return render(request, 'accounts/edit_address_form_partial.html', {'address': address})
 
 
@@ -167,6 +165,7 @@ def save_address_changes(request):
         address.__dict__.update(**form_data)
         address.save()
     return render(request, 'accounts/account/address_card_partial.html', {'address': address})
+
 
 
 @login_required
@@ -255,7 +254,7 @@ def use_address(request):
     address_context = {
         'address': address,
     }
-    selected_address_html = render_to_string('accounts/selected_address.html', address_context, request)
+    selected_address_html = render_to_string('accounts/checkout/selected_address.html', address_context, request)
     data = {
         'selected_address_html': selected_address_html,
     }
@@ -264,7 +263,7 @@ def use_address(request):
 
 def change_selected_address(request):
     addresses = Address.objects.filter(user=request.user)
-    return render(request, 'accounts/address_selection_partial.html', {'addresses': addresses})
+    return render(request, 'accounts/checkout/address_selection_partial.html', {'addresses': addresses})
 
 def add_address_from_checkout(request):
     # retrieve form data from AJAX request
@@ -295,6 +294,15 @@ def add_address_from_checkout(request):
     else:
         return JsonResponse({'success': False, 'error': 'Address already exists'}, status=400)
 
+def save_address_changes_from_checkout(request):
+    if request.method == 'POST':
+        address_id = request.POST.get('id')
+        address = Address.objects.get(pk=address_id)
+        form_data = request.POST.dict()
+        address.__dict__.update(**form_data)
+        address.save()
+    return render(request, 'accounts/checkout/address_selection_entry.html', {'address': address})
+
 
 def select_payment_method(request):
-    return render(request, 'accounts/selected_payment.html')
+    return render(request, 'accounts/checkout/selected_payment.html')
