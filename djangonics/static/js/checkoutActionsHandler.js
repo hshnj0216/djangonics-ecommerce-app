@@ -70,9 +70,6 @@ $(function() {
     $('#add-address').on('click', function() {
         // Get the form data
         let formData = $('#add-address-modal-form form').serializeArray();
-
-        console.log(formData);
-
         // Send an AJAX POST request to the server
         $.ajax({
           type: 'POST',

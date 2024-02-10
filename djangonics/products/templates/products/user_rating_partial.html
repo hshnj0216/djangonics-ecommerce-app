@@ -1,0 +1,18 @@
+<div id="user-rating" class="d-flex flex-column flex-grow-1 mb-1 {% if user_rating %}rated{% endif %}">
+    <div class="d-flex align-items-center">
+        <h3 class="me-3">Your rating:</h3>
+        <div>
+            {% for i in "12345" %}
+            {% if user_rating >= forloop.counter %}
+            <span class="fas fa-star" data-rating="{{ forloop.counter }}" data-product-id="{{ product.id }}"></span>
+            {% else %}
+            <span class="far fa-star" data-rating="{{ forloop.counter }}" data-product-id="{{ product.id }}"></span>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% if not user_rating %}
+    <p class="form-text">You have not rated this product yet.</p>
+    {% endif %}
+</div>
+
