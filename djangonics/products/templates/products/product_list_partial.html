@@ -1,6 +1,6 @@
 {% load humanize %}
 <div class="row">
-    {% for index, product in products %}
+    {% for index, product in products.object_list %}
         {% include 'products/product_card_partial.html' %}
     {% if forloop.counter|divisibleby:4 and not forloop.last %}
 </div>
@@ -10,4 +10,30 @@
     <h4>No results found.</h4>
     {% endfor %}
 </div>
+
+<nav aria-label="products page navigation">
+  <ul class="pagination d-flex justify-content-center my-3">
+    {% if products.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
+      </li>
+    {% endif %}
+    {% for i in products.paginator.page_range %}
+      {% if products.number == i %}
+        <li class="page-item active" aria-current="page">
+          <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+        </li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if products.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
 

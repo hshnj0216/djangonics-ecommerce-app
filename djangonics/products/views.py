@@ -10,6 +10,7 @@ from .models import Product, Category, Cart, CartItem, Rating, Discount, Review
 from django.db.models import Sum, Avg, Prefetch, Count, Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
+from django.core.paginator import Paginator
 import boto3
 from django.conf import settings
 from PIL import Image
@@ -103,6 +104,12 @@ def browse_all(request):
     discounted_products = get_todays_deals(request)
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
+
+    # Pagination
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     context = {
         'products': products,
         'new_arrivals': new_arrivals,
@@ -117,6 +124,12 @@ def todays_deals(request):
     products = get_todays_deals(request)
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
+
+    # Pagination
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     return render(request, 'products/todays_deals.html', {'products': products, 'categories': categories})
 
 
@@ -124,6 +137,12 @@ def best_sellers(request):
     products = get_best_sellers(request)
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
+
+    # Pagination
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     return render(request, 'products/best_sellers.html', {'products': products, 'categories': categories})
 
 
@@ -131,6 +150,12 @@ def new_arrivals(request):
     products = get_new_arrivals(request)
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
+
+    # Pagination
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     return render(request, 'products/new_arrivals.html', {'products': products, 'categories': categories})
 
 
