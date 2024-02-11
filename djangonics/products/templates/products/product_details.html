@@ -77,14 +77,7 @@
         </div>
         <hr>
     </section>
-
-    <section class="px-5 mx-5">
-        <h2>Product Reviews</h2>
-        <div>
-            {% include 'products/customer_rating_partial.html' %}
-            {% include 'products/customer_reviews_partial.html' %}
-        </div>
-    </section>
+    {% include 'products/product_reviews_and_ratings_section.html' %}
 </div>
 <div id="toast-container">
     <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">

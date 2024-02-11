@@ -30,7 +30,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipient_name = models.CharField(max_length=100)
     street_address = models.CharField(max_length=250)
-    apartment_address = models.CharField(max_length=250)
+    apartment_address = models.CharField(max_length=250, null=True, blank=True)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=25)
     phone_number = models.CharField(max_length=20)

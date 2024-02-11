@@ -1,14 +1,13 @@
 from botocore.config import Config
-from django.db.models.functions import Coalesce, Cast
+from django.db.models.functions import Coalesce
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.core.cache import cache
 from django.template.loader import render_to_string
-from django.urls import reverse
 from django.utils.cache import patch_response_headers
 from django.views.decorators.csrf import csrf_exempt
 from .models import Product, Category, Cart, CartItem, Rating, Discount, Review
-from django.db.models import Sum, Avg, Prefetch, Count, Q, FloatField
+from django.db.models import Sum, Avg, Prefetch, Count, Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
 import boto3
@@ -19,7 +18,6 @@ from transactions.models import Order
 
 
 # Create your views here.
-
 def generate_low_quality_image(request, hq_image):
     # open the high quality image
     image = Image.open(hq_image)
@@ -48,9 +46,10 @@ def get_products(request):
 
     return products
 
+
 def get_best_sellers(request):
     products = Product.objects.filter(units_sold__gt=0).order_by('-units_sold'
-    ).prefetch_related(
+                                                                 ).prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
         Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
     ).annotate(
@@ -59,9 +58,10 @@ def get_best_sellers(request):
     )
     return products
 
+
 def get_todays_deals(request):
     products = Product.objects.filter(discount__gt=0
-    ).prefetch_related(
+                                      ).prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
         Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
     ).annotate(
@@ -73,7 +73,7 @@ def get_todays_deals(request):
 
 def get_new_arrivals(request):
     products = Product.objects.order_by('-created_at'
-    ).prefetch_related(
+                                        ).prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
         Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
     ).annotate(
@@ -82,8 +82,9 @@ def get_new_arrivals(request):
     )
     return products
 
+
 def home(request):
-    #Get 5 items from each nav link
+    # Get 5 items from each nav link
     todays_deals = list(enumerate(get_todays_deals(request)[:4], start=1))
     best_sellers = list(enumerate(get_best_sellers(request)[:4], start=1))
     new_arrivals = list(enumerate(get_new_arrivals(request)[:4], start=1))
@@ -111,11 +112,13 @@ def browse_all(request):
     }
     return render(request, 'products/browse_all.html', context)
 
+
 def todays_deals(request):
     products = get_todays_deals(request)
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
     return render(request, 'products/todays_deals.html', {'products': products, 'categories': categories})
+
 
 def best_sellers(request):
     products = get_best_sellers(request)
@@ -123,13 +126,15 @@ def best_sellers(request):
     products = list(enumerate(products, start=1))
     return render(request, 'products/best_sellers.html', {'products': products, 'categories': categories})
 
+
 def new_arrivals(request):
     products = get_new_arrivals(request)
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
     return render(request, 'products/new_arrivals.html', {'products': products, 'categories': categories})
 
-def product_details(request, slug, product_id):
+
+def get_product_details(request, product_id):
     product = Product.objects.prefetch_related(
         Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
         Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount'),
@@ -145,6 +150,47 @@ def product_details(request, slug, product_id):
     ).get(
         pk=product_id
     )
+    return product
+
+
+def can_submit_rating(request, product, product_id):
+    if request.user.is_authenticated:
+        has_completed_order = Order.objects.filter(
+            user=request.user,
+            order_items__product_id=product_id,
+            delivery_status='Delivered'
+        ).exists()
+        has_submitted_rating = Rating.objects.filter(
+            user=request.user,
+            product=product_id
+        ).exists()
+        if has_completed_order and not has_submitted_rating:
+            can_submit_rating = True
+        else:
+            can_submit_rating = False
+        return can_submit_rating
+
+
+def can_submit_review(request, product_id):
+    if request.user.is_authenticated:
+        has_completed_order = Order.objects.filter(
+            user=request.user,
+            order_items__product_id=product_id,
+            delivery_status='Delivered'
+        ).exists()
+        has_submitted_review = Review.objects.filter(
+            user=request.user,
+            product_id=product_id,
+        ).exists()
+        if has_completed_order and not has_submitted_review:
+            can_submit_review = True
+        else:
+            can_submit_review = False
+        return can_submit_review
+
+
+def product_details(request, slug, product_id):
+    product = get_product_details(request, product_id)
     if product.stock <= 30:
         stock_range = range(1, product.stock + 1)
     else:
@@ -163,43 +209,17 @@ def product_details(request, slug, product_id):
         rating_4_percentage = 0
         rating_5_percentage = 0
 
-
-    user_rating = None
-    #Check if the user is allowed to submit a rating
-    can_submit_rating = False
-    if request.user.is_authenticated:
-        # get user rating
-        user_rating = Rating.objects.filter(user=request.user, product=product).first()
-        has_completed_order = Order.objects.filter(
-            user=request.user,
-            order_items__product_id=product_id,
-            delivery_status='Delivered'
-        ).exists()
-        has_submitted_rating = Rating.objects.filter(
-            user=request.user,
-            product=product_id
-        ).exists()
-        if has_completed_order and not has_submitted_rating:
-            can_submit_rating = True
-
+    # get user rating
+    user_rating = Rating.objects.filter(user=request.user, product=product).first()
+    # Check if the user is allowed to submit a rating
+    user_can_submit_rating = can_submit_rating(request, product, product_id)
     # Check if the user is allowed to submit a review
-    can_submit_review = False
-    if request.user.is_authenticated:
-        has_completed_order = Order.objects.filter(
-            user=request.user,
-            order_items__product_id=product_id,
-            delivery_status='Delivered'
-        ).exists()
-        has_submitted_review = Review.objects.filter(
-            user=request.user,
-            product_id=product_id,
-        ).exists()
-        if has_completed_order and not has_submitted_review:
-            can_submit_review = True
+    user_can_submit_review = can_submit_review(request, product_id)
+
     context = {
         'product': product,
-        'can_submit_review': can_submit_review,
-        'can_submit_rating': can_submit_rating,
+        'user_can_submit_review': user_can_submit_review,
+        'user_can_submit_rating': user_can_submit_rating,
         'range': stock_range,
         'user_rating': user_rating.value if user_rating else None,
         'rating_1_percentage': rating_1_percentage,
@@ -209,6 +229,7 @@ def product_details(request, slug, product_id):
         'rating_5_percentage': rating_5_percentage,
     }
     return render(request, 'products/product_details.html', context)
+
 
 @csrf_exempt
 def filter_products(request):
@@ -302,6 +323,7 @@ def search_products(request):
     }
     return render(request, 'products/search.html', context)
 
+
 @login_required
 def cart(request):
     context = {}
@@ -327,6 +349,7 @@ def cart(request):
     context['products'] = products
     context['range'] = qty_range
     return render(request, 'products/cart.html', context)
+
 
 @login_required
 def add_to_cart(request):
@@ -361,6 +384,7 @@ def add_to_cart(request):
     request.session['cart_item_count'] = cart_item_count
     return JsonResponse({'cart_item_count': cart_item_count})
 
+
 def get_cart_item_count(request, user):
     cart_item_count = request.session.get('cart_item_count')
     if cart_item_count is None:
@@ -370,6 +394,7 @@ def get_cart_item_count(request, user):
             request.session['cart_item_count'] = cart_item_count
     data = {'cart_item_count': cart_item_count}
     return JsonResponse(data)
+
 
 @login_required
 @csrf_exempt
@@ -388,6 +413,7 @@ def remove_item(request):
         'removed_html': removed_html,
     }
     return JsonResponse(data)
+
 
 @login_required
 @csrf_exempt
@@ -472,6 +498,7 @@ def get_images(request):
 
     return response
 
+
 @login_required
 @csrf_exempt
 def submit_rating(request):
@@ -488,21 +515,7 @@ def submit_rating(request):
     )
     rating.save()
 
-    product = Product.objects.prefetch_related(
-        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
-        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount'),
-        Prefetch('reviews', queryset=Review.objects.all(), to_attr='product_reviews')
-    ).annotate(
-        average_rating=Avg('ratings__value'),
-        num_ratings=Count('ratings'),
-        rating_1=Count('ratings', filter=Q(ratings__value=1)),
-        rating_2=Count('ratings', filter=Q(ratings__value=2)),
-        rating_3=Count('ratings', filter=Q(ratings__value=3)),
-        rating_4=Count('ratings', filter=Q(ratings__value=4)),
-        rating_5=Count('ratings', filter=Q(ratings__value=5)),
-    ).get(
-        pk=product_id
-    )
+    product = get_product_details(request, product_id)
 
     if product.stock <= 30:
         stock_range = range(1, product.stock + 1)
@@ -522,35 +535,7 @@ def submit_rating(request):
         rating_4_percentage = 0
         rating_5_percentage = 0
 
-    # Check if the user is allowed to submit a rating
-    can_submit_rating = False
-    if request.user.is_authenticated:
-        has_completed_order = Order.objects.filter(
-            user=request.user,
-            order_items__product_id=product_id,
-            delivery_status='Delivered'
-        ).exists()
-        has_submitted_rating = Rating.objects.filter(
-            user=request.user,
-            product=product_id
-        ).exists()
-        if has_completed_order and not has_submitted_rating:
-            can_submit_rating = True
-
-    # Check if the user is allowed to submit a review
-    can_submit_review = False
-    if request.user.is_authenticated:
-        has_completed_order = Order.objects.filter(
-            user=request.user,
-            order_items__product_id=product_id,
-            delivery_status='Delivered'
-        ).exists()
-        has_submitted_review = Review.objects.filter(
-            user=request.user,
-            product_id=product_id,
-        ).exists()
-        if has_completed_order and not has_submitted_review:
-            can_submit_review = True
+    user_can_submit_rating = False
 
     # get user rating
     user_rating = Rating.objects.filter(user=request.user, product=product).first()
@@ -558,8 +543,7 @@ def submit_rating(request):
 
     context = {
         'product': product,
-        'can_submit_review': can_submit_review,
-        'can_submit_rating': can_submit_rating,
+        'user_can_submit_rating': user_can_submit_rating,
         'range': stock_range,
         'user_rating': user_rating.value,
         'rating_1_percentage': rating_1_percentage,
@@ -579,7 +563,7 @@ def post_review(request):
     print(f"product_id: {product_id}")
     rating = Rating.objects.filter(user=request.user, product=product_id).first()
     product = Product.objects.get(pk=product_id)
-    #Create review
+    # Create review
     review = Review.objects.create(
         user=request.user,
         product=product,
@@ -588,13 +572,11 @@ def post_review(request):
         rating=rating
     )
     review.save()
-    product = Product.objects.prefetch_related(
-        Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
-        Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount'),
-        Prefetch('reviews', queryset=Review.objects.all(), to_attr='product_reviews')
-    ).get(
-        pk=product_id
-    )
-    return render(request, 'products/customer_reviews_partial.html', {'product': product})
-
-
+    can_user_submit_review = False
+    product = get_product_details(request, product_id)
+    context = {
+        'product': product,
+        'can_user_submit_review': can_user_submit_review,
+        'rating': review.rating
+    }
+    return render(request, 'products/customer_reviews_partial.html', context)

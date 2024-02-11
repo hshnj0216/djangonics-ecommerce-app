@@ -52,7 +52,7 @@ $(function() {
         let rating = $(this).data('rating');
         let productId = $(this).data('product-id');
         $('#user-rating p').hide();
-        if(!('#user-rating').hasClass('rated')) {
+        if(!$('#user-rating').hasClass('rated')) {
              $.ajax({
                 url: '/products/submit_rating/',
                 type: 'POST',
@@ -132,8 +132,7 @@ $(function() {
         let reviewContent = reviewContentTextarea.val();
         let productId = $(this).data('product-id');
         let csrfToken = $(this).siblings('input[name="csrfmiddlewaretoken"]').val();
-        console.log(csrfToken);
-        console.log(productId);
+
         $.ajax({
             url: '/products/post_review/',
             type: 'POST',

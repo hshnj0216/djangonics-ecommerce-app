@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Category, Product, ProductImage, Discount
+from .models import Category, Product, ProductImage, Discount, Rating, Review
 
 
 # Register your models here
@@ -24,10 +24,19 @@ class DiscountAdmin(admin.ModelAdmin):
 class DiscountInline(admin.TabularInline):
     model = Discount
 
+class RatingInline(admin.TabularInline):
+    model = Rating
+    extra = 0  # this will prevent extra empty forms
+
+class ReviewInline(admin.TabularInline):
+    model = Review
+    extra = 0  # this will prevent extra empty forms
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    inlines = [ProductImageInline, DiscountInline]
+    inlines = [ProductImageInline, DiscountInline, RatingInline, ReviewInline]
     list_display = ['name', 'slug', 'price', 'stock', 'discount', 'units_sold', 'created_at', 'updated_at']
     list_editable = ['price', 'stock',]
     prepopulated_fields = {'slug': ('name',)}

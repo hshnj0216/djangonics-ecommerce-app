@@ -5,18 +5,23 @@
             <div class="d-flex flex-start">
                 <h4 class="flex-fill">Order ID: {{order.id}}</h4>
                 {% if order.status == 'Open' and order.delivery_status == 'Processing' %}
-                    <a
+                <a
                         class="mx-3 cancel-order-btn"
                         data-order-id="{{order.id}}"
                         data-bs-toggle="modal"
                         data-bs-target="#cancelOrderModal">
-                        Cancel order
-                    </a>
+                    Cancel order
+                </a>
                 {% endif %}
                 {% if order.status == 'Open' %}
-                    <p class="text-end mx-3 badge bg-info">Delivery status: {{order.delivery_status}}</p>
+                <p class="text-end mx-3 badge {% if order.delivery_status == 'Delivered' %}bg-success{% else %}bg-info{% endif %}">
+                    Delivery status: {{ order.delivery_status }}
+                </p>
+
                 {% else %}
-                    <p class="text-end mx-3 badge bg-danger">Order status: {{order.status}}</p>
+                <p class="text-end mx-3 badge bg-danger">
+                    Order status: {{order.status}}
+                </p>
                 {% endif %}
             </div>
             <div class="d-flex flex-column ml-auto">
