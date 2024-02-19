@@ -486,30 +486,39 @@ def get_images(request):
     if cached_data:
         return JsonResponse(cached_data)
 
-    # Set up the IBM COS client
-    session = boto3.session.Session()
-    cos_client = session.client('s3',
-                                endpoint_url=settings.AWS_S3_ENDPOINT_URL,
-                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                                config=Config(signature_version='s3v4'),
-                                region_name='jp-tok'
-                                )
+    try:
+        # Set up the IBM COS client
+        session = boto3.session.Session()
+        cos_client = session.client('s3',
+                                    endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+                                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                    config=Config(signature_version='s3v4'),
+                                    region_name='jp-tok'
+                                    )
 
-    # Get the list of objects in the bucket
-    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-    prefix = f"{product_id}/{quality}-"
-    response = cos_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+        # Get the list of objects in the bucket
+        bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+        prefix = f"{product_id}/{quality}-"
+        response = cos_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
 
-    # Generate a list of URLs for the image objects
-    if 'Contents' in response:
+        # Generate a list of URLs for the image objects
+        if 'Contents' in response:
+            data = {
+                'img_urls': [f"{settings.AWS_S3_ENDPOINT_URL}/{bucket_name}/{obj['Key']}" for obj in response['Contents']],
+                'status': 'success',
+            }
+        else:
+            data = {
+                'status': 'failed',
+            }
+
+    except (BotoCoreError, ClientError):
+        # If accessing the bucket fails, serve the static files
+        static_url = settings.STATIC_URL
         data = {
-            'img_urls': [f"{settings.AWS_S3_ENDPOINT_URL}/{bucket_name}/{obj['Key']}" for obj in response['Contents']],
+            'img_urls': [f"{static_url}{product_id}/{quality}-{i}.jpg" for i in range(1, 6)],  # adjust as needed
             'status': 'success',
-        }
-    else:
-        data = {
-            'status': 'failed',
         }
 
     # Cache the response
