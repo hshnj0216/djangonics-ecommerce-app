@@ -266,8 +266,12 @@ li.address-action:not(:first-child)::before {
 .selected-rating{
     background-color: rgba(0, 127, 255, 0.5);
 }
+input[type="number"] {
+    -moz-appearance: textfield; /* For Firefox */
+}
+
 input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type="number"]::-webkit-outer-spin-button { /* For Chrome and Edge */
     -webkit-appearance: none;
     margin: 0;
 }

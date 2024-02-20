@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.core.paginator import Paginator
 import boto3
+from botocore.exceptions import BotoCoreError, ClientError
 from django.conf import settings
 from PIL import Image
 
@@ -260,6 +261,7 @@ def product_details(request, slug, product_id):
 def filter_products(request):
     # get the initial products queryset based on the current page
     current_page = request.GET.get('current_page')
+    print(f"from filter: {current_page}")
     if current_page == 'new_arrivals':
         products = get_new_arrivals(request)
     elif current_page == 'todays_deals':
@@ -280,7 +282,7 @@ def filter_products(request):
         print(products)
     else:
         products = get_products(request)
-
+    print(products)
     # apply category filters if provided
     categories = request.GET.get('categories', '').split(',')
     if len(categories) == 1 and categories[0] != '':
@@ -306,6 +308,11 @@ def filter_products(request):
 
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
+    # Pagination
+    paginator = Paginator(products, 12)  # Adjust the number as needed
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     context = {
         'current_page': current_page,
         'products': products,
@@ -513,12 +520,19 @@ def get_images(request):
                 'status': 'failed',
             }
 
+
     except (BotoCoreError, ClientError):
+
         # If accessing the bucket fails, serve the static files
+
         static_url = settings.STATIC_URL
+
         data = {
-            'img_urls': [f"{static_url}{product_id}/{quality}-{i}.jpg" for i in range(1, 6)],  # adjust as needed
+
+            'img_urls': [f"{static_url}images/product_images/{product_id}.jpg"],
+
             'status': 'success',
+
         }
 
     # Cache the response
