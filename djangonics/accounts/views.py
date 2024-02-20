@@ -22,53 +22,34 @@ from django.contrib import messages
 
 # Create your views here.
 def signup(request):
-    # if the request is GET render the template
+    storage = messages.get_messages(request)
+    storage.used = True
     if request.method == "GET":
         form = SignUpForm()
         return render(request, 'accounts/account/signup.html', {'form': form})
-    # if the request if POST process the registration
+
     if request.method == "POST":
-        # context = {}
-        # # extract credentials
-        # first_name = request.POST['first_name']
-        # last_name = request.POST['last_name']
-        # email = request.POST['email']
-        # contact_number = request.POST['contact_number']
-        # password = request.POST['password']
-        # # create user
-        # User.objects.create_user(
-        #     first_name=first_name,
-        #     last_name=last_name,
-        #     email=email,
-        #     contact_number=contact_number,
-        #     password=password,
-        # )
-        # success_message = "Account created successfully, you can now log in."
-        # context['success_message'] = success_message
-        # return render(request, 'accounts/login.html', context)
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            email = form.cleaned_data.get('email')
+            contact_number = form.cleaned_data.get('contact_number')
+            password = form.cleaned_data.get('password')
 
-        details = SignUpForm(request.POST)
-        context = {}
-
-        if details.is_valid():
-            print('success')
-            user = details.save(commit=False)
-
-            user.save()
-            success_message = "Account created successfully, you can now log in."
-            context['success_message'] = success_message
-
-            return render(request, 'accounts/account/login.html', context)
+            User.objects.create_user(username=email, email=email, password=password, first_name=first_name, last_name=last_name, contact_number=contact_number)
+            messages.success(request, "Account created successfully, you can now log in.")
+            login_form = LoginForm()
+            return render(request, 'accounts/account/login.html', {'login_form': login_form})
 
         else:
-            print('fail')
-            success_message = "Not a success message."
-            context['success_message'] = success_message
-
-            return render(request, 'accounts/account/signup.html', {'form': details})
+            messages.error(request, "There was a problem with your signup data, please try again.")
+            return render(request, 'accounts/account/signup.html', {'form': form})
 
 
 def login(request):
+    storage = messages.get_messages(request)
+    storage.used = True
     if request.method == "GET":
         login_form = LoginForm()
         return render(request, 'accounts/account/login.html', {'login_form': login_form})
@@ -88,6 +69,7 @@ def login(request):
     else:
         form = LoginForm()
     return render(request, 'accounts/account/login.html', {'login_form': form})
+
 
 
 def logout(request):

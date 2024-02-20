@@ -236,12 +236,21 @@ def product_details(request, slug, product_id):
         rating_5_percentage = 0
 
     # get user rating
-    user_rating = Rating.objects.filter(user=request.user, product=product).first()
+    if request.user.is_authenticated:
+        user_rating = Rating.objects.filter(user=request.user, product=product).first()
+    else:
+        user_rating = None
     # Check if the user is allowed to submit a rating
-    user_can_submit_rating = can_submit_rating(request, product, product_id)
+    if request.user.is_authenticated:
+        user_can_submit_rating = can_submit_rating(request, product, product_id)
+    else:
+        user_can_submit_rating = False
     # Check if the user is allowed to submit a review
-    user_can_submit_review = can_submit_review(request, product_id)
-
+    if request.user.is_authenticated:
+        user_can_submit_review = can_submit_review(request, product_id)
+    else:
+        user_can_submit_review = False
+    print(f"user_can_submit_rating: {user_can_submit_rating}")
     context = {
         'product': product,
         'user_can_submit_review': user_can_submit_review,
@@ -261,7 +270,6 @@ def product_details(request, slug, product_id):
 def filter_products(request):
     # get the initial products queryset based on the current page
     current_page = request.GET.get('current_page')
-    print(f"from filter: {current_page}")
     if current_page == 'new_arrivals':
         products = get_new_arrivals(request)
     elif current_page == 'todays_deals':
@@ -270,7 +278,6 @@ def filter_products(request):
         products = get_best_sellers(request)
     elif current_page == 'search_products':
         query = request.GET.get('query')
-        print(query)
         products = Product.objects.prefetch_related(
             Prefetch('ratings', queryset=Rating.objects.all(), to_attr='product_ratings'),
             Prefetch('discount', queryset=Discount.objects.all(), to_attr='product_discount')
@@ -279,10 +286,8 @@ def filter_products(request):
             average_rating=Avg('ratings__value'),
             num_ratings=Count('ratings')
         ).filter(search=SearchQuery(query))
-        print(products)
     else:
         products = get_products(request)
-    print(products)
     # apply category filters if provided
     categories = request.GET.get('categories', '').split(',')
     if len(categories) == 1 and categories[0] != '':
@@ -296,7 +301,6 @@ def filter_products(request):
 
     # apply rating filter if provided
     rating = request.GET.get('rating')
-    print(rating)
     if rating:
         min_rating = float(rating)
         max_rating = min_rating + 1
@@ -344,6 +348,12 @@ def search_products(request):
 
     categories = Category.objects.all()
     products = list(enumerate(products, start=1))
+
+    #Pagination
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     context = {
         'query': query,
         'current_page': current_page,

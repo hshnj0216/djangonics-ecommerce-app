@@ -1,59 +1,68 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator, RegexValidator
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import ModelForm
 from accounts.models import User
 import re
 
-def validate_password(value):
-    """Check if password meets the requirements."""
-    if len(value) < 8:
-        raise ValidationError("Password should be at least 8 characters long.")
-    if " " in value:
-        raise ValidationError("Password should not contain spaces.")
-    if not value:
-        raise ValidationError("Password should not be empty.")
-    if not re.match('^[a-zA-Z0-9]*$', value):
-        raise ValidationError("Password should only contain alphanumeric characters.")
 
-def validate_first_name(value):
-    # Validate first_name
-    if not value:
-        raise ValidationError("First name must not be empty.")
-    if len(value) > 100:
-        raise ValidationError("First name must not exceed 100 characters.")
-    if not value.replace(" ", "").isalpha():
-        raise ValidationError("First name should only contain alphabets and spaces.")
+class SignUpForm(forms.ModelForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'placeholder': 'Email'}),
+        validators=[EmailValidator()],
+        error_messages={
+            'unique': _("This email is already registered."),
+        },
+    )
+    first_name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'placeholder': 'First Name'}),
+        validators=[
+            RegexValidator(r'^[a-zA-Z\s]*$', _("First name should only contain alphabets and spaces.")),
+        ],
+    )
+    last_name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'placeholder': 'Last Name'}),
+        validators=[
+            RegexValidator(r'^[a-zA-Z\s]*$', _("Last name should only contain alphabets and spaces.")),
+        ],
+    )
+    contact_number = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'Contact Number (123-456-7890)'}),
+        validators=[
+            RegexValidator(r"^(1-)?\d{3}-\d{3}-\d{4}$", _("Invalid US phone number. The format should be: 123-456-7890 or 1-123-456-7890")),
+        ],
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        validators=[
+            RegexValidator(r'^[a-zA-Z0-9]{8,}$', _("Password should be at least 8 characters long and should only contain alphanumeric characters.")),
+        ],
+    )
 
-def validate_last_name(value):
-    if not value:
-        raise ValidationError("Last name must not be empty.")
-    if len(value) > 100:
-        raise ValidationError("Last name must not exceed 100 characters.")
-    if not value.replace(" ", "").isalpha():
-        raise ValidationError("Last name should only contain alphabets and spaces.")
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'contact_number', 'password']
 
-def validate_email(value):
-    validator = EmailValidator()
-    try:
-        validator(value)
-    except ValidationError:
-        raise ValidationError("Invalid email address.")
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                self.fields['email'].error_messages['unique'],
+                code='unique',
+            )
+        return email
 
-def validate_contact_number(value):
-    pattern = re.compile(r"^(1-)?\d{3}-\d{3}-\d{4}$")
-    if not pattern.match(value):
-        raise ValidationError("Invalid US phone number. The format should be: 123-456-7890 or 1-123-456-7890")
+    def clean_contact_number(self):
+        contact_number = self.cleaned_data.get('contact_number')
+        if User.objects.filter(contact_number=contact_number).exists():
+            raise ValidationError("Contact number already exists.")
+        return contact_number
 
-
-
-class SignUpForm(forms.Form):
-    first_name = forms.CharField(widget=forms.TextInput, validators=[validate_first_name])
-    last_name = forms.CharField(widget=forms.TextInput, validators=[validate_last_name])
-    email = forms.CharField(widget=forms.EmailInput, validators=[validate_email])
-    contact_number = forms.CharField(widget=forms.TextInput, validators=[validate_contact_number])
-    password = forms.CharField(widget=forms.PasswordInput, validators=[validate_password])
 
 
 class LoginForm(forms.Form):
