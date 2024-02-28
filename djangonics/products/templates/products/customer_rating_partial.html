@@ -115,7 +115,7 @@
             </div>
         </div>
     </div>
-    {% if user_can_submit_rating %}
+    {% if user_can_submit_rating or user_rating %}
         {% include 'products/user_rating_partial.html' %}
     {% endif %}
 </div>

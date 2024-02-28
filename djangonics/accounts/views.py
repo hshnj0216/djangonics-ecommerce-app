@@ -125,7 +125,6 @@ def add_address(request):
     # return a JSON response indicating success or failure and the ID of the newly created address
     if created:
         address = Address.objects.filter(user=request.user).latest('id')
-        print(address)
         return render(request, 'accounts/account/address_card_partial.html', {'address': address})
     else:
         return JsonResponse({'success': False, 'error': 'Address already exists'}, status=400)

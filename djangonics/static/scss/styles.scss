@@ -82,6 +82,9 @@
         background-color: #00a2d1;
     }
 }
+#content-container{
+    height: 85vh;
+}
 .card{
     background-color: $card-bg-color;
     width: 16rem;
@@ -346,5 +349,23 @@ input[type="number"], select.cart-item-qty {
             width: 4rem;
             height: 4rem;
         }
+    }
+}
+footer {
+    background-color: $util-nav-color;
+    color: $nav-text-color;
+    padding: 20px;
+    text-align: center;
+
+    h3 {
+        color: $nav-text-color;
+    }
+
+    p {
+        color: $nav-text-color;
+    }
+
+    div {
+        margin-bottom: 20px;
     }
 }
