@@ -58,4 +58,8 @@ $(function() {
         }
         updateProductList();
     });
+
+    $('#clear-filters-btn').on('click', function() {
+        $('#filter-form').trigger('reset');
+    });
 });

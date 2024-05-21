@@ -1,5 +1,5 @@
 <h5 class="mb-3">Filter by:</h5>
-<form action="" class="filter-form " data-filter-url="{% url 'products:filter_products' %}">
+<form id="filter-form" action="" class="filter-form" data-filter-url="{% url 'products:filter_products' %}">
     <h6>Category:</h6>
     <div class="container mb-3">
         {% for category in categories %}
@@ -73,5 +73,8 @@
             </div>
             <p class="mb-0 ms-2">& Up</p>
         </div>
+    </div>
+    <div id="clear-filters-btn-container" class="d-flex pt-3 pb-3 pr-3">
+        <button id="clear-filters-btn" class="btn btn-primary">Clear filters</button>
     </div>
 </form>
