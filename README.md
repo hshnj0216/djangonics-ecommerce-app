@@ -1,5 +1,8 @@
 # djangonics-ecommerce-app
 
+## IMPORTANT NOTICE
+This repository is no longer in service and is not intended for use or cloning. The associated IBM Cloud account for storing product images is no longer available(deactivated). This repository is kept online for portfolio purposes only.
+
 ## Project Description
 
 Djangonics is an ecommerce application built with Django. It's designed to provide a seamless online shopping experience, with a focus on electronics products.
@@ -20,4 +23,4 @@ Djangonics is an ecommerce application built with Django. It's designed to provi
 - **PayPal API**: For handling payments.
 - **Google Sign-In**: For user authentication.
 
-Please note that this project is no longer in service and is not intended for use or cloning. The associated IBM Cloud account for storing product images is no longer available. This repository is kept online for portfolio purposes only.
+
