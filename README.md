@@ -1,7 +1,7 @@
 # djangonics-ecommerce-app
 
 ## IMPORTANT NOTICE
-This repository is no longer in service and is not intended for use or cloning. The associated IBM Cloud account for storing product images is no longer available(deactivated). This repository is kept online for portfolio purposes only.
+This repository is no longer in service and is not intended for use or cloning. The associated IBM Cloud Lite(free trial) account for storing product images is no longer available(deactivated). This repository is kept online for portfolio purposes only.
 
 ## Project Description
 
